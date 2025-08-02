@@ -2,7 +2,7 @@
   # =====================================================================
   # KEYMAPS COMPLETS - En accord avec la configuration which-key
   # =====================================================================
-  
+
   keymaps = [
     # ===== CUSTOM MOVEMENT KEYS (JKLM instead of HJKL) =====
     {
@@ -57,7 +57,7 @@
       action = "l";
       options.desc = "Move right (custom)";
     }
-    
+
     # Remap mark key
     {
       mode = "n";
@@ -65,7 +65,7 @@
       action = "m";
       options.desc = "Set mark (custom)";
     }
-    
+
     # ===== WINDOW NAVIGATION (adapted for JKLM) =====
     {
       mode = "n";
@@ -91,7 +91,7 @@
       action = "<C-w>l";
       options.desc = "Go to right window";
     }
-    
+
     # ===== MOVE LINES (adapted for JKLM) =====
     {
       mode = "n";
@@ -129,7 +129,7 @@
       action = ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv";
       options.desc = "Move selection up";
     }
-    
+
     # ===== BASIC IMPROVEMENTS =====
     {
       mode = "n";
@@ -143,7 +143,7 @@
       action = "Nzz";
       options.desc = "Previous search result (centered)";
     }
-    
+
     # ===== INSERT MODE MAPPINGS =====
     {
       mode = "i";
@@ -169,7 +169,7 @@
       action = "<End>";
       options.desc = "End of line";
     }
-    
+
     # ===== BUFFER NAVIGATION =====
     {
       mode = "n";
@@ -183,7 +183,7 @@
       action = "<cmd>bnext<cr>";
       options.desc = "Next buffer";
     }
-    
+
     # ===== TERMINAL =====
     {
       mode = "t";
@@ -205,7 +205,7 @@
       action = "<cmd>lua Snacks.explorer({ focus = 'files' })<cr>";
       options.desc = "Explorer (Focus Files)";
     }
-    
+
     # =====================================================================
     # FILE/FIND GROUP - <leader>f
     # =====================================================================
@@ -251,7 +251,7 @@
       action = "<cmd>lua Snacks.picker.lsp_workspace_symbols()<cr>";
       options.desc = "LSP Workspace Symbols";
     }
-    
+
     # =====================================================================
     # GIT GROUP - <leader>g
     # =====================================================================
@@ -315,7 +315,7 @@
       action = "<cmd>lua vim.cmd('Git commit')<cr>";
       options.desc = "Commit";
     }
-    
+
     # =====================================================================
     # BUFFER GROUP - <leader>b
     # =====================================================================
@@ -367,7 +367,7 @@
       action = "<cmd>e!<cr>";
       options.desc = "Reload Buffer";
     }
-    
+
     # =====================================================================
     # WINDOWS GROUP - <leader>w
     # =====================================================================
@@ -431,7 +431,7 @@
     #   action = "<C-w>x";
     #   options.desc = "Rotate Windows";
     # }
-    
+
     # =====================================================================
     # CODE GROUP - <leader>c
     # =====================================================================
@@ -489,7 +489,7 @@
       action = "<cmd>lua vim.lsp.buf.signature_help()<cr>";
       options.desc = "Signature Help";
     }
-    
+
     # =====================================================================
     # UI GROUP - <leader>u
     # =====================================================================
@@ -529,7 +529,7 @@
       action = "<cmd>set showtabline=0<cr>";
       options.desc = "Hide Tab Line";
     }
-    
+
     # =====================================================================
     # DIAGNOSTICS GROUP - <leader>x
     # =====================================================================
@@ -581,7 +581,7 @@
       action = "<cmd>lua vim.diagnostic.goto_prev()<cr>";
       options.desc = "Previous Diagnostic";
     }
-    
+
     # =====================================================================
     # TERMINAL GROUP - <leader>t
     # =====================================================================
@@ -621,7 +621,7 @@
       action = "<cmd>lua vim.cmd('bdelete!')<cr>";
       options.desc = "Kill Terminal";
     }
-    
+
     # =====================================================================
     # NOTIFICATIONS GROUP - <leader>n
     # =====================================================================
@@ -649,7 +649,7 @@
       action = "<cmd>lua Snacks.notifier.clear_history()<cr>";
       options.desc = "Clear History";
     }
-    
+
     # =====================================================================
     # GOTO NAVIGATION - g prefix
     # =====================================================================
@@ -707,7 +707,7 @@
       action = "gf";
       options.desc = "Go to File";
     }
-    
+
     # =====================================================================
     # PREVIOUS NAVIGATION - [ prefix
     # =====================================================================
@@ -759,7 +759,7 @@
       action = "<cmd>lua vim.diagnostic.goto_prev({severity = vim.diagnostic.severity.WARN})<cr>";
       options.desc = "Previous Warning";
     }
-    
+
     # =====================================================================
     # NEXT NAVIGATION - ] prefix  
     # =====================================================================
@@ -811,7 +811,7 @@
       action = "<cmd>lua vim.diagnostic.goto_next({severity = vim.diagnostic.severity.WARN})<cr>";
       options.desc = "Next Warning";
     }
-    
+
     # =====================================================================
     # FOLD OPERATIONS - z prefix
     # =====================================================================
@@ -863,7 +863,7 @@
       action = "zE";
       options.desc = "Eliminate all folds";
     }
-    
+
     # =====================================================================
     # WHICH-KEY SPECIFIC KEYMAPS
     # =====================================================================
@@ -877,11 +877,11 @@
       '';
       options.desc = "Show All Keymaps";
     }
-    
+
     # =====================================================================
     # ADDITIONAL USEFUL KEYMAPS
     # =====================================================================
-    
+
     # Quick save and quit
     {
       mode = "n";
@@ -901,7 +901,7 @@
       action = "<cmd>qa!<cr>";
       options.desc = "Quit all (force)";
     }
-    
+
     # Better indenting
     {
       mode = "v";
@@ -915,7 +915,7 @@
       action = ">gv";
       options.desc = "Increase indent";
     }
-    
+
     # Clear search highlighting
     {
       mode = "n";
@@ -923,7 +923,7 @@
       action = "<cmd>nohlsearch<cr>";
       options.desc = "Clear search highlight";
     }
-    
+
     # Select all
     {
       mode = "n";
@@ -931,7 +931,7 @@
       action = "ggVG";
       options.desc = "Select all";
     }
-    
+
     # Better window resizing
     {
       mode = "n";
@@ -958,11 +958,11 @@
       options.desc = "Increase window width";
     }
   ];
-  
+
   # =====================================================================
   # SUPPRESSION DE KEYMAPS CONFLICTUELS
   # =====================================================================
-  
+
   extraConfigLua = ''
     -- Supprimer les keymaps par défaut qui interfèrent
     local function safe_del_keymap(mode, key)

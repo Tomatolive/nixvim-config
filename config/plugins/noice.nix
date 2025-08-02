@@ -469,47 +469,6 @@
   
 extraConfigLua = ''
     -- Configuration minimale pour noice avec gruvbox (intégration automatique)
-    local function setup_noice_transparency()
-      -- Seuls les ajustements de transparence nécessaires
-      -- Les couleurs gruvbox sont automatiquement appliquées via colorschemes.gruvbox.enable = true
-      
-      -- Assurer la transparence pour les mini messages
-      vim.api.nvim_set_hl(0, "NoiceMini", { 
-        bg = "NONE", 
-        fg = nil,  -- Hérite de gruvbox automatiquement
-        italic = true
-      })
-      
-      -- Override de couleurs spécifiques
-      vim.api.nvim_set_hl(0, "NoiceCmdlinePopupBorder", { 
-        fg = "#b8bb26",  -- Gruvbox bright_green (votre override)
-        bg = "NONE" 
-      })
-      
-      -- Optionnel: autres ajustements pour une meilleure visibilité en transparent
-      vim.api.nvim_set_hl(0, "NoicePopupmenuBorder", { 
-        fg = nil,  -- Hérite de gruvbox
-        bg = "NONE" 
-      })
-    end
-    
-    -- Appliquer les ajustements de transparence après le chargement du colorscheme
-    vim.api.nvim_create_autocmd("ColorScheme", {
-      pattern = "gruvbox*",
-      callback = function()
-        setup_noice_transparency()
-      end,
-    })
-    
-    -- Appliquer au démarrage
-    vim.api.nvim_create_autocmd("VimEnter", {
-      callback = function()
-        vim.defer_fn(function()
-          setup_noice_transparency()
-        end, 100)
-      end,
-    })
-    
     -- Configuration de l'intégration avec telescope si disponible
     local ok, telescope = pcall(require, "telescope")
     if ok then
