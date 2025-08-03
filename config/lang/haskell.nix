@@ -4,14 +4,10 @@
   # CONFIGURATION HASKELL - haskell-tools.nvim + HLS
   # =====================================================================
   
-  # Activer treesitter pour Haskell
-  plugins.treesitter.settings.ensure_installed = [ "haskell" ];
-  
   # =====================================================================
   # HASKELL-TOOLS.NVIM - Plugin moderne pour Haskell
   # =====================================================================
   
-  # Ajouter haskell-tools.nvim via extraPlugins
   extraPlugins = with pkgs.vimPlugins; [
     haskell-tools-nvim
   ];
@@ -21,83 +17,24 @@
   # =====================================================================
   extraPackages = with pkgs; [
     # Compilateur et outils de base
-    ghc                           # Glasgow Haskell Compiler
-    cabal-install                 # Build tool
-    stack                         # Alternative build tool
+    ghc
+    cabal-install
+    stack
     
     # Language Server et outils de développement
-    haskell-language-server       # LSP server principal
-    haskellPackages.haskell-debug-adapter         # Pour debugging (optionnel)
+    haskell-language-server
     
     # Outils de formatage et linting
-    ormolu                        # Formatage du code Haskell
-    hlint                         # Linter Haskell
+    ormolu
+    hlint
     
     # Outils de recherche et documentation
-    haskellPackages.hoogle                        # Recherche de types et fonctions
-    haskellPackages.fast-tags                     # Génération de tags
+    haskellPackages.hoogle
+    haskellPackages.fast-tags
     
     # REPL et outils interactifs
-    ghcid                         # Live reloading pour GHCi
+    ghcid
   ];
-  
-  # =====================================================================
-  # CONFIGURATION HASKELL-TOOLS (corrigée)
-  # =====================================================================
-  globals = {
-    # Configuration simplifiée et correcte de haskell-tools
-    haskell_tools = {
-      # Configuration des outils
-      tools = {
-        # Configuration REPL
-        repl = {
-          handler = "builtin";  # ou "toggleterm" si vous avez toggleterm
-        };
-        
-        # Configuration des tags
-        tags = {
-          enable = true;
-          package_events = [ "BufWritePost" ];
-        };
-      };
-      
-      # Configuration HLS (Haskell Language Server)
-      hls = {
-        # Paramètres HLS
-        settings = {
-          haskell = {
-            # Formatage avec ormolu
-            formattingProvider = "ormolu";
-            
-            # Vérifications
-            checkParents = "CheckOnSave";
-            checkProject = true;
-            
-            # Complétion
-            maxCompletions = 40;
-            
-            # Plugins HLS
-            plugin = {
-              # Activer les plugins utiles
-              "ghcide-completions" = { globalOn = true; };
-              "ghcide-hover-and-symbols" = { globalOn = true; };
-              "ghcide-type-lenses" = { globalOn = true; };
-              hlint = { globalOn = true; };
-              ormolu = { globalOn = true; };
-              
-              # Désactiver les plugins moins utiles
-              stan = { globalOn = false; };
-            };
-          };
-        };
-      };
-      
-      # Configuration DAP (debugging) - optionnel
-      dap = {
-        auto_discover = true;
-      };
-    };
-  };
   
   # =====================================================================
   # FORMATAGE AVEC ORMOLU
@@ -115,12 +52,6 @@
       };
     };
   };
-  
-  # =====================================================================
-  # KEYMAPS SPÉCIFIQUES À HASKELL - SUPPRIMÉS (voir extraConfigLua)
-  # =====================================================================
-  # Les keymaps sont maintenant définis dans extraConfigLua via autocommands
-  # car buffer = true ne fonctionne pas correctement dans nixvim
   
   # =====================================================================
   # AUTOCOMMANDS POUR HASKELL
@@ -145,13 +76,6 @@
           vim.wo.foldmethod = "indent"
           vim.wo.foldlevel = 99
           
-          -- Refresh automatique des code lenses (simplifié)
-          vim.defer_fn(function()
-            if vim.lsp.codelens then
-              vim.lsp.codelens.refresh()
-            end
-          end, 1000)
-          
           print("Haskell configuration loaded with haskell-tools.nvim")
         end
       '';
@@ -173,32 +97,44 @@
         end
       '';
     }
-    
-    # Auto-format on save pour Haskell (optionnel)
-    {
-      event = [ "BufWritePre" ];
-      pattern = [ "*.hs" "*.lhs" ];
-      callback.__raw = ''
-        function()
-          -- Format avec ormolu si disponible
-          require("conform").format({ 
-            async = false, 
-            timeout_ms = 2000,
-            lsp_fallback = true 
-          })
-        end
-      '';
-    }
   ];
   
   # =====================================================================
   # CONFIGURATION SUPPLÉMENTAIRE
   # =====================================================================
   extraConfigLua = ''
-    -- Configuration avancée pour Haskell
+    -- Configuration haskell-tools.nvim
+    
+    -- Setup haskell-tools avec configuration simplifiée
+    local ht = require('haskell-tools')
+    ht.setup({
+      tools = {
+        repl = {
+          handler = 'builtin',
+        },
+      },
+      hls = {
+        settings = {
+          haskell = {
+            formattingProvider = 'ormolu',
+            checkParents = 'CheckOnSave',
+            checkProject = true,
+            maxCompletions = 40,
+            plugin = {
+              ["ghcide-completions"] = { globalOn = true },
+              ["ghcide-hover-and-symbols"] = { globalOn = true },
+              ["ghcide-type-lenses"] = { globalOn = true },
+              hlint = { globalOn = true },
+              ormolu = { globalOn = true },
+              stan = { globalOn = false },
+            },
+          },
+        },
+      },
+    })
     
     -- ===================================================================
-    -- KEYMAPS SPÉCIFIQUES À HASKELL (via autocommands + which-key)
+    -- KEYMAPS SPÉCIFIQUES À HASKELL (via autocommands)
     -- ===================================================================
     vim.api.nvim_create_autocmd("FileType", {
       pattern = { "haskell", "lhaskell" },
@@ -206,32 +142,28 @@
         local bufnr = event.buf
         local opts = { noremap = true, silent = true, buffer = bufnr }
         
-        -- Code Lenses (très important pour HLS)
-        vim.keymap.set('n', '<leader>cl', vim.lsp.codelens.run, 
-          vim.tbl_extend('force', opts, { desc = "Run Code Lens (Haskell)" }))
-        
         -- Hoogle - Recherche de signatures de types
         vim.keymap.set('n', '<leader>hs', function()
-          require('haskell-tools').hoogle.hoogle_signature()
+          ht.hoogle.hoogle_signature()
         end, vim.tbl_extend('force', opts, { desc = "Hoogle search signature" }))
         
         -- Évaluation de code
         vim.keymap.set('n', '<leader>ea', function()
-          require('haskell-tools').lsp.buf_eval_all()
+          ht.lsp.buf_eval_all()
         end, vim.tbl_extend('force', opts, { desc = "Evaluate all code snippets" }))
         
         -- REPL
         vim.keymap.set('n', '<leader>hr', function()
-          require('haskell-tools').repl.toggle()
+          ht.repl.toggle()
         end, vim.tbl_extend('force', opts, { desc = "Toggle Haskell REPL" }))
         
         vim.keymap.set('v', '<leader>hr', function()
-          require('haskell-tools').repl.operator()
+          ht.repl.operator()
         end, vim.tbl_extend('force', opts, { desc = "Send selection to REPL" }))
         
         -- LSP spécifique Haskell
         vim.keymap.set('n', '<leader>hR', function()
-          require('haskell-tools').lsp.restart()
+          ht.lsp.restart()
         end, vim.tbl_extend('force', opts, { desc = "Restart Haskell LSP" }))
         
         -- Gestion de projets
@@ -258,12 +190,11 @@
               { "<leader>hR", desc = "Restart HLS", icon = "󰜉 ", buffer = bufnr },
               { "<leader>hs", desc = "Hoogle Search", icon = " ", buffer = bufnr },
               { "<leader>ea", desc = "Evaluate Code", icon = " ", buffer = bufnr },
-              { "<leader>cl", desc = "Code Lens", icon = "󰌵 ", buffer = bufnr },
             })
           end
         end, 100)
         
-        print("Haskell keymaps + which-key loaded for buffer " .. bufnr)
+        print("Haskell keymaps loaded for buffer " .. bufnr)
       end,
     })
     
@@ -288,7 +219,7 @@
     
     -- Fonction utilitaire pour débugger haskell-tools
     _G.debug_haskell_tools = function()
-      local ht_ok, ht = pcall(require, "haskell-tools")
+      local ht_ok, _ = pcall(require, "haskell-tools")
       if not ht_ok then
         print("haskell-tools.nvim not loaded")
         return
@@ -304,7 +235,6 @@
         for _, client in ipairs(clients) do
           print("  - Client ID:", client.id)
           print("  - Root dir:", client.config.root_dir)
-          print("  - Capabilities:", vim.tbl_count(client.server_capabilities or {}))
         end
       else
         print("No HLS clients active")
@@ -361,17 +291,16 @@
     end, { desc = "Test Haskell project" })
     
     vim.api.nvim_create_user_command("HaskellRepl", function()
-      require('haskell-tools').repl.toggle()
+      ht.repl.toggle()
     end, { desc = "Toggle Haskell REPL" })
     
     vim.api.nvim_create_user_command("HoogleSignature", function()
-      require('haskell-tools').hoogle.hoogle_signature()
+      ht.hoogle.hoogle_signature()
     end, { desc = "Search Hoogle for signature under cursor" })
     
     -- Auto-setup pour différents types de projets
     vim.api.nvim_create_autocmd("VimEnter", {
       callback = function()
-        -- Détecter et configurer selon le type de projet
         vim.defer_fn(function()
           local project_type = detect_project_type()
           if project_type ~= "unknown" then

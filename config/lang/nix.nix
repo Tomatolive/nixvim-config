@@ -4,44 +4,28 @@
   # CONFIGURATION NIX - LSP et formatage
   # =====================================================================
   
-  # Activer treesitter pour Nix
-  plugins.treesitter.settings.ensure_installed = [ "nix" ];
-  
   # =====================================================================
   # LSP - nixd (LSP server moderne pour Nix)
   # =====================================================================
-  plugins.lsp = {
+  plugins.lsp.servers.nixd = {
     enable = true;
     
-    servers = {
-      nixd = {
-        enable = true;
+    settings = {
+      nixpkgs = {
+        expr = "import <nixpkgs> { }";
+      };
+      
+      formatting = {
+        command = [ "nixpkgs-fmt" ];
+      };
+      
+      options = {
+        nixos = {
+          expr = "(builtins.getFlake \"/etc/nixos\").nixosConfigurations.HOSTNAME.options";
+        };
         
-        # Configuration nixd
-        settings = {
-          # Configuration pour nixd
-          nixpkgs = {
-            # Utiliser nixpkgs du système
-            expr = "import <nixpkgs> { }";
-          };
-          
-          # Options de formatage
-          formatting = {
-            command = [ "nixpkgs-fmt" ];
-          };
-          
-          # Options avancées
-          options = {
-            # Pour NixOS (si applicable)
-            nixos = {
-              expr = "(builtins.getFlake \"/etc/nixos\").nixosConfigurations.HOSTNAME.options";
-            };
-            
-            # Pour Home Manager (si applicable) 
-            home_manager = {
-              expr = "(builtins.getFlake \"/etc/nixos\").homeConfigurations.USERNAME.options";
-            };
-          };
+        home_manager = {
+          expr = "(builtins.getFlake \"/etc/nixos\").homeConfigurations.USERNAME.options";
         };
       };
     };
@@ -50,27 +34,16 @@
   # =====================================================================
   # FORMATAGE - nixpkgs-fmt via conform.nvim
   # =====================================================================
-  plugins.conform-nvim = {
-    enable = true;
+  plugins.conform-nvim.settings = {
+    formatters_by_ft = {
+      nix = [ "nixpkgs_fmt" ];
+    };
     
-    settings = {
-      formatters_by_ft = {
-        nix = [ "nixpkgs_fmt" ];
-      };
-      
-      # Configuration du formateur nixpkgs-fmt
-      formatters = {
-        nixpkgs_fmt = {
-          command = "nixpkgs-fmt";
-          args = [ ];
-          stdin = true;
-        };
-      };
-      
-      # Format on save pour les fichiers Nix
-      format_on_save = {
-        timeout_ms = 500;
-        lsp_fallback = true;
+    formatters = {
+      nixpkgs_fmt = {
+        command = "nixpkgs-fmt";
+        args = [ ];
+        stdin = true;
       };
     };
   };
@@ -79,21 +52,14 @@
   # PACKAGES REQUIS
   # =====================================================================
   extraPackages = with pkgs; [
-    nixd           # LSP server pour Nix
-    nixpkgs-fmt    # Formateur pour Nix
+    nixd
+    nixpkgs-fmt
   ];
-  
-  # =====================================================================
-  # KEYMAPS SPÉCIFIQUES À NIX - SUPPRIMÉS (voir extraConfigLua)
-  # =====================================================================
-  # Les keymaps sont maintenant définis dans extraConfigLua via autocommands
-  # car buffer = true ne fonctionne pas correctement dans nixvim
   
   # =====================================================================
   # AUTOCOMMANDS POUR NIX
   # =====================================================================
   autoCmd = [
-    # Configuration spécifique pour les fichiers Nix
     {
       event = [ "FileType" ];
       pattern = [ "nix" ];
@@ -116,22 +82,6 @@
         end
       '';
     }
-    
-    # Auto-format on save pour Nix (optionnel)
-    {
-      event = [ "BufWritePre" ];
-      pattern = [ "*.nix" ];
-      callback.__raw = ''
-        function()
-          -- Format automatiquement avant sauvegarde
-          require("conform").format({ 
-            async = false, 
-            timeout_ms = 500,
-            lsp_fallback = true 
-          })
-        end
-      '';
-    }
   ];
   
   # =====================================================================
@@ -141,7 +91,7 @@
     -- Configuration avancée pour nixd
     
     -- ===================================================================
-    -- KEYMAPS SPÉCIFIQUES À NIX (via autocommands + which-key)
+    -- KEYMAPS SPÉCIFIQUES À NIX (via autocommands)
     -- ===================================================================
     vim.api.nvim_create_autocmd("FileType", {
       pattern = "nix",
@@ -158,15 +108,12 @@
         vim.keymap.set('n', '<leader>lR', vim.lsp.buf.rename, 
           vim.tbl_extend('force', opts, { desc = "Rename symbol (Nix)" }))
         
-        -- Aller à la définition (packages, options, etc.)
         vim.keymap.set('n', '<leader>ld', vim.lsp.buf.definition, 
           vim.tbl_extend('force', opts, { desc = "Go to definition (Nix)" }))
         
-        -- Documentation hover pour les options Nix
         vim.keymap.set('n', '<leader>lh', vim.lsp.buf.hover, 
           vim.tbl_extend('force', opts, { desc = "Hover documentation (Nix)" }))
         
-        -- Autocomplétion des options NixOS/Home Manager
         vim.keymap.set('n', '<leader>la', vim.lsp.buf.code_action, 
           vim.tbl_extend('force', opts, { desc = "Code actions (Nix)" }))
         
@@ -185,7 +132,7 @@
           end
         end, 100)
         
-        print("Nix keymaps + which-key loaded for buffer " .. bufnr)
+        print("Nix keymaps loaded for buffer " .. bufnr)
       end,
     })
     
@@ -193,7 +140,7 @@
     -- FONCTIONS UTILITAIRES
     -- ===================================================================
     
-    -- Détection automatique de flake.nix pour de meilleures suggestions
+    -- Détection automatique de flake.nix
     local function find_flake_root()
       local current_dir = vim.fn.expand('%:p:h')
       local flake_file = vim.fn.findfile('flake.nix', current_dir .. ';')
@@ -207,24 +154,13 @@
     local function setup_nix_development()
       local flake_root = find_flake_root()
       if flake_root then
-        -- Si dans un projet avec flake.nix, ajuster la configuration nixd
         print("Flake detected at: " .. flake_root)
-        
-        -- Possibilité d'ajuster les settings nixd ici selon le projet
-        -- local nixd_config = require('lspconfig').nixd
-        -- nixd_config.setup({
-        --   settings = {
-        --     nixpkgs = {
-        --       expr = "import (builtins.getFlake \"" .. flake_root .. "\").inputs.nixpkgs { }"
-        --     }
-        --   }
-        -- })
       end
     end
     
     -- Fonction utilitaire pour débugger nixd
     _G.debug_nixd = function()
-      local clients = vim.lsp.get_clients({ name = "nixd" })  -- API corrigée
+      local clients = vim.lsp.get_clients({ name = "nixd" })
       if #clients > 0 then
         print("nixd is running")
         for _, client in ipairs(clients) do

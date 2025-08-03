@@ -1,22 +1,22 @@
 {
   # =====================================================================
-  # KEYMAPS COMPLETS - En accord avec la configuration which-key
+  # KEYMAPS COMPLETS - Configuration JKLM et organisation par groupes
   # =====================================================================
 
   keymaps = [
-    # ===== CUSTOM MOVEMENT KEYS (JKLM instead of HJKL) =====
+    # ===== MOUVEMENT CUSTOM (JKLM au lieu de HJKL) =====
     {
       mode = [ "n" "v" "o" ];
       key = "j";
       action = "h";
-      options.desc = "Move left (custom)";
+      options.desc = "Move left";
     }
     {
       mode = [ "n" "v" "o" ];
       key = "k";
       action = "v:count == 0 ? 'gj' : 'j'";
       options = {
-        desc = "Move down (custom)";
+        desc = "Move down";
         expr = true;
         silent = true;
       };
@@ -36,7 +36,7 @@
       key = "l";
       action = "v:count == 0 ? 'gk' : 'k'";
       options = {
-        desc = "Move up (custom)";
+        desc = "Move up";
         expr = true;
         silent = true;
       };
@@ -55,7 +55,7 @@
       mode = [ "n" "v" "o" ];
       key = "m";
       action = "l";
-      options.desc = "Move right (custom)";
+      options.desc = "Move right";
     }
 
     # Remap mark key
@@ -63,10 +63,10 @@
       mode = "n";
       key = "§";
       action = "m";
-      options.desc = "Set mark (custom)";
+      options.desc = "Set mark";
     }
 
-    # ===== WINDOW NAVIGATION (adapted for JKLM) =====
+    # ===== NAVIGATION FENÊTRES (adapté pour JKLM) =====
     {
       mode = "n";
       key = "<C-j>";
@@ -92,7 +92,7 @@
       options.desc = "Go to right window";
     }
 
-    # ===== MOVE LINES (adapted for JKLM) =====
+    # ===== DÉPLACER LIGNES (adapté pour JKLM) =====
     {
       mode = "n";
       key = "<A-k>";
@@ -130,7 +130,7 @@
       options.desc = "Move selection up";
     }
 
-    # ===== BASIC IMPROVEMENTS =====
+    # ===== AMÉLIORATIONS DE BASE =====
     {
       mode = "n";
       key = "n";
@@ -143,8 +143,14 @@
       action = "Nzz";
       options.desc = "Previous search result (centered)";
     }
+    {
+      mode = "n";
+      key = "<Esc>";
+      action = "<cmd>nohlsearch<cr>";
+      options.desc = "Clear search highlight";
+    }
 
-    # ===== INSERT MODE MAPPINGS =====
+    # ===== MODE INSERTION =====
     {
       mode = "i";
       key = "jj";
@@ -170,7 +176,7 @@
       options.desc = "End of line";
     }
 
-    # ===== BUFFER NAVIGATION =====
+    # ===== NAVIGATION BUFFERS =====
     {
       mode = "n";
       key = "<S-TAB>";
@@ -192,7 +198,79 @@
       options.desc = "Exit terminal mode";
     }
 
-    # ===== EXPLORER =====
+    # ===== SAUVEGARDE ET QUITTER =====
+    {
+      mode = "n";
+      key = "<C-s>";
+      action = "<cmd>w<cr>";
+      options.desc = "Save file";
+    }
+    {
+      mode = "n";
+      key = "<leader>q";
+      action = "<cmd>q<cr>";
+      options.desc = "Quit";
+    }
+    {
+      mode = "n";
+      key = "<leader>Q";
+      action = "<cmd>qa!<cr>";
+      options.desc = "Quit all (force)";
+    }
+
+    # ===== INDENTATION =====
+    {
+      mode = "v";
+      key = "<";
+      action = "<gv";
+      options.desc = "Decrease indent";
+    }
+    {
+      mode = "v";
+      key = ">";
+      action = ">gv";
+      options.desc = "Increase indent";
+    }
+
+    # ===== SÉLECTION =====
+    {
+      mode = "n";
+      key = "<C-a>";
+      action = "ggVG";
+      options.desc = "Select all";
+    }
+
+    # ===== REDIMENSIONNEMENT FENÊTRES =====
+    {
+      mode = "n";
+      key = "<C-Up>";
+      action = "<cmd>resize +2<cr>";
+      options.desc = "Increase window height";
+    }
+    {
+      mode = "n";
+      key = "<C-Down>";
+      action = "<cmd>resize -2<cr>";
+      options.desc = "Decrease window height";
+    }
+    {
+      mode = "n";
+      key = "<C-Left>";
+      action = "<cmd>vertical resize -2<cr>";
+      options.desc = "Decrease window width";
+    }
+    {
+      mode = "n";
+      key = "<C-Right>";
+      action = "<cmd>vertical resize +2<cr>";
+      options.desc = "Increase window width";
+    }
+
+    # =====================================================================
+    # LEADER MAPPINGS - Organisés par fonctionnalité
+    # =====================================================================
+
+    # ===== EXPLORATEUR =====
     {
       mode = "n";
       key = "<leader>e";
@@ -206,9 +284,7 @@
       options.desc = "Explorer (Focus Files)";
     }
 
-    # =====================================================================
-    # FILE/FIND GROUP - <leader>f
-    # =====================================================================
+    # ===== FIND/FILE GROUP - <leader>f =====
     {
       mode = "n";
       key = "<leader>ff";
@@ -252,73 +328,33 @@
       options.desc = "LSP Workspace Symbols";
     }
 
-    # =====================================================================
-    # GIT GROUP - <leader>g
-    # =====================================================================
+    # ===== GIT GROUP - <leader>g =====
     {
       mode = "n";
       key = "<leader>gg";
       action = "<cmd>lua Snacks.lazygit()<cr>";
-      options.desc = "Status";
+      options.desc = "Git Status";
     }
     {
       mode = "n";
       key = "<leader>gb";
       action = "<cmd>lua vim.cmd('Git blame')<cr>";
-      options.desc = "Blame";
+      options.desc = "Git Blame";
     }
     {
       mode = "n";
       key = "<leader>gd";
       action = "<cmd>lua vim.cmd('Gvdiffsplit')<cr>";
-      options.desc = "Diff";
+      options.desc = "Git Diff";
     }
     {
       mode = "n";
       key = "<leader>gl";
       action = "<cmd>lua vim.cmd('Git log')<cr>";
-      options.desc = "Log";
-    }
-    {
-      mode = "n";
-      key = "<leader>gp";
-      action = "<cmd>lua vim.cmd('Git push')<cr>";
-      options.desc = "Push";
-    }
-    {
-      mode = "n";
-      key = "<leader>gP";
-      action = "<cmd>lua vim.cmd('Git pull')<cr>";
-      options.desc = "Pull";
-    }
-    {
-      mode = "n";
-      key = "<leader>gs";
-      action = "<cmd>lua vim.cmd('Git add .')<cr>";
-      options.desc = "Stage";
-    }
-    {
-      mode = "n";
-      key = "<leader>gu";
-      action = "<cmd>lua vim.cmd('Git reset')<cr>";
-      options.desc = "Unstage";
-    }
-    {
-      mode = "n";
-      key = "<leader>gr";
-      action = "<cmd>lua vim.cmd('Git reset --hard')<cr>";
-      options.desc = "Reset";
-    }
-    {
-      mode = "n";
-      key = "<leader>gc";
-      action = "<cmd>lua vim.cmd('Git commit')<cr>";
-      options.desc = "Commit";
+      options.desc = "Git Log";
     }
 
-    # =====================================================================
-    # BUFFER GROUP - <leader>b
-    # =====================================================================
+    # ===== BUFFER GROUP - <leader>b =====
     {
       mode = "n";
       key = "<leader>bd";
@@ -351,12 +387,6 @@
     }
     {
       mode = "n";
-      key = "<leader>bf";
-      action = "<cmd>lua Snacks.picker.buffers()<cr>";
-      options.desc = "Find Buffer";
-    }
-    {
-      mode = "n";
       key = "<leader>bs";
       action = "<cmd>w<cr>";
       options.desc = "Save Buffer";
@@ -368,73 +398,7 @@
       options.desc = "Reload Buffer";
     }
 
-    # =====================================================================
-    # WINDOWS GROUP - <leader>w
-    # =====================================================================
-    # {
-    #   mode = "n";
-    #   key = "<leader>wh";
-    #   action = "<C-w>h";
-    #   options.desc = "Go Left";
-    # }
-    # {
-    #   mode = "n";
-    #   key = "<leader>wj"; 
-    #   action = "<C-w>j";
-    #   options.desc = "Go Down";
-    # }
-    # {
-    #   mode = "n";
-    #   key = "<leader>wk";
-    #   action = "<C-w>k";
-    #   options.desc = "Go Up";
-    # }
-    # {
-    #   mode = "n";
-    #   key = "<leader>wl";
-    #   action = "<C-w>l";
-    #   options.desc = "Go Right";
-    # }
-    # {
-    #   mode = "n";
-    #   key = "<leader>ws";
-    #   action = "<cmd>split<cr>";
-    #   options.desc = "Split Horizontal";
-    # }
-    # {
-    #   mode = "n";
-    #   key = "<leader>wv";
-    #   action = "<cmd>vsplit<cr>";
-    #   options.desc = "Split Vertical";
-    # }
-    # {
-    #   mode = "n";
-    #   key = "<leader>wc";
-    #   action = "<C-w>c";
-    #   options.desc = "Close Window";
-    # }
-    # {
-    #   mode = "n";
-    #   key = "<leader>wo";
-    #   action = "<C-w>o";
-    #   options.desc = "Only This Window";
-    # }
-    # {
-    #   mode = "n";
-    #   key = "<leader>w=";
-    #   action = "<C-w>=";
-    #   options.desc = "Balance Windows";
-    # }
-    # {
-    #   mode = "n";
-    #   key = "<leader>wr";
-    #   action = "<C-w>x";
-    #   options.desc = "Rotate Windows";
-    # }
-
-    # =====================================================================
-    # CODE GROUP - <leader>c
-    # =====================================================================
+    # ===== CODE GROUP - <leader>c =====
     {
       mode = "n";
       key = "<leader>ca";
@@ -453,46 +417,8 @@
       action = "<cmd>lua vim.lsp.buf.format()<cr>";
       options.desc = "Format";
     }
-    {
-      mode = "n";
-      key = "<leader>cd";
-      action = "<cmd>lua vim.lsp.buf.definition()<cr>";
-      options.desc = "Definition";
-    }
-    {
-      mode = "n";
-      key = "<leader>cR";
-      action = "<cmd>lua vim.lsp.buf.references()<cr>";
-      options.desc = "References";
-    }
-    {
-      mode = "n";
-      key = "<leader>ci";
-      action = "<cmd>lua vim.lsp.buf.implementation()<cr>";
-      options.desc = "Implementation";
-    }
-    {
-      mode = "n";
-      key = "<leader>ct";
-      action = "<cmd>lua vim.lsp.buf.type_definition()<cr>";
-      options.desc = "Type Definition";
-    }
-    {
-      mode = "n";
-      key = "<leader>ch";
-      action = "<cmd>lua vim.lsp.buf.hover()<cr>";
-      options.desc = "Hover";
-    }
-    {
-      mode = "n";
-      key = "<leader>cs";
-      action = "<cmd>lua vim.lsp.buf.signature_help()<cr>";
-      options.desc = "Signature Help";
-    }
 
-    # =====================================================================
-    # UI GROUP - <leader>u
-    # =====================================================================
+    # ===== UI GROUP - <leader>u =====
     {
       mode = "n";
       key = "<leader>un";
@@ -517,22 +443,8 @@
       action = "<cmd>set wrap!<cr>";
       options.desc = "Toggle Word Wrap";
     }
-    {
-      mode = "n";
-      key = "<leader>us";
-      action = "<cmd>set laststatus=0<cr>";
-      options.desc = "Hide Status Line";
-    }
-    {
-      mode = "n";
-      key = "<leader>ut";
-      action = "<cmd>set showtabline=0<cr>";
-      options.desc = "Hide Tab Line";
-    }
 
-    # =====================================================================
-    # DIAGNOSTICS GROUP - <leader>x
-    # =====================================================================
+    # ===== DIAGNOSTICS GROUP - <leader>x =====
     {
       mode = "n";
       key = "<leader>xx";
@@ -553,38 +465,12 @@
     }
     {
       mode = "n";
-      key = "<leader>xt";
-      action = "<cmd>TodoTrouble<cr>";
-      options.desc = "Todo Comments";
-    }
-    {
-      mode = "n";
-      key = "<leader>xw";
-      action = "<cmd>lua vim.diagnostic.setqflist()<cr>";
-      options.desc = "Workspace Diagnostics";
-    }
-    {
-      mode = "n";
       key = "<leader>xe";
       action = "<cmd>lua vim.diagnostic.open_float()<cr>";
       options.desc = "Show Line Diagnostics";
     }
-    {
-      mode = "n";
-      key = "<leader>xn";
-      action = "<cmd>lua vim.diagnostic.goto_next()<cr>";
-      options.desc = "Next Diagnostic";
-    }
-    {
-      mode = "n";
-      key = "<leader>xp";
-      action = "<cmd>lua vim.diagnostic.goto_prev()<cr>";
-      options.desc = "Previous Diagnostic";
-    }
 
-    # =====================================================================
-    # TERMINAL GROUP - <leader>t
-    # =====================================================================
+    # ===== TERMINAL GROUP - <leader>t =====
     {
       mode = "n";
       key = "<leader>tt";
@@ -603,28 +489,8 @@
       action = "<cmd>lua Snacks.terminal.open(nil, {position = 'right'})<cr>";
       options.desc = "Vertical Terminal";
     }
-    {
-      mode = "n";
-      key = "<leader>tf";
-      action = "<cmd>lua Snacks.terminal.open(nil, {position = 'float'})<cr>";
-      options.desc = "Floating Terminal";
-    }
-    {
-      mode = "n";
-      key = "<leader>tn";
-      action = "<cmd>lua Snacks.terminal.open()<cr>";
-      options.desc = "New Terminal";
-    }
-    {
-      mode = "n";
-      key = "<leader>tk";
-      action = "<cmd>lua vim.cmd('bdelete!')<cr>";
-      options.desc = "Kill Terminal";
-    }
 
-    # =====================================================================
-    # NOTIFICATIONS GROUP - <leader>n
-    # =====================================================================
+    # ===== NOTIFICATIONS GROUP - <leader>n =====
     {
       mode = "n";
       key = "<leader>nh";
@@ -637,22 +503,12 @@
       action = "<cmd>lua Snacks.notifier.hide()<cr>";
       options.desc = "Dismiss All";
     }
-    {
-      mode = "n";
-      key = "<leader>nl";
-      action = "<cmd>lua Snacks.notifier.show_last()<cr>";
-      options.desc = "Last Notification";
-    }
-    {
-      mode = "n";
-      key = "<leader>nc";
-      action = "<cmd>lua Snacks.notifier.clear_history()<cr>";
-      options.desc = "Clear History";
-    }
 
     # =====================================================================
-    # GOTO NAVIGATION - g prefix
+    # NAVIGATION - g, [, ], z prefixes
     # =====================================================================
+
+    # ===== GOTO NAVIGATION =====
     {
       mode = "n";
       key = "gd";
@@ -689,28 +545,8 @@
       action = "<cmd>lua vim.lsp.buf.hover()<cr>";
       options.desc = "Hover Documentation";
     }
-    {
-      mode = "n";
-      key = "gs";
-      action = "<cmd>lua vim.lsp.buf.signature_help()<cr>";
-      options.desc = "Signature Help";
-    }
-    {
-      mode = "n";
-      key = "gx";
-      action = "<cmd>lua vim.ui.open(vim.fn.expand('<cfile>'))<cr>";
-      options.desc = "Open with system app";
-    }
-    {
-      mode = "n";
-      key = "gf";
-      action = "gf";
-      options.desc = "Go to File";
-    }
 
-    # =====================================================================
-    # PREVIOUS NAVIGATION - [ prefix
-    # =====================================================================
+    # ===== NAVIGATION PRÉCÉDENT/SUIVANT =====
     {
       mode = "n";
       key = "[d";
@@ -719,21 +555,9 @@
     }
     {
       mode = "n";
-      key = "[h";
-      action = "<cmd>Gitsigns prev_hunk<cr>";
-      options.desc = "Previous Hunk";
-    }
-    {
-      mode = "n";
-      key = "[q";
-      action = "<cmd>cprev<cr>";
-      options.desc = "Previous Quickfix";
-    }
-    {
-      mode = "n";
-      key = "[l";
-      action = "<cmd>lprev<cr>";
-      options.desc = "Previous Location";
+      key = "]d";
+      action = "<cmd>lua vim.diagnostic.goto_next()<cr>";
+      options.desc = "Next Diagnostic";
     }
     {
       mode = "n";
@@ -743,130 +567,22 @@
     }
     {
       mode = "n";
-      key = "[t";
-      action = "<cmd>tabprev<cr>";
-      options.desc = "Previous Tab";
-    }
-    {
-      mode = "n";
-      key = "[e";
-      action = "<cmd>lua vim.diagnostic.goto_prev({severity = vim.diagnostic.severity.ERROR})<cr>";
-      options.desc = "Previous Error";
-    }
-    {
-      mode = "n";
-      key = "[w";
-      action = "<cmd>lua vim.diagnostic.goto_prev({severity = vim.diagnostic.severity.WARN})<cr>";
-      options.desc = "Previous Warning";
-    }
-
-    # =====================================================================
-    # NEXT NAVIGATION - ] prefix  
-    # =====================================================================
-    {
-      mode = "n";
-      key = "]d";
-      action = "<cmd>lua vim.diagnostic.goto_next()<cr>";
-      options.desc = "Next Diagnostic";
-    }
-    {
-      mode = "n";
-      key = "]h";
-      action = "<cmd>Gitsigns next_hunk<cr>";
-      options.desc = "Next Hunk";
-    }
-    {
-      mode = "n";
-      key = "]q";
-      action = "<cmd>cnext<cr>";
-      options.desc = "Next Quickfix";
-    }
-    {
-      mode = "n";
-      key = "]l";
-      action = "<cmd>lnext<cr>";
-      options.desc = "Next Location";
-    }
-    {
-      mode = "n";
       key = "]b";
       action = "<cmd>bnext<cr>";
       options.desc = "Next Buffer";
     }
-    {
-      mode = "n";
-      key = "]t";
-      action = "<cmd>tabnext<cr>";
-      options.desc = "Next Tab";
-    }
-    {
-      mode = "n";
-      key = "]e";
-      action = "<cmd>lua vim.diagnostic.goto_next({severity = vim.diagnostic.severity.ERROR})<cr>";
-      options.desc = "Next Error";
-    }
-    {
-      mode = "n";
-      key = "]w";
-      action = "<cmd>lua vim.diagnostic.goto_next({severity = vim.diagnostic.severity.WARN})<cr>";
-      options.desc = "Next Warning";
-    }
 
-    # =====================================================================
-    # FOLD OPERATIONS - z prefix
-    # =====================================================================
+    # ===== WHICH-KEY =====
     {
       mode = "n";
-      key = "za";
-      action = "za";
-      options.desc = "Toggle fold";
+      key = "<leader>?";
+      action.__raw = ''
+        function()
+          require("which-key").show({ global = false })
+        end
+      '';
+      options.desc = "Buffer Local Keymaps";
     }
-    {
-      mode = "n";
-      key = "zc";
-      action = "zc";
-      options.desc = "Close fold";
-    }
-    {
-      mode = "n";
-      key = "zo";
-      action = "zo";
-      options.desc = "Open fold";
-    }
-    {
-      mode = "n";
-      key = "zm";
-      action = "zm";
-      options.desc = "Close all folds";
-    }
-    {
-      mode = "n";
-      key = "zr";
-      action = "zr";
-      options.desc = "Open all folds";
-    }
-    {
-      mode = "n";
-      key = "zf";
-      action = "zf";
-      options.desc = "Create fold";
-    }
-    {
-      mode = "n";
-      key = "zd";
-      action = "zd";
-      options.desc = "Delete fold";
-    }
-    {
-      mode = "n";
-      key = "zE";
-      action = "zE";
-      options.desc = "Eliminate all folds";
-    }
-
-    # =====================================================================
-    # WHICH-KEY SPECIFIC KEYMAPS
-    # =====================================================================
     {
       mode = "n";
       key = "<leader>K";
@@ -877,86 +593,6 @@
       '';
       options.desc = "Show All Keymaps";
     }
-
-    # =====================================================================
-    # ADDITIONAL USEFUL KEYMAPS
-    # =====================================================================
-
-    # Quick save and quit
-    {
-      mode = "n";
-      key = "<C-s>";
-      action = "<cmd>w<cr>";
-      options.desc = "Save file";
-    }
-    {
-      mode = "n";
-      key = "<leader>q";
-      action = "<cmd>q<cr>";
-      options.desc = "Quit";
-    }
-    {
-      mode = "n";
-      key = "<leader>Q";
-      action = "<cmd>qa!<cr>";
-      options.desc = "Quit all (force)";
-    }
-
-    # Better indenting
-    {
-      mode = "v";
-      key = "<";
-      action = "<gv";
-      options.desc = "Decrease indent";
-    }
-    {
-      mode = "v";
-      key = ">";
-      action = ">gv";
-      options.desc = "Increase indent";
-    }
-
-    # Clear search highlighting
-    {
-      mode = "n";
-      key = "<Esc>";
-      action = "<cmd>nohlsearch<cr>";
-      options.desc = "Clear search highlight";
-    }
-
-    # Select all
-    {
-      mode = "n";
-      key = "<C-a>";
-      action = "ggVG";
-      options.desc = "Select all";
-    }
-
-    # Better window resizing
-    {
-      mode = "n";
-      key = "<C-Up>";
-      action = "<cmd>resize +2<cr>";
-      options.desc = "Increase window height";
-    }
-    {
-      mode = "n";
-      key = "<C-Down>";
-      action = "<cmd>resize -2<cr>";
-      options.desc = "Decrease window height";
-    }
-    {
-      mode = "n";
-      key = "<C-Left>";
-      action = "<cmd>vertical resize -2<cr>";
-      options.desc = "Decrease window width";
-    }
-    {
-      mode = "n";
-      key = "<C-Right>";
-      action = "<cmd>vertical resize +2<cr>";
-      options.desc = "Increase window width";
-    }
   ];
 
   # =====================================================================
@@ -964,35 +600,21 @@
   # =====================================================================
 
   extraConfigLua = ''
-    -- Supprimer les keymaps par défaut qui interfèrent
+    -- Supprimer les keymaps par défaut qui interfèrent avec JKLM
     local function safe_del_keymap(mode, key)
       pcall(vim.keymap.del, mode, key)
     end
     
-    -- Supprimer les keymaps LazyVim par défaut qui interfèrent avec JKLM
-    safe_del_keymap({"n", "i", "v"}, "<A-j>")
-    safe_del_keymap("n", "<S-h>")
-    safe_del_keymap("n", "<S-l>")
-    
-    -- Création de groupes additionnels pour which-key
-    local wk = require("which-key")
-    
-    -- S'assurer que tous les groupes sont bien définis
-    wk.add({
-      { "<leader>", group = "Leader" },
-      { "<leader>f", group = "Find/File" },
-      { "<leader>g", group = "Git" },
-      { "<leader>b", group = "Buffer" },
-      { "<leader>w", group = "Window" },
-      { "<leader>c", group = "Code" },
-      { "<leader>u", group = "UI" },
-      { "<leader>x", group = "Diagnostics" },  
-      { "<leader>t", group = "Terminal" },
-      { "<leader>n", group = "Notifications" },
-      { "g", group = "Goto" },
-      { "[", group = "Previous" },
-      { "]", group = "Next" },
-      { "z", group = "Fold" },
+    -- Attendre que tous les plugins soient chargés
+    vim.api.nvim_create_autocmd("VimEnter", {
+      callback = function()
+        vim.defer_fn(function()
+          -- Supprimer les keymaps LazyVim par défaut qui interfèrent
+          safe_del_keymap({"n", "i", "v"}, "<A-j>")
+          safe_del_keymap("n", "<S-h>")
+          safe_del_keymap("n", "<S-l>")
+        end, 100)
+      end,
     })
   '';
 }

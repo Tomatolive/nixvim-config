@@ -7,14 +7,11 @@
     enable = true;
     
     settings = {
-      # ===================================================================
-      # CONFIGURATION DES COMMANDES (cmdline)
-      # ===================================================================
+      # Configuration des commandes (cmdline)
       cmdline = {
         enabled = true;
-        view = "cmdline_popup";  # ou "cmdline" pour style classique
+        view = "cmdline_popup";
         
-        # Configuration des icônes pour les commandes
         format = {
           cmdline = { 
             pattern = "^:"; 
@@ -54,81 +51,40 @@
         };
       };
       
-      # ===================================================================
-      # CONFIGURATION DES MESSAGES
-      # ===================================================================
+      # Configuration des messages
       messages = {
         enabled = true;
-        view = "notify";           # Utilise les notifications
-        view_error = "notify";     # Erreurs en notifications
-        view_warn = "notify";      # Warnings en notifications
-        view_history = "messages"; # Historique dans :messages
-        view_search = "virtualtext"; # Résultats de recherche en texte virtuel
+        view = "notify";
+        view_error = "notify";
+        view_warn = "notify";
+        view_history = "messages";
+        view_search = "virtualtext";
       };
       
-      # ===================================================================
-      # CONFIGURATION DU MENU POPUP (autocomplétion)
-      # ===================================================================
+      # Configuration du menu popup
       popupmenu = {
         enabled = true;
-        backend = "nui";  # Utilise nui.nvim pour l'affichage
-        
-        # Configuration de l'apparence
-        kind_icons = {
-          # Icônes pour les types d'autocomplétion
-          Text = " ";
-          Method = "󰆧 ";
-          Function = "󰊕 ";
-          Constructor = " ";
-          Field = "󰇽 ";
-          Variable = "󰂡 ";
-          Class = "󰠱 ";
-          Interface = " ";
-          Module = " ";
-          Property = "󰜢 ";
-          Unit = " ";
-          Value = "󰎠 ";
-          Enum = " ";
-          Keyword = "󰌋 ";
-          Snippet = " ";
-          Color = "󰏘 ";
-          File = "󰈙 ";
-          Reference = " ";
-          Folder = "󰉋 ";
-          EnumMember = " ";
-          Constant = "󰏿 ";
-          Struct = " ";
-          Event = " ";
-          Operator = "󰆕 ";
-          TypeParameter = "󰅲 ";
-        };
+        backend = "nui";
       };
       
-      # ===================================================================
-      # CONFIGURATION DES NOTIFICATIONS (intégration avec snacks)
-      # ===================================================================
+      # Notifications désactivées (utilise snacks.notifier)
       notify = {
-        enabled = false;  # Désactivé car on utilise snacks.notifier
+        enabled = false;
       };
       
-      # ===================================================================
-      # CONFIGURATION LSP
-      # ===================================================================
+      # Configuration LSP
       lsp = {
-        # Remplace les popups LSP par défaut
         override = {
           "vim.lsp.util.convert_input_to_markdown_lines" = true;
           "vim.lsp.util.stylize_markdown" = true;
           "cmp.entry.get_documentation" = true;
         };
         
-        # Configuration de la documentation hover
         hover = {
           enabled = true;
           silent = true;
         };
         
-        # Configuration des signatures
         signature = {
           enabled = true;
           auto_open = {
@@ -139,16 +95,14 @@
           };
         };
         
-        # Messages de progression LSP
         progress = {
           enabled = true;
           format = "lsp_progress";
           format_done = "lsp_progress_done";
-          throttle.__raw = "1000 / 30"; # max 30 messages par seconde
+          throttle.__raw = "1000 / 30";
           view = "mini";
         };
         
-        # Documentation
         documentation = {
           view = "hover";
           opts = {
@@ -164,22 +118,17 @@
         };
       };
       
-      # ===================================================================
-      # PRESETS - Configurations prédéfinies
-      # ===================================================================
+      # Presets
       presets = {
-        bottom_search = true;         # Search count dans le coin
-        command_palette = true;       # Command palette style VSCode
-        long_message_to_split = true; # Messages longs en split
-        inc_rename = false;           # Désactivé si vous n'utilisez pas inc-rename
-        lsp_doc_border = false;       # Bordures pour la doc LSP
+        bottom_search = true;
+        command_palette = true;
+        long_message_to_split = true;
+        inc_rename = false;
+        lsp_doc_border = false;
       };
       
-      # ===================================================================
-      # CONFIGURATION DES VUES
-      # ===================================================================
+      # Configuration des vues
       views = {
-        # Popup pour cmdline
         cmdline_popup = {
           position = {
             row = 5;
@@ -193,13 +142,11 @@
             style = "rounded";
             padding = [ 0 1 ];
           };
-          filter_options = {};
           win_options = {
             winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder";
           };
         };
         
-        # Popup pour les menus
         popupmenu = {
           relative = "editor";
           position = {
@@ -219,41 +166,6 @@
           };
         };
         
-        # Vue pour les confirmations
-        confirm = {
-          backend = "popup";
-          relative = "editor";
-          position = {
-            row = "50%";
-            col = "50%";
-          };
-          size = "auto";
-          border = {
-            style = "rounded";
-            padding = [ 0 1 ];
-            text = {
-              top = " Confirm ";
-            };
-          };
-          focus_on_open = true;
-        };
-        
-        # Vue pour les messages d'erreur
-        split = {
-          backend = "split";
-          enter = true;
-          relative = "editor";
-          position = "bottom";
-          size = "20%";
-          close = {
-            keys = [ "q" ];
-          };
-          win_options = {
-            winhighlight = "Normal:Normal,FloatBorder:FloatBorder";
-          };
-        };
-        
-        # Vue pour hover
         hover = {
           border = {
             style = "rounded";
@@ -265,7 +177,6 @@
           };
         };
         
-        # Mini vue pour les messages courts
         mini = {
           backend = "mini";
           relative = "editor";
@@ -276,7 +187,6 @@
           position = {
             row = -1;
             col = "100%";
-            # col = 0 pour alignement à gauche
           };
           size = "auto";
           border = {
@@ -288,11 +198,9 @@
         };
       };
       
-      # ===================================================================
-      # CONFIGURATION DES ROUTES
-      # ===================================================================
+      # Routes simplifiées
       routes = [
-        # Rediriger les messages de sauvegarde vers mini
+        # Messages de sauvegarde vers mini
         {
           filter = {
             event = "msg_show";
@@ -307,47 +215,6 @@
           view = "mini";
         }
         
-        # Rediriger les messages d'erreur vers une vue séparée
-        {
-          filter = {
-            event = "msg_show";
-            kind = "error";
-          };
-          view = "notify";
-          opts = {
-            title = "Error";
-            level = "error";
-            merge = false;
-            replace = false;
-          };
-        }
-        
-        # Rediriger les warnings vers notifications
-        {
-          filter = {
-            event = "msg_show";
-            kind = "warn";
-          };
-          view = "notify";
-          opts = {
-            title = "Warning";
-            level = "warn";
-            merge = false;
-            replace = false;
-          };
-        }
-        
-        # Messages de recherche en bas
-        {
-          filter = {
-            event = "msg_show";
-            kind = "search_count";
-          };
-          opts = {
-            skip = true;
-          };
-        }
-        
         # Cacher les messages "written"
         {
           filter = {
@@ -358,38 +225,10 @@
             skip = true;
           };
         }
-        
-        # Cacher certains messages LSP verbeux
-        {
-          filter = {
-            event = "lsp";
-            kind = "progress";
-            cond.__raw = ''
-              function(message)
-                local client = vim.tbl_get(message.opts, "progress", "client")
-                return client == "ltex"
-              end
-            '';
-          };
-          opts = { skip = true; };
-        }
       ];
       
-      # ===================================================================
-      # CONFIGURATION DU FORMATAGE
-      # ===================================================================
+      # Format pour la progression LSP
       format = {
-        level = {
-          icons = {
-            error = "✖";
-            warn = "▼";
-            info = "●";
-            debug = "◆";
-            trace = "■";
-          };
-        };
-        
-        # Format pour la progression LSP
         lsp_progress = {
           lenght = {
             __unkeyed-1 = 40;
@@ -415,7 +254,6 @@
           '';
         };
         
-        # Format pour la progression LSP terminée
         lsp_progress_done = {
           lenght = {
             __unkeyed-1 = 40;
@@ -436,61 +274,29 @@
         };
       };
       
-      # ===================================================================
-      # CONFIGURATION DE SANTÉ/DEBUG
-      # ===================================================================
       health = {
-        checker = false; # Désactiver le checker automatique
+        checker = false;
       };
       
-      # Smart move pour éviter de montrer certains messages
       smart_move = {
         enabled = true;
         excluded_filetypes = [ "cmp_menu" "cmp_docs" "notify" ];
       };
       
-      # Throttle pour éviter le spam
-      throttle = 50; # ms
+      throttle = 50;
     };
   };
-  
-  # =====================================================================
-  # DÉPENDANCES REQUISES
-  # =====================================================================
   
   # nui.nvim est requis pour noice
   plugins.nui = {
     enable = true;
   };
   
-  # =====================================================================
-  # CONFIGURATION SUPPLÉMENTAIRE
-  # =====================================================================
-  
-extraConfigLua = ''
-    -- Configuration minimale pour noice avec gruvbox (intégration automatique)
-    -- Configuration de l'intégration avec telescope si disponible
+  extraConfigLua = ''
+    -- Intégration avec telescope si disponible
     local ok, telescope = pcall(require, "telescope")
     if ok then
       telescope.load_extension("noice")
     end
-    
-    -- Fonction utilitaire pour vérifier si noice est actif
-    _G.noice_enabled = function()
-      local ok, noice = pcall(require, "noice")
-      return ok and noice.api.status.command.has()
-    end
-    
-    -- Auto-commandes pour des intégrations spéciales
-    vim.api.nvim_create_autocmd("User", {
-      pattern = "VeryLazy", 
-      callback = function()
-        -- Intégration avec lualine si disponible
-        local ok, lualine = pcall(require, "lualine")
-        if ok then
-          -- On peut ajouter noice status à lualine ici si souhaité
-        end
-      end,
-    })
   '';
 }

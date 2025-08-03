@@ -3,10 +3,10 @@
   # =====================================================================
   # CONFIGURATION DES LANGAGES - Index principal
   # =====================================================================
-  
+
   imports = [
     ./nix.nix
-    ./haskell.nix       # NOUVEAU : Support Haskell avec haskell-tools.nvim
+    ./haskell.nix
     # Ajoutez ici vos futurs langages :
     # ./python.nix
     # ./rust.nix
@@ -21,41 +21,14 @@
     # ./markdown.nix
     # ./bash.nix
   ];
-  
+
   # =====================================================================
-  # CONFIGURATION LSP GLOBALE
+  # CONFIGURATION LSP GLOBALE SIMPLIFIÉE
   # =====================================================================
-  
-  # S'assurer que LSP est activé globalement
+
   plugins.lsp = {
     enable = true;
-    
-    # Configuration globale pour tous les LSP
-    keymaps = {
-      # Keymaps LSP communs à tous les langages
-      lspBuf = {
-        "gd" = "definition";
-        "gD" = "declaration"; 
-        "gr" = "references";
-        "gi" = "implementation";
-        "gt" = "type_definition";
-        "K" = "hover";
-        "<C-k>" = "signature_help";
-        "<leader>ca" = "code_action";
-        "<leader>cr" = "rename";
-        "<leader>cf" = "format";
-      };
-      
-      # Diagnostics
-      diagnostic = {
-        "[d" = "goto_prev";
-        "]d" = "goto_next";
-        "<leader>xe" = "open_float";
-        "<leader>xl" = "setloclist";
-        "<leader>xq" = "setqflist";  # Tous les diagnostics dans quickfix
-      };
-    };
-    
+
     # Configuration des handlers LSP
     onAttach = ''
       -- Configuration commune à tous les LSP servers
@@ -75,33 +48,153 @@
       
       -- Activer les inlay hints si supporté (Neovim 0.10+)
       if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-        -- Signature corrigée pour Neovim 0.11+
         pcall(vim.lsp.inlay_hint.enable, true, { bufnr = bufnr })
       end
       
-      print("LSP attached: " .. client.name)
+      -- ===================================================================
+      -- KEYMAPS LSP BUFFER-LOCAL (définis ici pour éviter les conflits)
+      -- ===================================================================
+      
+      local function map(modes, lhs, rhs, desc)
+        vim.keymap.set(modes, lhs, rhs, { 
+          buffer = bufnr, 
+          desc = desc,
+          silent = true,
+          noremap = true 
+        })
+      end
+      
+      -- Code actions
+      if client.server_capabilities.codeActionProvider then
+        map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action (" .. client.name .. ")")
+      end
+      
+      -- Rename
+      if client.server_capabilities.renameProvider then
+        map("n", "<leader>cr", vim.lsp.buf.rename, "Rename (" .. client.name .. ")")
+      end
+      
+      -- Format
+      if client.server_capabilities.documentFormattingProvider then
+        map("n", "<leader>cf", function()
+          vim.lsp.buf.format({ async = true })
+        end, "Format (" .. client.name .. ")")
+      end
+      
+      -- Hover
+      if client.server_capabilities.hoverProvider then
+        map("n", "K", vim.lsp.buf.hover, "Hover (" .. client.name .. ")")
+      end
+      
+      -- Signature Help
+      if client.server_capabilities.signatureHelpProvider then
+        map("n", "<C-k>", vim.lsp.buf.signature_help, "Signature Help (" .. client.name .. ")")
+      end
+      
+      -- Navigation avec Snacks picker (plus joli)
+      if client.server_capabilities.definitionProvider then
+        map("n", "gd", function()
+          require("snacks").picker.lsp_definitions()
+        end, "Go to Definition (" .. client.name .. ")")
+      end
+      
+      if client.server_capabilities.referencesProvider then
+        map("n", "gr", function()
+          require("snacks").picker.lsp_references()
+        end, "Find References (" .. client.name .. ")")
+      end
+      
+      if client.server_capabilities.implementationProvider then
+        map("n", "gi", function()
+          require("snacks").picker.lsp_implementations()
+        end, "Go to Implementation (" .. client.name .. ")")
+      end
+      
+      if client.server_capabilities.typeDefinitionProvider then
+        map("n", "gt", function()
+          require("snacks").picker.lsp_type_definitions()
+        end, "Go to Type Definition (" .. client.name .. ")")
+      end
+      
+      -- Declaration (fallback vers LSP standard)
+      if client.server_capabilities.declarationProvider then
+        map("n", "gD", vim.lsp.buf.declaration, "Go to Declaration (" .. client.name .. ")")
+      end
+      
+      -- Diagnostics (globaux, pas spécifiques au LSP)
+      map("n", "[d", vim.diagnostic.goto_prev, "Previous Diagnostic")
+      map("n", "]d", vim.diagnostic.goto_next, "Next Diagnostic")
+      map("n", "<leader>xe", vim.diagnostic.open_float, "Line Diagnostics")
+      
+      print("LSP attached: " .. client.name .. " with buffer-local keymaps")
     '';
   };
-  
+
   # =====================================================================
-  # TREESITTER GLOBAL
+  # TREESITTER GLOBAL - Configuration centralisée
   # =====================================================================
-  
+
   plugins.treesitter = {
     enable = true;
+
+    # Utiliser grammarPackages au lieu de ensure_installed pour nixvim
+    grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+      # Langages de base
+      lua
+      vim
+      vimdoc
+      query
+      regex
+
+      # Langages de programmation
+      nix
+      haskell
+      python
+      rust
+      javascript
+      typescript
+      go
+      c
+      cpp
+      java
+
+      # Web
+      html
+      css
+      scss
+
+      # Configuration et données
+      json
+      yaml
+      toml
+      xml
+
+      # Documentation et markup
+      markdown
+      markdown_inline
+
+      # Shell
+      bash
+      fish
+
+      # Autres
+      diff
+      git_config
+      git_rebase
+      gitcommit
+      gitignore
+    ];
+
     settings = {
-      highlight.enable = true;
-      indent.enable = true;
-      
-      # Langages de base (étendus par chaque fichier de langage)
-      ensure_installed = [
-        "lua"          # Pour la configuration Neovim
-        "vim"          # Pour les scripts Vim
-        "vimdoc"       # Pour la documentation Vim
-        "query"        # Pour les queries Treesitter
-        "regex"        # Pour les expressions régulières
-      ];
-      
+      highlight = {
+        enable = true;
+        additional_vim_regex_highlighting = false;
+      };
+
+      indent = {
+        enable = true;
+      };
+
       # Modules supplémentaires
       incremental_selection = {
         enable = true;
@@ -112,9 +205,8 @@
           node_decremental = "<M-space>";
         };
       };
-      
+
       textobjects = {
-        enable = true;
         select = {
           enable = true;
           lookahead = true;
@@ -150,59 +242,49 @@
       };
     };
   };
-  
+
   # =====================================================================
   # FORMATAGE GLOBAL (conform.nvim)
   # =====================================================================
-  
+
   plugins.conform-nvim = {
     enable = true;
-    
+
     settings = {
       # Configuration de base (étendue par chaque langage)
       format_on_save = {
         timeout_ms = 500;
         lsp_fallback = true;
       };
-      
+
       # Notification lors du formatage
       notify_on_error = true;
     };
   };
-  
-  # =====================================================================
-  # AUTOCOMPLÉTION GLOBALE
-  # =====================================================================
-  
-  # Déjà configuré dans plugins/blink.nix
-  # Mais on peut ajouter des sources spécifiques aux langages ici
-  
+
   # =====================================================================
   # CONFIGURATION SUPPLÉMENTAIRE
   # =====================================================================
-  
+
   extraConfigLua = ''
     -- Configuration globale pour les langages
     
-    -- CONFIGURATION DES DIAGNOSTICS - Affichage dans le buffer
+    -- CONFIGURATION DES DIAGNOSTICS
     vim.diagnostic.config({
-      -- Afficher les diagnostics dans la signcolumn avec des icônes
       signs = {
         text = {
-          [vim.diagnostic.severity.ERROR] = " ",  -- Erreurs en rouge
-          [vim.diagnostic.severity.WARN] = " ",   -- Warnings en jaune  
-          [vim.diagnostic.severity.INFO] = " ",   -- Infos en bleu
-          [vim.diagnostic.severity.HINT] = "󰌵 ",   -- Hints en vert
+          [vim.diagnostic.severity.ERROR] = " ",
+          [vim.diagnostic.severity.WARN] = " ",
+          [vim.diagnostic.severity.INFO] = " ",
+          [vim.diagnostic.severity.HINT] = "󰌵 ",
         },
       },
       
-      -- Texte virtuel à la fin des lignes (optionnel)
       virtual_text = {
         enabled = true,
         spacing = 4,
         prefix = "●",
         format = function(diagnostic)
-          -- Limiter la longueur du message  
           local message = diagnostic.message
           if #message > 50 then
             message = message:sub(1, 47) .. "..."
@@ -211,7 +293,6 @@
         end,
       },
       
-      -- Fenêtre flottante pour les diagnostics détaillés
       float = {
         focusable = false,
         style = "minimal",
@@ -225,27 +306,25 @@
         end,
       },
       
-      -- Affichage dans la ligne de statut
       underline = true,
       update_in_insert = false,
       severity_sort = true,
     })
     
-    -- Définir les couleurs des diagnostics pour gruvbox
-    vim.api.nvim_set_hl(0, "DiagnosticError", { fg = "#fb4934" })  -- Rouge gruvbox
-    vim.api.nvim_set_hl(0, "DiagnosticWarn", { fg = "#fabd2f" })   -- Jaune gruvbox
-    vim.api.nvim_set_hl(0, "DiagnosticInfo", { fg = "#83a598" })   -- Bleu gruvbox
-    vim.api.nvim_set_hl(0, "DiagnosticHint", { fg = "#8ec07c" })   -- Vert gruvbox
+    -- Couleurs des diagnostics pour gruvbox
+    vim.api.nvim_set_hl(0, "DiagnosticError", { fg = "#fb4934" })
+    vim.api.nvim_set_hl(0, "DiagnosticWarn", { fg = "#fabd2f" })
+    vim.api.nvim_set_hl(0, "DiagnosticInfo", { fg = "#83a598" })
+    vim.api.nvim_set_hl(0, "DiagnosticHint", { fg = "#8ec07c" })
     
-    -- Couleurs pour les icônes dans la signcolumn
     vim.api.nvim_set_hl(0, "DiagnosticSignError", { fg = "#fb4934", bg = "NONE" })
     vim.api.nvim_set_hl(0, "DiagnosticSignWarn", { fg = "#fabd2f", bg = "NONE" })
     vim.api.nvim_set_hl(0, "DiagnosticSignInfo", { fg = "#83a598", bg = "NONE" })
     vim.api.nvim_set_hl(0, "DiagnosticSignHint", { fg = "#8ec07c", bg = "NONE" })
     
-    -- Fonction utilitaire pour vérifier les LSP actifs (API corrigée)
+    -- Fonctions utilitaires
     _G.list_lsp_clients = function()
-      local clients = vim.lsp.get_clients()  -- API corrigée
+      local clients = vim.lsp.get_clients()
       if #clients == 0 then
         print("No LSP clients active")
         return
@@ -261,7 +340,6 @@
       end
     end
     
-    -- Fonction pour redémarrer tous les LSP
     _G.restart_all_lsp = function()
       vim.cmd("LspRestart")
       print("All LSP servers restarted")
@@ -271,9 +349,8 @@
     vim.api.nvim_create_autocmd("FileType", {
       callback = function(args)
         local ft = args.match
-        -- Attendre un peu que les LSP se connectent
         vim.defer_fn(function()
-          local clients = vim.lsp.get_clients({ bufnr = args.buf })  -- API corrigée
+          local clients = vim.lsp.get_clients({ bufnr = args.buf })
           if #clients > 0 then
             local client_names = {}
             for _, client in ipairs(clients) do
@@ -285,10 +362,10 @@
       end,
     })
     
-    -- Commandes globales pour les langages
+    -- Commandes globales
     vim.api.nvim_create_user_command("LangInfo", function()
       local ft = vim.bo.filetype
-      local clients = vim.lsp.get_clients({ bufnr = 0 })  -- API corrigée
+      local clients = vim.lsp.get_clients({ bufnr = 0 })
       
       print("=== Language Information ===")
       print("Filetype: " .. ft)
@@ -309,15 +386,24 @@
       local ts_parser = vim.treesitter.get_parser(0, ft, { error = false })
       print("Treesitter: " .. (ts_parser and "enabled" or "disabled"))
       
-      -- Afficher le nombre de diagnostics
       local diagnostics = vim.diagnostic.get(0)
       local error_count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
       local warn_count = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
       print(string.format("Diagnostics: %d total (%d errors, %d warnings)", 
         #diagnostics, error_count, warn_count))
+        
+      -- Afficher les keymaps LSP buffer-local
+      print("LSP Keymaps available (buffer-local):")
+      print("  gd → Go to Definition")
+      print("  gr → Find References") 
+      print("  gi → Go to Implementation")
+      print("  gt → Go to Type Definition")
+      print("  K → Hover Documentation")
+      print("  <leader>ca → Code Actions")
+      print("  <leader>cr → Rename")
+      print("  <leader>cf → Format")
     end, { desc = "Show language information for current buffer" })
     
-    -- Commande pour basculer les diagnostics virtuels
     vim.api.nvim_create_user_command("ToggleDiagnostics", function()
       local config = vim.diagnostic.config()
       if config.virtual_text then

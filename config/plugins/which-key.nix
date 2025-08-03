@@ -1,20 +1,19 @@
 {
   # =====================================================================
-  # WHICH-KEY - Configuration corrigée pour which-key v3 (nixvim)
+  # WHICH-KEY - Configuration dans le style LazyVim
   # =====================================================================
-  
+
   plugins.which-key = {
     enable = true;
-    
-    # Configuration principale pour which-key v3
+
     settings = {
-      # Preset Helix comme LazyVim
+      # Preset helix comme LazyVim
       preset = "helix";
-      
-      # Délai d'affichage (200ms comme LazyVim)
-      delay = 200;
-      
-      # Configuration des icônes
+
+      # Pas de defaults dans LazyVim v3+
+      defaults = { };
+
+      # Configuration des icônes LazyVim style
       icons = {
         breadcrumb = "»";
         separator = "➜";
@@ -24,232 +23,342 @@
         rules = false;
         colors = true;
       };
-      
-      # Configuration de la fenêtre popup
+
+      # Configuration de la fenêtre
       win = {
-        padding = [ 1 2 ];
+        no_overlap = true;
+        padding = [
+          1
+          2
+        ];
+        title = true;
+        title_pos = "center";
+        border = "rounded";
         wo = {
           winblend = 10;
         };
       };
-      
-      # Layout
+
+      # Layout LazyVim style
       layout = {
-        width = { min = 20; max = 50; };
-        height = { min = 4; max = 25; };
+        width = {
+          min = 20;
+        };
         spacing = 3;
-        align = "center";
+        align = "left";
       };
-      
-      # Notifications
-      notify = true;
+
+      # Delay LazyVim (plus rapide que notre ancienne config)
+      delay = 200;
+
+      # Disable pour certains filetypes (style LazyVim)
+      disable = {
+        ft = [ "TelescopePrompt" ];
+      };
     };
   };
-  
+
   # =====================================================================
-  # PLUGINS COMPLÉMENTAIRES
+  # ICÔNES - Utiliser mini.icons comme LazyVim
   # =====================================================================
-  
-  # Icônes pour mini.icons (recommandé par which-key v3)
+
   plugins.mini = {
     enable = true;
     modules = {
       icons = { };
     };
   };
-  
-  # Fallback si mini.icons n'est pas disponible
-  plugins.web-devicons.enable = true;
-  
+
   # =====================================================================
-  # KEYMAPS POUR WHICH-KEY
+  # NOTE: Les keymaps which-key sont définis dans config/config/keymaps.nix
+  # pour éviter les redondances et conflits
   # =====================================================================
-  
-  keymaps = [
-    # Keymap pour afficher which-key avec keymaps locaux
-    {
-      mode = "n"; 
-      key = "<leader>?";
-      action.__raw = ''
-        function()
-          require("which-key").show({ global = false })
-        end
-      '';
-      options.desc = "Buffer Local Keymaps (which-key)";
-    }
-    
-    # Keymap pour afficher tous les keymaps
-    {
-      mode = "n";
-      key = "<leader>K";
-      action.__raw = ''
-        function()
-          require("which-key").show({ global = true })
-        end
-      '';
-      options.desc = "Show All Keymaps";
-    }
-    
-    # Raccourci pour help
-    {
-      mode = "n";
-      key = "<leader>h";
-      action = ":help ";
-      options.desc = "Help";
-    }
-  ];
-  
+
   # =====================================================================
-  # CONFIGURATION LUA SUPPLÉMENTAIRE
+  # CONFIGURATION LUA STYLE LAZYVIM
   # =====================================================================
-  
+
   extraConfigLua = ''
-    -- Configuration des couleurs which-key pour gruvbox (style compatible)
-    local function setup_which_key_gruvbox_colors()
-      -- Couleurs gruvbox adaptées (au lieu des couleurs Tokyo Night)
-      local gruvbox_colors = {
-        bg0 = "#282828",     -- gruvbox dark0
-        bg1 = "#3c3836",     -- gruvbox dark1
-        bg2 = "#504945",     -- gruvbox dark2
-        fg0 = "#fbf1c7",     -- gruvbox light0
-        fg1 = "#ebdbb2",     -- gruvbox light1
-        red = "#fb4934",     -- gruvbox bright red
-        green = "#b8bb26",   -- gruvbox bright green
-        yellow = "#fabd2f",  -- gruvbox bright yellow
-        blue = "#83a598",    -- gruvbox bright blue
-        purple = "#d3869b",  -- gruvbox bright purple
-        aqua = "#8ec07c",    -- gruvbox bright aqua
-        orange = "#fe8019",  -- gruvbox bright orange
-        gray = "#928374",    -- gruvbox gray
+    -- Configuration LazyVim style pour which-key
+
+    -- Couleurs LazyVim style (adapté pour gruvbox)
+    local function setup_which_key_lazyvim_colors()
+      -- Couleurs inspirées de LazyVim mais adaptées pour gruvbox
+      local colors = {
+        bg = "#3c3836",      -- gruvbox dark1
+        fg = "#ebdbb2",      -- gruvbox light1
+        border = "#b8bb26",  -- gruvbox bright green
+        title = "#fe8019",   -- gruvbox bright orange
+        desc = "#8ec07c",    -- gruvbox bright aqua
+        key = "#83a598",     -- gruvbox bright blue
+        group = "#d3869b",   -- gruvbox bright purple
+        separator = "#928374", -- gruvbox gray
+        icon = "#fabd2f",    -- gruvbox bright yellow
+        cyan = "#8ec07c",    -- pour les icônes cyan
+        green = "#b8bb26",   -- pour les icônes green
       }
       
-      -- NOMS CORRECTS pour which-key v3 (différents de v2)
+      -- Highlights which-key style LazyVim
       vim.api.nvim_set_hl(0, "WhichKey", { 
-        fg = gruvbox_colors.blue, 
+        fg = colors.key, 
         bold = true 
       })
       
       vim.api.nvim_set_hl(0, "WhichKeyGroup", { 
-        fg = gruvbox_colors.purple 
+        fg = colors.group 
       })
       
       vim.api.nvim_set_hl(0, "WhichKeyDesc", { 
-        fg = gruvbox_colors.green 
+        fg = colors.desc 
       })
       
       vim.api.nvim_set_hl(0, "WhichKeySeparator", { 
-        fg = gruvbox_colors.gray 
+        fg = colors.separator 
       })
       
       vim.api.nvim_set_hl(0, "WhichKeyNormal", { 
-        bg = gruvbox_colors.bg0,
-        fg = gruvbox_colors.fg1
+        bg = colors.bg,
+        fg = colors.fg
       })
       
       vim.api.nvim_set_hl(0, "WhichKeyBorder", { 
-        fg = gruvbox_colors.green,  -- Bordure verte pour plus de visibilité
-        bg = "NONE" 
-      })
-      
-      vim.api.nvim_set_hl(0, "WhichKeyValue", { 
-        fg = gruvbox_colors.aqua 
-      })
-      
-      vim.api.nvim_set_hl(0, "WhichKeyIcon", { 
-        fg = gruvbox_colors.yellow 
+        fg = colors.border,
+        bg = colors.bg
       })
       
       vim.api.nvim_set_hl(0, "WhichKeyTitle", { 
-        fg = gruvbox_colors.orange,
+        fg = colors.title,
+        bg = colors.bg,
         bold = true 
       })
-    end
-    
-    -- Fonction pour désactiver temporairement la transparence (debug)
-    local function disable_transparency_for_debug()
-      vim.api.nvim_set_hl(0, "WhichKeyNormal", { 
-        bg = "#282828",  -- Arrière-plan solide pour debug
-        fg = "#ebdbb2"
+      
+      vim.api.nvim_set_hl(0, "WhichKeyIcon", { 
+        fg = colors.icon 
+      })
+      
+      -- Couleurs pour les icônes spécifiques LazyVim
+      vim.api.nvim_set_hl(0, "WhichKeyIconCyan", { 
+        fg = colors.cyan 
+      })
+      
+      vim.api.nvim_set_hl(0, "WhichKeyIconGreen", { 
+        fg = colors.green 
       })
     end
-    
-    -- Appliquer les couleurs après le chargement du colorscheme gruvbox
+
+    -- Appliquer les couleurs immédiatement
+    setup_which_key_lazyvim_colors()
+
+    -- Appliquer les couleurs après le chargement du colorscheme
     vim.api.nvim_create_autocmd("ColorScheme", {
       pattern = "gruvbox*",
       callback = function()
-        -- Petit délai pour s'assurer que gruvbox est complètement chargé
-        vim.defer_fn(function()
-          setup_which_key_gruvbox_colors()
-        end, 50)
+        vim.defer_fn(setup_which_key_lazyvim_colors, 50)
       end,
     })
-    
-    -- Appliquer au démarrage si gruvbox est déjà chargé
-    vim.api.nvim_create_autocmd("VimEnter", {
-      callback = function()
-        vim.defer_fn(function()
-          if vim.g.colors_name == "gruvbox" then
-            setup_which_key_gruvbox_colors()
-          end
-        end, 100)
-      end,
-    })
-    
-    -- Éviter les conflits de keymaps
-    local function safe_del_keymap(mode, key)
-      pcall(vim.keymap.del, mode, key)
-    end
-    
-    -- Supprimer les keymaps par défaut qui pourraient causer des conflits
-    vim.api.nvim_create_autocmd("VimEnter", {
-      callback = function()
-        -- Attendre un peu pour que tous les plugins soient chargés
-        vim.defer_fn(function()
-          safe_del_keymap({"n", "i", "v"}, "<A-j>")
-          safe_del_keymap("n", "<S-h>")
-          safe_del_keymap("n", "<S-l>")
-        end, 100)
-      end,
-    })
-    
-    -- Fonction utilitaire pour debug des couleurs
-    _G.debug_which_key_colors = function()
-      print("Current colorscheme:", vim.g.colors_name)
-      disable_transparency_for_debug()
-      print("Transparency disabled for which-key. Test with <leader> key.")
-    end
-    
-    -- Fonction pour recharger les couleurs manuellement
-    _G.reload_which_key_colors = function()
-      setup_which_key_gruvbox_colors()
-      print("Which-key colors reloaded!")
-    end
-    
-    -- Ajout automatique des groupes which-key
+
+    -- ===============================================================
+    -- CONFIGURATION IMMÉDIATE DES GROUPES (fix du timing)
+    -- ===============================================================
+
+    -- Configuration immédiate des groupes principaux
+    vim.defer_fn(function()
+      local ok, wk = pcall(require, "which-key")
+      if ok then
+        -- Groupes principaux avec titres (ajoutés immédiatement)
+        wk.add({
+          { "<leader>f", group = "󰈞 File & Find" },
+          { "<leader>g", group = "󰊢 Git" },
+          { "<leader>b", group = "󰓩 Buffers" },
+          { "<leader>c", group = "󰘦 Code" },
+          { "<leader>u", group = "󰙵 UI" },
+          { "<leader>x", group = "󱖫 Diagnostics" },
+          { "<leader>t", group = "󰆍 Terminal" },
+          { "<leader>n", group = "󰂚 Notifications" },
+          { "<leader>q", group = "󰗼 Quit" },
+          { "<leader>s", group = "󰍉 Search" },
+          { "<leader><tab>", group = "󰓩 Tabs" },
+          { "<leader>l", group = "󰅘 Language" },
+          
+          -- Navigation avec titres
+          { "g", group = "󰈮 Goto" },
+          { "[", group = "󰒮 Previous" },
+          { "]", group = "󰒭 Next" },
+          { "z", group = "󰗘 Fold" },
+          
+          -- Which-key meta commands
+          { 
+            "<leader>?", 
+            function()
+              require("which-key").show({ global = false })
+            end,
+            desc = "Buffer Keymaps"
+          },
+          { 
+            "<leader>K", 
+            function()
+              require("which-key").show({ global = true })
+            end,
+            desc = "All Keymaps"
+          },
+        })
+        print("Which-key: Main groups configured")
+      else
+        print("Which-key: Failed to load")
+      end
+    end, 100)
+
+    -- Configuration supplémentaire via VeryLazy pour s'assurer que c'est bien chargé
     vim.api.nvim_create_autocmd("User", {
       pattern = "VeryLazy",
       callback = function()
-        local ok, wk = pcall(require, "which-key")
-        if ok then
-          -- Enregistrer des groupes principaux
-          wk.add({
-            { "<leader>", group = "Leader" },
-            { "<leader>f", group = "Find/File" },
-            { "<leader>g", group = "Git" },
-            { "<leader>b", group = "Buffer" },
-            { "<leader>w", group = "Window" },
-            { "<leader>c", group = "Code" },
-            { "<leader>u", group = "UI" },
-            { "<leader>x", group = "Diagnostics" },
-            { "<leader>t", group = "Terminal" },
-            { "<leader>n", group = "Notifications" },
-            { "g", group = "Goto" },
-            { "[", group = "Previous" },
-            { "]", group = "Next" },
-            { "z", group = "Fold" },
-          })
-        end
+        vim.defer_fn(function()
+          local ok, wk = pcall(require, "which-key")
+          if ok then
+            -- Re-ajouter les groupes pour s'assurer qu'ils sont là
+            wk.add({
+              { "<leader>f", group = "󰈞 File & Find" },
+              { "<leader>g", group = "󰊢 Git" },
+              { "<leader>b", group = "󰓩 Buffers" },
+              { "<leader>c", group = "󰘦 Code" },
+              { "<leader>u", group = "󰙵 UI" },
+              { "<leader>x", group = "󱖫 Diagnostics" },
+              { "<leader>t", group = "󰆍 Terminal" },
+              { "<leader>n", group = "󰂚 Notifications" },
+            })
+            print("Which-key: Groups reinforced via VeryLazy")
+          end
+        end, 200)
       end,
     })
+
+    -- ===============================================================
+    -- LSP INTÉGRATION SIMPLIFIÉE
+    -- ===============================================================
+
+    -- Autocommand pour LSP attach
+    vim.api.nvim_create_autocmd("LspAttach", {
+      callback = function(event)
+        local client = vim.lsp.get_client_by_id(event.data.client_id)
+        if not client then return end
+        
+        local bufnr = event.buf
+        local ft = vim.bo[bufnr].filetype
+        local lsp_name = client.name
+        
+        vim.defer_fn(function()
+          local ok, wk = pcall(require, "which-key")
+          if not ok then return end
+          
+          -- Ajouter descriptions LSP aux keymaps existants
+          local lsp_maps = {}
+          
+          if client.server_capabilities.codeActionProvider then
+            table.insert(lsp_maps, {
+              "<leader>ca",
+              desc = "Code Actions (" .. lsp_name .. ")",
+              buffer = bufnr
+            })
+          end
+          
+          if client.server_capabilities.renameProvider then
+            table.insert(lsp_maps, {
+              "<leader>cr",
+              desc = "Rename (" .. lsp_name .. ")",
+              buffer = bufnr
+            })
+          end
+          
+          if client.server_capabilities.hoverProvider then
+            table.insert(lsp_maps, {
+              "K",
+              desc = "Hover (" .. lsp_name .. ")",
+              buffer = bufnr
+            })
+          end
+          
+          if client.server_capabilities.definitionProvider then
+            table.insert(lsp_maps, {
+              "gd",
+              desc = "Definition (" .. lsp_name .. ")",
+              buffer = bufnr
+            })
+          end
+          
+          if #lsp_maps > 0 then
+            wk.add(lsp_maps)
+            print("Which-key: Added " .. lsp_name .. " mappings")
+          end
+        end, 1000)
+      end,
+    })
+
+    -- ===============================================================
+    -- GROUPES PAR FILETYPE
+    -- ===============================================================
+
+    vim.api.nvim_create_autocmd("FileType", {
+      callback = function(event)
+        local ft = event.match
+        local bufnr = event.buf
+        
+        vim.defer_fn(function()
+          local ok, wk = pcall(require, "which-key")
+          if not ok then return end
+          
+          -- Groupes spécialisés
+          if ft == "nix" then
+            wk.add({
+              { "<leader>l", group = "󱄅 Nix", buffer = bufnr },
+            })
+            print("Which-key: Added Nix group")
+          elseif ft == "haskell" then
+            wk.add({
+              { "<leader>h", group = "󰲒 Haskell", buffer = bufnr },
+            })
+            print("Which-key: Added Haskell group")
+          elseif ft == "lua" then
+            wk.add({
+              { "<leader>l", group = "󰢱 Lua", buffer = bufnr },
+            })
+            print("Which-key: Added Lua group")
+          end
+        end, 200)
+      end,
+    })
+
+    -- ===============================================================
+    -- DEBUG FONCTION
+    -- ===============================================================
+
+    _G.debug_which_key = function()
+      print("=== Which-Key Debug ===")
+      print("Filetype:", vim.bo.filetype)
+      
+      local ok, wk = pcall(require, "which-key")
+      if ok then
+        print("Which-key loaded: ✓")
+        
+        -- Tester manuellement l'ajout d'un groupe
+        wk.add({
+          { "<leader>T", group = "🧪 Test Group" },
+        })
+        print("Added test group - try <leader>T")
+      else
+        print("Which-key not loaded: ✗")
+      end
+      
+      local clients = vim.lsp.get_clients({ bufnr = 0 })
+      print("LSP clients:", #clients)
+      for _, client in ipairs(clients) do
+        print("  - " .. client.name)
+      end
+    end
+
+    -- Tester immédiatement
+    vim.defer_fn(function()
+      print("Which-key config loaded, testing...")
+      debug_which_key()
+    end, 2000)
   '';
 }

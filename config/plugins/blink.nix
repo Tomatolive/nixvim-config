@@ -4,25 +4,21 @@
       enable = true;
       
       settings = {
-        # Keymaps - utilise le preset par défaut (Tab/S-Tab pour naviguer, Enter pour accepter)
+        # Keymaps - utilise le preset par défaut
         keymap = {
           preset = "default";
-          # Keymaps personnalisées (optionnel)
-          # ["<C-space>"] = [ "show" "show_documentation" "hide_documentation" ];
-          # ["<C-e>"] = [ "hide" "fallback" ];
         };
         
-        # Apparence et interface
+        # Apparence
         appearance = {
           use_nvim_cmp_as_default = true;
-          nerd_font_variant = "mono";  # "normal" ou "mono"
+          nerd_font_variant = "mono";
         };
         
         # Sources de complétion
         sources = {
           default = [ "lsp" "path" "snippets" "buffer" ];
           
-          # Configuration des providers
           providers = {
             lsp = {
               name = "LSP";
@@ -51,7 +47,6 @@
             buffer = {
               score_offset = -3;
               opts = {
-                max_items = 20;
                 get_bufnrs.__raw = "function() return vim.api.nvim_list_bufs() end";
               };
             };
