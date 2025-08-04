@@ -1,515 +1,516 @@
 {
   # =====================================================================
-  # LUALINE - StatusLine moderne style LazyVim
+  # LUALINE - Configuration style LazyVim exacte avec toutes les fonctionnalités
   # =====================================================================
 
   plugins.lualine = {
     enable = true;
 
-      settings = {
-    #     # =====================================================================
-    #     # CONFIGURATION GLOBALE
-    #     # =====================================================================
-        options = {
-    #       theme = "gruvbox-material"; # Thème gruvbox
-    #       component_separators = {
-    #         left = "";
-    #         right = "";
-    #       };
-    #       section_separators = {
-    #         left = "";
-    #         right = "";
-    #       };
-          disabled_filetypes = {
-            statusline = [ "dashboard" "alpha" "starter" ];
-            winbar = [ ];
-          };
-    #       ignore_focus = [ ];
-    #       always_divide_middle = true;
-    #       globalstatus = true; # Statusline globale (LazyVim style)
-    #       refresh = {
-    #         statusline = 1000;
-    #         tabline = 1000;
-    #         winbar = 1000;
-    #       };
+    settings = {
+      options = {
+        theme = "auto";
+        globalstatus = true; # vim.o.laststatus == 3
+        disabled_filetypes = {
+          statusline = [ "dashboard" "alpha" "ministarter" "snacks_dashboard" ];
         };
-    #
-    #     # =====================================================================
-    #     # SECTIONS - Layout LazyVim
-    #     # =====================================================================
-    #     sections = {
-    #       # Section A (gauche) - Mode et Git
-    #       lualine_a = [
-    #         {
-    #           __unkeyed-1 = "mode";
-    #         }
-    #       ];
-    #
-    #       # Section B - Branche Git
-    #       lualine_b = [
-    #         {
-    #           __unkeyed-1 = "branch";
-    #         }
-    #       ];
-    #
-    #       # Section C - Fichier et diagnostics
-    #       lualine_c = [
-    #         {
-    #           __unkeyed-1 = "diagnostics";
-    #           sources = [ "nvim_lsp" "nvim_diagnostic" ];
-    #           sections = [ "error" "warn" "info" "hint" ];
-    #           diagnostics_color = {
-    #             error = "DiagnosticError";
-    #             warn = "DiagnosticWarn";
-    #             info = "DiagnosticInfo";
-    #             hint = "DiagnosticHint";
-    #           };
-    #           symbols = {
-    #             error = " ";
-    #             warn = " ";
-    #             info = " ";
-    #             hint = "󰌵 ";
-    #           };
-    #           colored = true;
-    #           update_in_insert = false;
-    #           always_visible = false;
-    #         }
-    #         {
-    #           __unkeyed-1 = "filename";
-    #           file_status = true;
-    #           newfile_status = false;
-    #           path = 1; # Nom relatif
-    #           symbols = {
-    #             modified = "●";
-    #             readonly = "";
-    #             unnamed = "[No Name]";
-    #             newfile = "[New]";
-    #           };
-    #         }
-    #       ];
-    #
-    #       # Section X (droite) - LSP et Formatters
-    #       lualine_x = [
-    #         # LSP clients actifs
-    #         {
-    #           __unkeyed-1.__raw = ''
-    #             function()
-    #               local clients = vim.lsp.get_clients({ bufnr = 0 })
-    #               if #clients == 0 then
-    #                 return ""
-    #               end
-    #
-    #               local client_names = {}
-    #               for _, client in ipairs(clients) do
-    #                 table.insert(client_names, client.name)
-    #               end
-    #
-    #               return "󰒋 " .. table.concat(client_names, " ")
-    #             end
-    #           '';
-    #           icon = "󰒋";
-    #           color = {
-    #             fg = "#83a598";
-    #           }; # Bleu gruvbox
-    #         }
-    #
-    #         # Formatters (conform.nvim)
-    #         {
-    #           __unkeyed-1.__raw = ''
-    #             function()
-    #               local ok, conform = pcall(require, "conform")
-    #               if not ok then
-    #                 return ""
-    #               end
-    #
-    #               local formatters = conform.list_formatters()
-    #               if #formatters == 0 then
-    #                 return ""
-    #               end
-    #
-    #               local formatter_names = {}
-    #               for _, formatter in ipairs(formatters) do
-    #                 table.insert(formatter_names, formatter.name)
-    #               end
-    #
-    #               return " " .. table.concat(formatter_names, " ")
-    #             end
-    #           '';
-    #           color = {
-    #             fg = "#b8bb26";
-    #           }; # Vert gruvbox
-    #         }
-    #
-    #         # Treesitter
-    #         {
-    #           __unkeyed-1.__raw = ''
-    #             function()
-    #               local ok, ts = pcall(require, "nvim-treesitter.parsers")
-    #               if not ok then
-    #                 return ""
-    #               end
-    #
-    #               local buf = vim.api.nvim_get_current_buf()
-    #               local ft = vim.api.nvim_buf_get_option(buf, "filetype")
-    #               local lang = ts.get_parser_configs()[ft]
-    #
-    #               if lang then
-    #                 return " " .. ft
-    #               else
-    #                 return ""
-    #               end
-    #             end
-    #           '';
-    #           color = {
-    #             fg = "#fe8019";
-    #           }; # Orange gruvbox
-    #         }
-    #       ];
-    #
-    #       # Section Y - Encodage et type de fichier
-    #       lualine_y = [
-    #         {
-    #           __unkeyed-1 = "encoding";
-    #           fmt.__raw = ''
-    #             function(str)
-    #               return str:upper()
-    #             end
-    #           '';
-    #         }
-    #         {
-    #           __unkeyed-1 = "fileformat";
-    #           symbols = {
-    #             unix = "LF";
-    #             dos = "CRLF";
-    #             mac = "CR";
-    #           };
-    #         }
-    #         {
-    #           __unkeyed-1 = "filetype";
-    #           colored = true;
-    #           icon_only = false;
-    #           icon = {
-    #             align = "right";
-    #           };
-    #         }
-    #       ];
-    #
-    #       # Section Z - Position dans le fichier
-    #       lualine_z = [
-    #         {
-    #           __unkeyed-1 = "progress";
-    #           separator = { right = ""; };
-    #           left_padding = 2;
-    #         }
-    #         {
-    #           __unkeyed-1 = "location";
-    #           padding = { left = 0; right = 1; };
-    #         }
-    #       ];
-    #     };
-    #
-    #     # =====================================================================
-    #     # SECTIONS INACTIVES
-    #     # =====================================================================
-    #     inactive_sections = {
-    #       lualine_a = [ ];
-    #       lualine_b = [ ];
-    #       lualine_c = [
-    #         {
-    #           __unkeyed-1 = "filename";
-    #           file_status = true;
-    #           path = 1;
-    #         }
-    #       ];
-    #       lualine_x = [ "location" ];
-    #       lualine_y = [ ];
-    #       lualine_z = [ ];
-    #     };
-    #
-    #     # =====================================================================
-    #     # TABLINE - Désactivée (utilise bufferline)
-    #     # =====================================================================
-    #     tabline = { };
-    #
-    #     # =====================================================================
-    #     # WINBAR - Désactivée
-    #     # =====================================================================
-    #     winbar = { };
-    #     inactive_winbar = { };
-    #
-    #     # =====================================================================
-    #     # EXTENSIONS
-    #     # =====================================================================
-    #     extensions = [
-    #       "nvim-tree"
-    #       "toggleterm"
-    #       "quickfix"
-    #       "fugitive"
-    #       "neo-tree"
-    #       "fzf"
-    #       "man"
-    #     ];
-    #   };
+      };
+
+      sections = {
+        # Section A - Mode
+        lualine_a = [ "mode" ];
+
+        # Section B - Branche Git
+        lualine_b = [ "branch" ];
+
+        # Section C - Root dir, diagnostics, filetype icon, pretty path
+        lualine_c = [
+          # Root directory (équivalent LazyVim.lualine.root_dir())
+          {
+            __unkeyed-1.__raw = ''
+              function()
+                local root_patterns = { ".git", "package.json", "Cargo.toml", "pyproject.toml", ".svn" }
+                local path = vim.api.nvim_buf_get_name(0)
+                if path == "" then return "" end
+                
+                path = vim.fs.dirname(path)
+                local root = vim.fs.find(root_patterns, { path = path, upward = true })[1]
+                if root then
+                  local root_dir = vim.fs.dirname(root)
+                  local relative_root = vim.fn.fnamemodify(root_dir, ':~:.')
+                  return "󱉭 " .. (relative_root == "." and vim.fn.fnamemodify(root_dir, ':t') or relative_root)
+                end
+                return ""
+              end
+            '';
+            color =
+              {
+                fg = "#83a598";
+              }; # bleu gruvbox
+          }
+
+          # Diagnostics avec icônes LazyVim
+          {
+            __unkeyed-1 = "diagnostics";
+            symbols = {
+              error = " ";
+              warn = " ";
+              info = " ";
+              hint = " ";
+            };
+          }
+
+          # Filetype icon seulement
+          {
+            __unkeyed-1 = "filetype";
+            icon_only = true;
+            separator = "";
+            padding = { left = 1; right = 0; };
+          }
+
+          # Pretty path (équivalent LazyVim.lualine.pretty_path())
+          {
+            __unkeyed-1.__raw = ''
+              function()
+                local path = vim.api.nvim_buf_get_name(0)
+                if path == "" then return "[No Name]" end
+                
+                local filename = vim.fn.fnamemodify(path, ':t')
+                local directory = vim.fn.fnamemodify(path, ':h:t')
+                
+                if directory == "." or directory == "" then
+                  return filename
+                end
+                
+                -- Raccourcir le chemin si trop long
+                local max_len = 40
+                local full_path = directory .. "/" .. filename
+                if #full_path > max_len then
+                  return "…/" .. filename
+                end
+                
+                return directory .. "/" .. filename
+              end
+            '';
+            color = {
+              fg = "#ebdbb2";
+            }; # fg normal gruvbox
+          }
+        ];
+
+        # Section X - Profiler, Noice, DAP, Lazy updates, Git diff
+        lualine_x = [
+          # Snacks profiler status
+          {
+            __unkeyed-1.__raw = ''
+              function()
+                local ok, snacks = pcall(require, "snacks")
+                if ok and snacks.profiler and snacks.profiler.status then
+                  local status = snacks.profiler.status()
+                  return type(status) == "string" and status or ""
+                end
+                return ""
+              end
+            '';
+            color =
+              {
+                fg = "#d3869b";
+              }; # purple gruvbox
+          }
+
+          # Noice command
+          {
+            __unkeyed-1.__raw = ''
+              function() 
+                local ok, noice = pcall(require, "noice")
+                if ok and noice.api and noice.api.status and noice.api.status.command and noice.api.status.command.has() then
+                  local cmd = noice.api.status.command.get()
+                  return type(cmd) == "string" and cmd or ""
+                end
+                return ""
+              end
+            '';
+            cond.__raw = ''
+              function() 
+                local ok, noice = pcall(require, "noice")
+                return ok and noice.api and noice.api.status and noice.api.status.command and noice.api.status.command.has()
+              end
+            '';
+            color.__raw = ''
+              function() 
+                return { fg = "#fabd2f" }
+              end
+            '';
+          }
+
+          # Noice mode
+          {
+            __unkeyed-1.__raw = ''
+              function() 
+                local ok, noice = pcall(require, "noice")
+                if ok and noice.api and noice.api.status and noice.api.status.mode and noice.api.status.mode.has() then
+                  local mode = noice.api.status.mode.get()
+                  return type(mode) == "string" and mode or ""
+                end
+                return ""
+              end
+            '';
+            cond.__raw = ''
+              function() 
+                local ok, noice = pcall(require, "noice")
+                return ok and noice.api and noice.api.status and noice.api.status.mode and noice.api.status.mode.has()
+              end
+            '';
+            color.__raw = ''
+              function() 
+                return { fg = "#8ec07c" }
+              end
+            '';
+          }
+
+          # DAP status
+          {
+            __unkeyed-1.__raw = ''
+              function() 
+                local ok, dap = pcall(require, "dap")
+                if ok and dap.status then
+                  local status = dap.status()
+                  if type(status) == "string" and status ~= "" then
+                    return "  " .. status
+                  end
+                end
+                return ""
+              end
+            '';
+            cond.__raw = ''
+              function() 
+                local ok, dap = pcall(require, "dap")
+                if not ok then return false end
+                local status = dap.status()
+                return type(status) == "string" and status ~= ""
+              end
+            '';
+            color.__raw = ''
+              function() 
+                return { fg = "#fb4934" }
+              end
+            '';
+          }
+
+          # Lazy updates
+          {
+            __unkeyed-1.__raw = ''
+              function()
+                local ok, lazy = pcall(require, "lazy.status")
+                if ok and lazy.has_updates and lazy.has_updates() and lazy.updates then
+                  local updates = lazy.updates()
+                  return type(updates) == "string" and updates or ""
+                end
+                return ""
+              end
+            '';
+            cond.__raw = ''
+              function()
+                local ok, lazy = pcall(require, "lazy.status")
+                return ok and lazy.has_updates and lazy.has_updates()
+              end
+            '';
+            color.__raw = ''
+              function() 
+                return { fg = "#fe8019" }
+              end
+            '';
+          }
+
+          # Git diff
+          {
+            __unkeyed-1 = "diff";
+            symbols = {
+              added = " ";
+              modified = " ";
+              removed = " ";
+            };
+            source.__raw = ''
+              function()
+                local gitsigns = vim.b.gitsigns_status_dict
+                if gitsigns then
+                  return {
+                    added = gitsigns.added,
+                    modified = gitsigns.changed,
+                    removed = gitsigns.removed,
+                  }
+                end
+              end
+            '';
+          }
+        ];
+
+        # Section Y - Progress et location
+        lualine_y = [
+          {
+            __unkeyed-1 = "progress";
+            separator = " ";
+            padding = { left = 1; right = 0; };
+          }
+          {
+            __unkeyed-1 = "location";
+            padding = { left = 0; right = 1; };
+          }
+        ];
+
+        # Section Z - Horloge
+        lualine_z = [
+          {
+            __unkeyed-1 = "os.date('%R')";
+            icon = " ";
+            color = { fg = "#282828"; bg = "#83a598"; };
+          }
+        ];
+      };
+
+      # Extensions LazyVim
+      extensions = [ "neo-tree" "lazy" "fzf" ];
     };
-    #
-    # # =====================================================================
-    # # CONFIGURATION SUPPLÉMENTAIRE LUA
-    # # =====================================================================
-    # extraConfigLua = ''
-    #   -- ===================================================================
-    #   -- CONFIGURATION AVANCÉE LUALINE
-    #   -- ===================================================================
-    #
-    #   -- Fonction pour afficher le statut git personnalisé
-    #   local function git_status()
-    #     local ok, gitsigns = pcall(require, "gitsigns")
-    #     if not ok then
-    #       return ""
-    #     end
-    #
-    #     local status = vim.b.gitsigns_status_dict
-    #     if not status then
-    #       return ""
-    #     end
-    #
-    #     local added = status.added or 0
-    #     local changed = status.changed or 0
-    #     local removed = status.removed or 0
-    #
-    #     local result = {}
-    #     if added > 0 then
-    #       table.insert(result, "+" .. added)
-    #     end
-    #     if changed > 0 then
-    #       table.insert(result, "~" .. changed)
-    #     end
-    #     if removed > 0 then
-    #       table.insert(result, "-" .. removed)
-    #     end
-    #
-    #     if #result > 0 then
-    #       return " [" .. table.concat(result, " ") .. "]"
-    #     else
-    #       return ""
-    #     end
-    #   end
-    #
-    #   -- Fonction pour afficher le statut des macros
-    #   local function macro_recording()
-    #     local recording = vim.fn.reg_recording()
-    #     if recording ~= "" then
-    #       return "󰑊 Recording @" .. recording
-    #     else
-    #       return ""
-    #     end
-    #   end
-    #
-    #   -- Fonction pour afficher le nombre de buffers
-    #   local function buffer_count()
-    #     local buffers = vim.fn.len(vim.fn.filter(range(1, vim.fn.bufnr('$')), 'buflisted(v:val)'))
-    #     return "󰓩 " .. buffers
-    #   end
-    #
-    #   -- Fonction pour afficher l'indentation
-    #   local function indent_style()
-    #     local expandtab = vim.bo.expandtab
-    #     local shiftwidth = vim.bo.shiftwidth
-    #
-    #     if expandtab then
-    #       return "Spaces: " .. shiftwidth
-    #     else
-    #       return "Tabs: " .. shiftwidth
-    #     end
-    #   end
-    #
-    #   -- Attendre que lualine soit chargée pour ajouter des composants personnalisés
-    #   vim.defer_fn(function()
-    #     local ok, lualine = pcall(require, "lualine")
-    #     if not ok then
-    #       return
-    #     end
-    #
-    #     -- Recharger avec composants personnalisés
-    #     lualine.setup({
-    #       sections = {
-    #         lualine_c = {
-    #           {
-    #             "filename",
-    #             file_status = true,
-    #             newfile_status = false,
-    #             path = 1,
-    #             symbols = {
-    #               modified = "●",
-    #               readonly = "",
-    #               unnamed = "[No Name]",
-    #               newfile = "[New]",
-    #             },
-    #           },
-    #           {
-    #             git_status,
-    #             color = { fg = "#d3869b" },  -- Purple gruvbox
-    #           },
-    #           {
-    #             "diagnostics",
-    #             sources = { "nvim_lsp", "nvim_diagnostic" },
-    #             sections = { "error", "warn", "info", "hint" },
-    #             symbols = {
-    #               error = " ",
-    #               warn = " ",
-    #               info = " ",
-    #               hint = "󰌵 ",
-    #             },
-    #             colored = true,
-    #           },
-    #         },
-    #         lualine_x = {
-    #           {
-    #             macro_recording,
-    #             color = { fg = "#fb4934" },  -- Red gruvbox
-    #           },
-    #           {
-    #             function()
-    #               local clients = vim.lsp.get_clients({ bufnr = 0 })
-    #               if #clients == 0 then
-    #                 return ""
-    #               end
-    #
-    #               local client_names = {}
-    #               for _, client in ipairs(clients) do
-    #                 table.insert(client_names, client.name)
-    #               end
-    #
-    #               return "󰒋 " .. table.concat(client_names, " ")
-    #             end,
-    #             color = { fg = "#83a598" },
-    #           },
-    #           {
-    #             function()
-    #               local ok, conform = pcall(require, "conform")
-    #               if not ok then
-    #                 return ""
-    #               end
-    #
-    #               local formatters = conform.list_formatters()
-    #               if #formatters == 0 then
-    #                 return ""
-    #               end
-    #
-    #               local formatter_names = {}
-    #               for _, formatter in ipairs(formatters) do
-    #                 table.insert(formatter_names, formatter.name)
-    #               end
-    #
-    #               return " " .. table.concat(formatter_names, " ")
-    #             end,
-    #             color = { fg = "#b8bb26" },
-    #           },
-    #         },
-    #       },
-    #     })
-    #
-    #     print("Lualine enhanced components loaded")
-    #   end, 1000)
-    #
-    #   -- ===================================================================
-    #   -- HIGHLIGHTS PERSONNALISÉS
-    #   -- ===================================================================
-    #
-    #   vim.api.nvim_create_autocmd("ColorScheme", {
-    #     callback = function()
-    #       -- Ajuster les couleurs lualine pour gruvbox
-    #       vim.api.nvim_set_hl(0, "lualine_a_normal", { 
-    #         fg = "#282828", 
-    #         bg = "#83a598", 
-    #         bold = true 
-    #       })
-    #       vim.api.nvim_set_hl(0, "lualine_a_insert", { 
-    #         fg = "#282828", 
-    #         bg = "#b8bb26", 
-    #         bold = true 
-    #       })
-    #       vim.api.nvim_set_hl(0, "lualine_a_visual", { 
-    #         fg = "#282828", 
-    #         bg = "#fe8019", 
-    #         bold = true 
-    #       })
-    #       vim.api.nvim_set_hl(0, "lualine_a_replace", { 
-    #         fg = "#282828", 
-    #         bg = "#fb4934", 
-    #         bold = true 
-    #       })
-    #       vim.api.nvim_set_hl(0, "lualine_a_command", { 
-    #         fg = "#282828", 
-    #         bg = "#d3869b", 
-    #         bold = true 
-    #       })
-    #
-    #       -- Couleurs des sections
-    #       vim.api.nvim_set_hl(0, "lualine_b_normal", { 
-    #         fg = "#ebdbb2", 
-    #         bg = "#504945" 
-    #       })
-    #       vim.api.nvim_set_hl(0, "lualine_c_normal", { 
-    #         fg = "#a89984", 
-    #         bg = "#3c3836" 
-    #       })
-    #     end,
-    #   })
-    #
-    #   -- Appliquer immédiatement
-    #   vim.defer_fn(function()
-    #     vim.cmd("doautocmd ColorScheme")
-    #   end, 100)
-    #
-    #   -- ===================================================================
-    #   -- COMMANDES ET RACCOURCIS
-    #   -- ===================================================================
-    #
-    #   -- Fonction de debug
-    #   _G.debug_lualine = function()
-    #     print("=== Lualine Debug ===")
-    #
-    #     local ok, lualine = pcall(require, "lualine")
-    #     if ok then
-    #       print("Lualine loaded: ✓")
-    #
-    #       -- Informations sur la configuration
-    #       local config = require("lualine_require").require("lualine.config")
-    #       print("Theme:", config.options.theme)
-    #       print("Global status:", config.options.globalstatus)
-    #
-    #       -- LSP clients
-    #       local clients = vim.lsp.get_clients({ bufnr = 0 })
-    #       print("LSP clients:", #clients)
-    #
-    #       -- Git status
-    #       local git_head = vim.b.gitsigns_head
-    #       print("Git branch:", git_head or "none")
-    #
-    #     else
-    #       print("Lualine not loaded: ✗")
-    #     end
-    #   end
-    #
-    #   -- Commande pour recharger lualine
-    #   vim.api.nvim_create_user_command("LualineReload", function()
-    #     package.loaded["lualine"] = nil
-    #     require("lualine").setup()
-    #     print("Lualine reloaded")
-    #   end, { desc = "Reload lualine configuration" })
-    #
-    #   -- Commande pour toggle statusline
-    #   vim.api.nvim_create_user_command("LualineToggle", function()
-    #     if vim.o.laststatus == 0 then
-    #       vim.o.laststatus = 3
-    #       print("Lualine enabled")
-    #     else
-    #       vim.o.laststatus = 0
-    #       print("Lualine disabled")
-    #     end
-    #   end, { desc = "Toggle lualine visibility" })
-    #
-    #   print("Lualine LazyVim-style configuration loaded")
-    # '';
   };
+
+  # =====================================================================
+  # CONFIGURATION SUPPLÉMENTAIRE LUA
+  # =====================================================================
+
+  extraConfigLua = ''
+    -- Configuration lualine style LazyVim
+    
+    -- Gestion de la performance et initialisation
+    vim.api.nvim_create_autocmd("VimEnter", {
+      callback = function()
+        -- Set laststatus early
+        vim.g.lualine_laststatus = vim.o.laststatus
+        if vim.fn.argc(-1) > 0 then
+          -- set an empty statusline till lualine loads
+          vim.o.statusline = " "
+        else
+          -- hide the statusline on the starter page
+          vim.o.laststatus = 0
+        end
+      end
+    })
+
+    -- Restaurer laststatus quand lualine est prête
+    vim.defer_fn(function()
+      if vim.g.lualine_laststatus then
+        vim.o.laststatus = vim.g.lualine_laststatus
+      else
+        vim.o.laststatus = 3  -- globalstatus par défaut
+      end
+    end, 100)
+
+    -- Désactiver le require madness comme dans LazyVim
+    vim.defer_fn(function()
+      local ok, lualine_require = pcall(require, "lualine_require")
+      if ok then
+        lualine_require.require = require
+      end
+    end, 50)
+
+    -- Configuration trouble symbols si trouble.nvim est disponible
+    vim.defer_fn(function()
+      local has_trouble = pcall(require, "trouble")
+      if has_trouble and vim.g.trouble_lualine then
+        local trouble = require("trouble")
+        local symbols = trouble.statusline({
+          mode = "symbols",
+          groups = {},
+          title = false,
+          filter = { range = true },
+          format = "{kind_icon}{symbol.name:Normal}",
+          hl_group = "lualine_c_normal",
+        })
+        
+        if symbols then
+          -- Ajouter symbols à lualine_c
+          local ok, lualine = pcall(require, "lualine")
+          if ok then
+            local config = require("lualine").get_config()
+            table.insert(config.sections.lualine_c, {
+              symbols.get,
+              cond = function()
+                return vim.b.trouble_lualine ~= false and symbols.has()
+              end,
+            })
+            lualine.setup(config)
+          end
+        end
+      end
+    end, 1000)
+
+    -- Couleurs personnalisées pour gruvbox
+    vim.api.nvim_create_autocmd("ColorScheme", {
+      pattern = "gruvbox*",
+      callback = function()
+        -- Mode colors
+        vim.api.nvim_set_hl(0, "lualine_a_normal", { 
+          fg = "#282828", 
+          bg = "#83a598", 
+          bold = true 
+        })
+        vim.api.nvim_set_hl(0, "lualine_a_insert", { 
+          fg = "#282828", 
+          bg = "#b8bb26", 
+          bold = true 
+        })
+        vim.api.nvim_set_hl(0, "lualine_a_visual", { 
+          fg = "#282828", 
+          bg = "#fe8019", 
+          bold = true 
+        })
+        vim.api.nvim_set_hl(0, "lualine_a_replace", { 
+          fg = "#282828", 
+          bg = "#fb4934", 
+          bold = true 
+        })
+        vim.api.nvim_set_hl(0, "lualine_a_command", { 
+          fg = "#282828", 
+          bg = "#d3869b", 
+          bold = true 
+        })
+        vim.api.nvim_set_hl(0, "lualine_a_terminal", { 
+          fg = "#282828", 
+          bg = "#8ec07c", 
+          bold = true 
+        })
+
+        -- Section colors
+        vim.api.nvim_set_hl(0, "lualine_b_normal", { 
+          fg = "#ebdbb2", 
+          bg = "#504945" 
+        })
+        vim.api.nvim_set_hl(0, "lualine_c_normal", { 
+          fg = "#a89984", 
+          bg = "#3c3836" 
+        })
+        vim.api.nvim_set_hl(0, "lualine_x_normal", { 
+          fg = "#a89984", 
+          bg = "#3c3836" 
+        })
+        vim.api.nvim_set_hl(0, "lualine_y_normal", { 
+          fg = "#ebdbb2", 
+          bg = "#504945" 
+        })
+        vim.api.nvim_set_hl(0, "lualine_z_normal", { 
+          fg = "#282828", 
+          bg = "#83a598",
+          bold = true 
+        })
+      end,
+    })
+
+    -- Appliquer immédiatement
+    vim.cmd("doautocmd ColorScheme")
+
+    -- Fonctions utilitaires
+    _G.debug_lualine = function()
+      print("=== Lualine Debug ===")
+      
+      local ok, lualine = pcall(require, "lualine")
+      if ok then
+        print("Lualine loaded: ✓")
+        print("Laststatus:", vim.o.laststatus)
+        print("Globalstatus:", vim.o.laststatus == 3)
+        
+        -- Vérifier les extensions
+        local extensions = {"neo-tree", "lazy", "fzf"}
+        for _, ext in ipairs(extensions) do
+          local has_ext = pcall(require, ext)
+          print("Extension " .. ext .. ":", has_ext and "✓" or "✗")
+        end
+        
+        -- Vérifier snacks components
+        local snacks_ok, snacks = pcall(require, "snacks")
+        if snacks_ok then
+          print("Snacks available:")
+          print("  - profiler:", snacks.profiler and "✓" or "✗")
+          print("  - util:", snacks.util and "✓" or "✗")
+        end
+        
+        -- Vérifier noice
+        local noice_ok, noice = pcall(require, "noice")
+        if noice_ok then
+          print("Noice available: ✓")
+          print("  - command status:", noice.api.status.command.has())
+          print("  - mode status:", noice.api.status.mode.has())
+        else
+          print("Noice available: ✗")
+        end
+        
+      else
+        print("Lualine not loaded: ✗")
+      end
+    end
+
+    -- Fonction pour tester les composants lualine
+    _G.test_lualine_components = function()
+      print("=== Test Lualine Components ===")
+      
+      -- Test chaque composant individuellement
+      print("Testing components for table returns...")
+      
+      -- Test snacks profiler
+      local ok, snacks = pcall(require, "snacks")
+      if ok and snacks.profiler and snacks.profiler.status then
+        local status = snacks.profiler.status()
+        print("Snacks profiler status:", type(status), status)
+      end
+      
+      -- Test noice
+      local noice_ok, noice = pcall(require, "noice")
+      if noice_ok and noice.api then
+        print("Noice API available")
+        if noice.api.status and noice.api.status.command then
+          local has_cmd = noice.api.status.command.has()
+          print("Noice command has:", has_cmd)
+          if has_cmd then
+            local cmd = noice.api.status.command.get()
+            print("Noice command get:", type(cmd), cmd)
+          end
+        end
+      end
+      
+      -- Test lazy
+      local lazy_ok, lazy = pcall(require, "lazy.status")
+      if lazy_ok then
+        print("Lazy status available")
+        if lazy.has_updates then
+          local has_updates = lazy.has_updates()
+          print("Lazy has updates:", has_updates)
+          if has_updates and lazy.updates then
+            local updates = lazy.updates()
+            print("Lazy updates:", type(updates), updates)
+          end
+        end
+      end
+      
+      -- Test clock
+      local clock = os.date("%R")
+      print("Clock:", type(clock), clock)
+      
+      print("")
+      print("All components should return strings, not tables!")
+    end
+
+    -- Commandes personnalisées
+    vim.api.nvim_create_user_command("LualineDebug", function()
+      debug_lualine()
+    end, { desc = "Debug lualine configuration" })
+
+    vim.api.nvim_create_user_command("LualineTest", function()
+      test_lualine_components()
+    end, { desc = "Test lualine components" })
+
+    vim.api.nvim_create_user_command("LualineReload", function()
+      package.loaded["lualine"] = nil
+      require("lualine").setup()
+      print("Lualine reloaded")
+    end, { desc = "Reload lualine configuration" })
+
+    print("Lualine LazyVim-style configuration loaded")
+  '';
 }
