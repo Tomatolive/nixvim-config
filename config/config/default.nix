@@ -9,35 +9,21 @@
     settings = {
       transparent_mode = true;
       overrides = {
-        # Popups et fenêtres flottantes
-        NormalFloat = {
-          bg = "#3c3836";
-          fg = "#ebdbb2";
-        };
-        FloatBorder = {
-          fg = "#b8bb26";
-          bg = "#3c3836";
-        };
-        FloatTitle = {
-          fg = "#fe8019";
-          bg = "#3c3836";
-          bold = true;
-        };
+        # StatusLine (spécialement pour le dashboard)
+        StatusLine = { bg = "#32302F"; fg = "#ebdbb2"; };
 
         # Which-key spécifique
-        WhichKeyNormal = {
-          bg = "#3c3836";
-          fg = "#ebdbb2";
-        };
-        WhichKeyBorder = {
-          fg = "#b8bb26";
-          bg = "#3c3836";
-        };
+        WhichKeySeparator = { fg = "#fadb2f"; };
+        WhichKey = { fg = "#fadb2f"; };
+        WhichKeyDesc = { fg = "#689d6a"; };
+        WhichKeyGroup = { fg = "#fe8019"; };
+        WhichKeyNormal = { bg = "#3c3836"; };
+        WhichKeyBorder = { fg = "#689d6a"; bg = "#3c3836"; };
+        WhichKeyTitle = { fg = "#689d6a"; bg = "#3c3836"; };
 
         # Noice cmdline
         NoiceCmdlinePopupBorder = {
           fg = "#b8bb26";
-          bg = "#3c3836";
         };
       };
     };

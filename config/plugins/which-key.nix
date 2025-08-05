@@ -70,82 +70,6 @@
   extraConfigLua = ''
     -- Configuration LazyVim style pour which-key
 
-    -- Couleurs LazyVim style (adapté pour gruvbox)
-    local function setup_which_key_lazyvim_colors()
-      -- Couleurs inspirées de LazyVim mais adaptées pour gruvbox
-      local colors = {
-        bg = "#3c3836",      -- gruvbox dark1
-        fg = "#ebdbb2",      -- gruvbox light1
-        border = "#b8bb26",  -- gruvbox bright green
-        title = "#fe8019",   -- gruvbox bright orange
-        desc = "#8ec07c",    -- gruvbox bright aqua
-        key = "#83a598",     -- gruvbox bright blue
-        group = "#d3869b",   -- gruvbox bright purple
-        separator = "#928374", -- gruvbox gray
-        icon = "#fabd2f",    -- gruvbox bright yellow
-        cyan = "#8ec07c",    -- pour les icônes cyan
-        green = "#b8bb26",   -- pour les icônes green
-      }
-      
-      -- Highlights which-key style LazyVim
-      vim.api.nvim_set_hl(0, "WhichKey", { 
-        fg = colors.key, 
-        bold = true 
-      })
-      
-      vim.api.nvim_set_hl(0, "WhichKeyGroup", { 
-        fg = colors.group 
-      })
-      
-      vim.api.nvim_set_hl(0, "WhichKeyDesc", { 
-        fg = colors.desc 
-      })
-      
-      vim.api.nvim_set_hl(0, "WhichKeySeparator", { 
-        fg = colors.separator 
-      })
-      
-      vim.api.nvim_set_hl(0, "WhichKeyNormal", { 
-        bg = colors.bg,
-        fg = colors.fg
-      })
-      
-      vim.api.nvim_set_hl(0, "WhichKeyBorder", { 
-        fg = colors.border,
-        bg = colors.bg
-      })
-      
-      vim.api.nvim_set_hl(0, "WhichKeyTitle", { 
-        fg = colors.title,
-        bg = colors.bg,
-        bold = true 
-      })
-      
-      vim.api.nvim_set_hl(0, "WhichKeyIcon", { 
-        fg = colors.icon 
-      })
-      
-      -- Couleurs pour les icônes spécifiques LazyVim
-      vim.api.nvim_set_hl(0, "WhichKeyIconCyan", { 
-        fg = colors.cyan 
-      })
-      
-      vim.api.nvim_set_hl(0, "WhichKeyIconGreen", { 
-        fg = colors.green 
-      })
-    end
-
-    -- Appliquer les couleurs immédiatement
-    setup_which_key_lazyvim_colors()
-
-    -- Appliquer les couleurs après le chargement du colorscheme
-    vim.api.nvim_create_autocmd("ColorScheme", {
-      pattern = "gruvbox*",
-      callback = function()
-        vim.defer_fn(setup_which_key_lazyvim_colors, 50)
-      end,
-    })
-
     -- ===============================================================
     -- CONFIGURATION IMMÉDIATE DES GROUPES (fix du timing)
     -- ===============================================================
@@ -156,24 +80,22 @@
       if ok then
         -- Groupes principaux avec titres (ajoutés immédiatement)
         wk.add({
-          { "<leader>f", group = "󰈞 File & Find" },
-          { "<leader>g", group = "󰊢 Git" },
-          { "<leader>b", group = "󰓩 Buffers" },
-          { "<leader>c", group = "󰘦 Code" },
-          { "<leader>u", group = "󰙵 UI" },
-          { "<leader>x", group = "󱖫 Diagnostics" },
-          { "<leader>t", group = "󰆍 Terminal" },
-          { "<leader>n", group = "󰂚 Notifications" },
-          { "<leader>q", group = "󰗼 Quit" },
-          { "<leader>s", group = "󰍉 Search" },
-          { "<leader><tab>", group = "󰓩 Tabs" },
-          { "<leader>l", group = "󰅘 Language" },
+          { "<leader>f", group = " 󰈞 File & Find" },
+          { "<leader>g", group = " 󰊢 Git" },
+          { "<leader>b", group = " 󰓩 Buffers" },
+          { "<leader>c", group = " 󰘦 Code" },
+          { "<leader>u", group = " 󰙵 UI" },
+          { "<leader>x", group = " 󱖫 Diagnostics" },
+          { "<leader>t", group = " 󰆍 Terminal" },
+          { "<leader>n", group = " 󰂚 Notifications" },
+          { "<leader>q", group = " 󰗼 Quit" },
+          { "<leader>s", group = " 󰍉 Search" },
           
           -- Navigation avec titres
-          { "g", group = "󰈮 Goto" },
-          { "[", group = "󰒮 Previous" },
-          { "]", group = "󰒭 Next" },
-          { "z", group = "󰗘 Fold" },
+          { "g", group = " 󰈮 Goto" },
+          { "[", group = " 󰒮 Previous" },
+          { "]", group = " 󰒭 Next" },
+          { "z", group = " 󰗘 Fold" },
           
           -- Which-key meta commands
           { 
@@ -191,35 +113,10 @@
             desc = "All Keymaps"
           },
         })
-        print("Which-key: Main groups configured")
       else
         print("Which-key: Failed to load")
       end
     end, 100)
-
-    -- Configuration supplémentaire via VeryLazy pour s'assurer que c'est bien chargé
-    vim.api.nvim_create_autocmd("User", {
-      pattern = "VeryLazy",
-      callback = function()
-        vim.defer_fn(function()
-          local ok, wk = pcall(require, "which-key")
-          if ok then
-            -- Re-ajouter les groupes pour s'assurer qu'ils sont là
-            wk.add({
-              { "<leader>f", group = "󰈞 File & Find" },
-              { "<leader>g", group = "󰊢 Git" },
-              { "<leader>b", group = "󰓩 Buffers" },
-              { "<leader>c", group = "󰘦 Code" },
-              { "<leader>u", group = "󰙵 UI" },
-              { "<leader>x", group = "󱖫 Diagnostics" },
-              { "<leader>t", group = "󰆍 Terminal" },
-              { "<leader>n", group = "󰂚 Notifications" },
-            })
-            print("Which-key: Groups reinforced via VeryLazy")
-          end
-        end, 200)
-      end,
-    })
 
     -- ===============================================================
     -- LSP INTÉGRATION SIMPLIFIÉE
@@ -273,11 +170,6 @@
               buffer = bufnr
             })
           end
-          
-          if #lsp_maps > 0 then
-            wk.add(lsp_maps)
-            print("Which-key: Added " .. lsp_name .. " mappings")
-          end
         end, 1000)
       end,
     })
@@ -298,56 +190,19 @@
           -- Groupes spécialisés
           if ft == "nix" then
             wk.add({
-              { "<leader>l", group = "󱄅 Nix", buffer = bufnr },
+              { "<leader>l", group = " 󱄅 Nix", buffer = bufnr },
             })
-            print("Which-key: Added Nix group")
           elseif ft == "haskell" then
             wk.add({
-              { "<leader>h", group = "󰲒 Haskell", buffer = bufnr },
+              { "<leader>h", group = " 󰲒 Haskell", buffer = bufnr },
             })
-            print("Which-key: Added Haskell group")
           elseif ft == "lua" then
             wk.add({
-              { "<leader>l", group = "󰢱 Lua", buffer = bufnr },
+              { "<leader>l", group = " 󰢱 Lua", buffer = bufnr },
             })
-            print("Which-key: Added Lua group")
           end
         end, 200)
       end,
     })
-
-    -- ===============================================================
-    -- DEBUG FONCTION
-    -- ===============================================================
-
-    _G.debug_which_key = function()
-      print("=== Which-Key Debug ===")
-      print("Filetype:", vim.bo.filetype)
-      
-      local ok, wk = pcall(require, "which-key")
-      if ok then
-        print("Which-key loaded: ✓")
-        
-        -- Tester manuellement l'ajout d'un groupe
-        wk.add({
-          { "<leader>T", group = "🧪 Test Group" },
-        })
-        print("Added test group - try <leader>T")
-      else
-        print("Which-key not loaded: ✗")
-      end
-      
-      local clients = vim.lsp.get_clients({ bufnr = 0 })
-      print("LSP clients:", #clients)
-      for _, client in ipairs(clients) do
-        print("  - " .. client.name)
-      end
-    end
-
-    -- Tester immédiatement
-    vim.defer_fn(function()
-      print("Which-key config loaded, testing...")
-      debug_which_key()
-    end, 2000)
   '';
 }

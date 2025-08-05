@@ -167,67 +167,13 @@
             '';
           }
 
-          # DAP status
-          {
-            __unkeyed-1.__raw = ''
-              function() 
-                local ok, dap = pcall(require, "dap")
-                if ok and dap.status then
-                  local status = dap.status()
-                  if type(status) == "string" and status ~= "" then
-                    return "  " .. status
-                  end
-                end
-                return ""
-              end
-            '';
-            cond.__raw = ''
-              function() 
-                local ok, dap = pcall(require, "dap")
-                if not ok then return false end
-                local status = dap.status()
-                return type(status) == "string" and status ~= ""
-              end
-            '';
-            color.__raw = ''
-              function() 
-                return { fg = "#fb4934" }
-              end
-            '';
-          }
-
-          # Lazy updates
-          {
-            __unkeyed-1.__raw = ''
-              function()
-                local ok, lazy = pcall(require, "lazy.status")
-                if ok and lazy.has_updates and lazy.has_updates() and lazy.updates then
-                  local updates = lazy.updates()
-                  return type(updates) == "string" and updates or ""
-                end
-                return ""
-              end
-            '';
-            cond.__raw = ''
-              function()
-                local ok, lazy = pcall(require, "lazy.status")
-                return ok and lazy.has_updates and lazy.has_updates()
-              end
-            '';
-            color.__raw = ''
-              function() 
-                return { fg = "#fe8019" }
-              end
-            '';
-          }
-
           # Git diff
           {
             __unkeyed-1 = "diff";
             symbols = {
-              added = " ";
-              modified = " ";
-              removed = " ";
+              added = " ";
+              modified = " ";
+              removed = " ";
             };
             source.__raw = ''
               function()

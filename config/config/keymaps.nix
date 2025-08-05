@@ -190,18 +190,6 @@
       options.desc = "Next buffer";
     }
 
-    {
-      mode = "n";
-      key = "[b";
-      action = "<cmd>BufferLineCyclePrev<cr>";
-      options.desc = "Prev Buffer";
-    }
-    {
-      mode = "n";
-      key = "]b";
-      action = "<cmd>BufferLineCycleNext<cr>";
-      options.desc = "Next Buffer";
-    }
 
     # Déplacer buffers
     {
@@ -445,6 +433,102 @@
       options.desc = "Current File History";
     }
 
+    # Actions hunks
+    {
+      mode = [ "n" "v" ];
+      key = "<leader>ghs";
+      action = "<cmd>Gitsigns stage_hunk<CR>";
+      options.desc = "Stage Hunk";
+    }
+    {
+      mode = [ "n" "v" ];
+      key = "<leader>ghr";
+      action = "<cmd>Gitsigns reset_hunk<CR>";
+      options.desc = "Reset Hunk";
+    }
+    {
+      mode = "n";
+      key = "<leader>ghS";
+      action.__raw = ''
+        require("gitsigns").stage_buffer
+      '';
+      options.desc = "Stage Buffer";
+    }
+    {
+      mode = "n";
+      key = "<leader>ghu";
+      action.__raw = ''
+        require("gitsigns").undo_stage_hunk
+      '';
+      options.desc = "Undo Stage Buffer";
+    }
+    {
+      mode = "n";
+      key = "<leader>ghR";
+      action.__raw = ''
+        require("gitsigns").reset_buffer
+      '';
+      options.desc = "Reset Buffer";
+    }
+    {
+      mode = "n";
+      key = "<leader>ghp";
+      action.__raw = ''
+        require("gitsigns").preview_hunk_inline
+      '';
+      options.desc = "Preview Hunk Inline";
+    }
+    {
+      mode = "n";
+      key = "<leader>ghP";
+      action.__raw = ''
+        require("gitsigns").preview_hunk
+      '';
+      options.desc = "Preview Hunk";
+    }
+
+    # Blame
+    {
+      mode = "n";
+      key = "<leader>ghb";
+      action.__raw = ''
+        function()
+          require("gitsigns").blame_line({ full = true })
+        end
+      '';
+      options.desc = "Blame Line";
+    }
+    {
+      mode = "n";
+      key = "<leader>ghB";
+      action.__raw = ''
+        function()
+          require("gitsigns").blame_line()
+        end
+      '';
+      options.desc = "Blame Buffer";
+    }
+
+    # Diff
+    {
+      mode = "n";
+      key = "<leader>ghd";
+      action.__raw = ''
+        require("gitsigns").diffthis
+      '';
+      options.desc = "Diff This";
+    }
+    {
+      mode = "n";
+      key = "<leader>ghD";
+      action.__raw = ''
+        function()
+          require("gitsigns").diffthis("~")
+        end
+      '';
+      options.desc = "Diff This ~";
+    }
+
     # ===== BUFFER GROUP - <leader>b =====
     {
       mode = "n";
@@ -457,18 +541,6 @@
       key = "<leader>bD";
       action = "<cmd>%bdelete|edit#|bdelete#<cr>";
       options.desc = "Delete All Buffers";
-    }
-    {
-      mode = "n";
-      key = "<leader>bp";
-      action = "<cmd>bprevious<cr>";
-      options.desc = "Previous Buffer";
-    }
-    {
-      mode = "n";
-      key = "<leader>bn";
-      action = "<cmd>bnext<cr>";
-      options.desc = "Next Buffer";
     }
     {
       mode = "n";
@@ -670,14 +742,62 @@
     {
       mode = "n";
       key = "[b";
-      action = "<cmd>bprev<cr>";
-      options.desc = "Previous Buffer";
+      action = "<cmd>BufferLineCyclePrev<cr>";
+      options.desc = "Prev Buffer";
     }
     {
       mode = "n";
       key = "]b";
-      action = "<cmd>bnext<cr>";
+      action = "<cmd>BufferLineCycleNext<cr>";
       options.desc = "Next Buffer";
+    }
+    {
+      mode = "n";
+      key = "]h";
+      action.__raw = ''
+        function()
+          if vim.wo.diff then
+            vim.cmd.normal({ "]c", bang = true })
+          else
+            gs.nav_hunk("next")
+          end
+        end
+      '';
+      options.desc = "Next Hunk";
+    }
+    {
+      mode = "n";
+      key = "[h";
+      action.__raw = ''
+        function()
+          if vim.wo.diff then
+            vim.cmd.normal({ "[c", bang = true })
+          else
+            gs.nav_hunk("prev")
+          end
+        end
+      '';
+      options.desc = "Prev Hunk";
+    }
+    {
+      mode = "n";
+      key = "]H";
+      action.__raw = ''
+        function()
+          gs.nav_hunk("last")
+        end
+      '';
+      options.desc = "Last Hunk";
+    }
+    {
+      mode = "n";
+      key = "[H";
+      action.__raw = ''
+        function()
+          gs.nav_hunk("first")
+        end
+      '';
+      options.desc = "First Hunk";
     }
 
     # ===== WHICH-KEY =====

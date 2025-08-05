@@ -100,8 +100,6 @@
           -- Options spécifiques Haskell
           vim.wo.foldmethod = "indent"
           vim.wo.foldlevel = 99
-          
-          print("Haskell file loaded - setting up tools...")
         end
       '';
     }
@@ -117,8 +115,6 @@
           vim.bo.shiftwidth = 2
           vim.bo.expandtab = true
           vim.bo.commentstring = "-- %s"
-          
-          print("Cabal configuration loaded")
         end
       '';
     }
@@ -189,7 +185,6 @@
       local ok, haskell_tools = pcall(require, 'haskell-tools')
       
       if ok and haskell_tools and haskell_tools.setup then
-        print("Loading haskell-tools.nvim...")
         
         -- Setup haskell-tools
         local setup_ok, setup_err = pcall(function()
@@ -228,7 +223,6 @@
         if setup_ok then
           haskell_tools_available = true
           ht = haskell_tools
-          print("✓ haskell-tools.nvim loaded successfully")
           return true
         else
           print("✗ haskell-tools.nvim setup failed: " .. (setup_err or "unknown error"))
@@ -238,7 +232,6 @@
       end
       
       -- Fallback vers LSP standard
-      print("→ Falling back to standard HLS")
       return false
     end
     
@@ -250,8 +243,6 @@
       callback = function(event)
         local bufnr = event.buf
         local opts = { noremap = true, silent = true, buffer = bufnr }
-        
-        print("Setting up Haskell keymaps for buffer " .. bufnr)
         
         -- Essayer de configurer haskell-tools (avec délai pour le chargement)
         vim.defer_fn(function()
@@ -550,57 +541,6 @@
     })
     
     -- ===================================================================
-    -- FONCTIONS GLOBALES DE DEBUG
-    -- ===================================================================
-    
-    _G.debug_haskell = function()
-      print("=== Haskell Debug ===")
-      print("Filetype:", vim.bo.filetype)
-      print("Project type:", detect_project_type())
-      print("Haskell-tools available:", haskell_tools_available)
-      
-      if haskell_tools_available then
-        print("Haskell-tools features:")
-        if ht.repl then print("  ✓ REPL") else print("  ✗ REPL") end
-        if ht.hoogle then print("  ✓ Hoogle") else print("  ✗ Hoogle") end
-        if ht.lsp then print("  ✓ LSP extensions") else print("  ✗ LSP extensions") end
-      end
-      
-      -- LSP clients
-      local clients = vim.lsp.get_clients({ bufnr = 0 })
-      print("LSP clients:", #clients)
-      for _, client in ipairs(clients) do
-        print("  - " .. client.name)
-      end
-      
-      -- Diagnostics
-      local diagnostics = vim.diagnostic.get(0)
-      print("Diagnostics:", #diagnostics)
-      
-      -- Which-key
-      local ok, wk = pcall(require, "which-key")
-      print("Which-key available:", ok)
-    end
-    
-    _G.test_haskell_tools = function()
-      print("=== Testing Haskell Tools ===")
-      
-      -- Test require
-      local ok, ht_test = pcall(require, 'haskell-tools')
-      print("Require haskell-tools:", ok)
-      
-      if ok then
-        print("Available functions:")
-        for k, v in pairs(ht_test) do
-          print("  " .. k .. ": " .. type(v))
-        end
-      end
-      
-      -- Test setup
-      setup_haskell_tools()
-    end
-    
-    -- ===================================================================
     -- INITIALISATION
     -- ===================================================================
     
@@ -608,7 +548,5 @@
     vim.defer_fn(function()
       setup_haskell_tools()
     end, 2000)
-    
-    print("Haskell configuration with haskell-tools support loaded")
   '';
 }

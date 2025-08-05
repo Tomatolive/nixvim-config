@@ -11,14 +11,14 @@
       # MINI.ICONS - Déjà configuré
       # =================================================================
       icons = { };
-      
+
       # =================================================================
       # MINI.AI - Text objects améliorés
       # =================================================================
       ai = {
         # Configuration LazyVim style
         n_lines = 500;
-        
+
         # Custom text objects (style LazyVim)
         custom_textobjects = {
           # Whole buffer
@@ -34,7 +34,7 @@
               end
             '';
           };
-          
+
           # Current line
           l = {
             __raw = ''
@@ -48,7 +48,7 @@
               end
             '';
           };
-          
+
           # Indent level
           i = {
             __raw = ''
@@ -58,7 +58,7 @@
               end
             '';
           };
-          
+
           # Function call
           o = {
             __raw = ''
@@ -68,7 +68,7 @@
               end
             '';
           };
-          
+
           # Complete buffer
           e = {
             __raw = ''
@@ -84,32 +84,36 @@
           };
         };
       };
-      
+
       # =================================================================
       # MINI.PAIRS - Auto-pairing intelligent (version silencieuse)
       # =================================================================
       pairs = {
         # Modes où activer les pairs
-        modes = { insert = true; command = false; terminal = false; };
-        
+        modes = {
+          insert = true;
+          command = false;
+          terminal = false;
+        };
+
         # Skip autopair when next character is one of these
         skip_next = {
           __raw = "[=[[%w%%%'%[%\"%.%`%$]]=]";
         };
-        
+
         # Skip autopair when the cursor is inside these treesitter nodes
         skip_ts = [ "string" ];
-        
+
         # Skip autopair when next character is closing pair and there are more closing pairs than opening pairs
         skip_unbalanced = true;
-        
+
         # Better deal with markdown code blocks
         markdown = true;
-        
+
         # IMPORTANT: Mode silencieux pour éviter conflits avec noice
         silent = true;
       };
-      
+
       # =================================================================
       # MINI.SURROUND - Gestion des surroundings (version silencieuse)
       # =================================================================
@@ -123,26 +127,26 @@
           highlight = "gsh"; # Highlight surrounding
           replace = "gsr"; # Replace surrounding
           update_n_lines = "gsn"; # Update `n_lines`
-          
+
           suffix_last = "l"; # Suffix to search with "prev" method
           suffix_next = "n"; # Suffix to search with "next" method
         };
-        
+
         # Number of lines within which surrounding is searched
         n_lines = 20;
-        
+
         # How to search for surrounding (first inside current line, then inside neighborhood)
         search_method = "cover";
-        
+
         # IMPORTANT: Mode silencieux pour éviter conflits avec noice
         silent = true;
-        
+
         # Custom surroundings (LazyVim style)
         custom_surroundings = {
           # Markdown code block
           c = {
             input = {
-            __raw = "{ '%w+%(().-%)%)', '^.-%w+%(().-%)%).*$' }";
+              __raw = "{ '%w+%(().-%)%)', '^.-%w+%(().-%)%).*$' }";
             };
             output = {
               __raw = ''
@@ -153,7 +157,7 @@
               '';
             };
           };
-          
+
           # HTML/XML tag
           t = {
             input = {
@@ -170,13 +174,99 @@
           };
         };
       };
+
+      # =================================================================
+      # MINI.COMMENT - Commentaires intelligents (version silencieuse)
+      # =================================================================
+      comment = {
+        # Options pour la gestion des commentaires
+        options = {
+          # Fonction pour calculer commentstring personnalisé
+          custom_commentstring = null;
+
+          # Ignorer les lignes vides lors du commenting
+          ignore_blank_line = false;
+
+          # Commenter au début de la ligne ou après l'indentation
+          start_of_line = false;
+
+          # Gestion de l'indentation des commentaires
+          pad_comment_parts = true;
+        };
+
+        # Mappings (style LazyVim)
+        mappings = {
+          # Commenter ligne(s) en normal et visual
+          comment = "gc";
+          comment_line = "gcc";
+          comment_visual = "gc";
+
+          # Commenter jusqu'à la fin de la ligne
+          textobject = "gc";
+        };
+
+        # IMPORTANT: Mode silencieux pour éviter conflits avec noice
+        silent = true;
+      };
+
+      # =================================================================
+      # MINI.HIPATTERNS - Mise en évidence de patterns (couleurs, TODO, etc.)
+      # =================================================================
+      hipatterns = {
+        # Patterns prédéfinis (style LazyVim)
+        highlighters = {
+          # Couleurs hexadécimales (#ffffff, #123ABC, etc.)
+          hex_color = {
+            __raw = ''
+              require('mini.hipatterns').gen_highlighter.hex_color()
+            '';
+          };
+
+          # Mots-clés TODO, FIXME, etc.
+          fixme = {
+            pattern = "%f[%w]()FIXME()%f[%W]";
+            group = "MiniHipatternsFixme";
+          };
+
+          hack = {
+            pattern = "%f[%w]()HACK()%f[%W]";
+            group = "MiniHipatternsHack";
+          };
+
+          todo = {
+            pattern = "%f[%w]()TODO()%f[%W]";
+            group = "MiniHipatternsTodo";
+          };
+
+          note = {
+            pattern = "%f[%w]()NOTE()%f[%W]";
+            group = "MiniHipatternsNote";
+          };
+
+          # Couleurs nommées courantes
+          red = {
+            pattern = "red";
+            group = "MiniHipatternsRed";
+          };
+
+          blue = {
+            pattern = "blue";
+            group = "MiniHipatternsBlue";
+          };
+
+          green = {
+            pattern = "green";
+            group = "MiniHipatternsGreen";
+          };
+        };
+      };
     };
   };
 
   # =====================================================================
   # CONFIGURATION SUPPLÉMENTAIRE LUA
   # =====================================================================
-  
+
   extraConfigLua = ''
     -- Configuration des highlights pour mini.nvim (gruvbox style)
     vim.api.nvim_create_autocmd("ColorScheme", {
@@ -207,11 +297,11 @@
         })
       end,
     })
-    
+
     -- ===================================================================
     -- CONFIGURATION ANTI-CONFLIT NOICE POUR MINI.NVIM
     -- ===================================================================
-    
+
     -- Configuration silencieuse pour mini.pairs
     vim.defer_fn(function()
       local pairs_ok, pairs = pcall(require, 'mini.pairs')
@@ -230,7 +320,7 @@
         end
       end
     end, 100)
-    
+
     -- Configuration silencieuse pour mini.surround  
     vim.defer_fn(function()
       local surround_ok, surround = pcall(require, 'mini.surround')
@@ -250,11 +340,11 @@
         end
       end
     end, 100)
-    
+
     -- ===================================================================
     -- FONCTIONS DE TEST (SANS MESSAGES DEBUG)
     -- ===================================================================
-    
+
     -- Fonction pour tester mini.ai text objects
     _G.test_mini_ai = function()
       print("=== Mini.ai Text Objects ===")
@@ -278,7 +368,7 @@
       print("       d + i/a + object (ex: 'daw' = delete around word)")
       print("       c + i/a + object (ex: 'cit' = change inside tag)")
     end
-    
+
     -- Fonction pour tester mini.surround
     _G.test_mini_surround = function()
       print("=== Mini.surround Keymaps ===")
@@ -303,7 +393,7 @@
       print("  f - Function call")
       print("  t - HTML/XML tag")
     end
-    
+
     -- Fonction pour tester mini.pairs
     _G.test_mini_pairs = function()
       print("=== Mini.pairs Features ===")
@@ -319,16 +409,16 @@
       print("")
       print("Try typing opening brackets and quotes!")
     end
-    
+
     -- Commandes de test
     vim.api.nvim_create_user_command("TestMiniAi", function()
       test_mini_ai()
     end, { desc = "Show mini.ai text objects help" })
-    
+
     vim.api.nvim_create_user_command("TestMiniSurround", function()
       test_mini_surround()
     end, { desc = "Show mini.surround keymaps help" })
-    
+
     vim.api.nvim_create_user_command("TestMiniPairs", function()
       test_mini_pairs()
     end, { desc = "Show mini.pairs features" })
