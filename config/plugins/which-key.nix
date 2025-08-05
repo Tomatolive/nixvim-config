@@ -59,17 +59,6 @@
   };
 
   # =====================================================================
-  # ICÔNES - Utiliser mini.icons comme LazyVim
-  # =====================================================================
-
-  plugins.mini = {
-    enable = true;
-    modules = {
-      icons = { };
-    };
-  };
-
-  # =====================================================================
   # NOTE: Les keymaps which-key sont définis dans config/config/keymaps.nix
   # pour éviter les redondances et conflits
   # =====================================================================

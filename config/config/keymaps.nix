@@ -190,6 +190,33 @@
       options.desc = "Next buffer";
     }
 
+    {
+      mode = "n";
+      key = "[b";
+      action = "<cmd>BufferLineCyclePrev<cr>";
+      options.desc = "Prev Buffer";
+    }
+    {
+      mode = "n";
+      key = "]b";
+      action = "<cmd>BufferLineCycleNext<cr>";
+      options.desc = "Next Buffer";
+    }
+
+    # Déplacer buffers
+    {
+      mode = "n";
+      key = "[B";
+      action = "<cmd>BufferLineMovePrev<cr>";
+      options.desc = "Move buffer prev";
+    }
+    {
+      mode = "n";
+      key = "]B";
+      action = "<cmd>BufferLineMoveNext<cr>";
+      options.desc = "Move buffer next";
+    }
+
     # ===== TERMINAL =====
     {
       mode = "t";
@@ -333,25 +360,89 @@
       mode = "n";
       key = "<leader>gg";
       action = "<cmd>lua Snacks.lazygit()<cr>";
-      options.desc = "Git Status";
+      options.desc = "Lazygit";
     }
     {
       mode = "n";
-      key = "<leader>gb";
-      action = "<cmd>lua vim.cmd('Git blame')<cr>";
-      options.desc = "Git Blame";
+      key = "<leader>gG";
+      action = "<cmd>lua Snacks.lazygit({cwd = vim.uv.cwd()})<cr>";
+      options.desc = "Lazygit (cwd)";
     }
     {
       mode = "n";
-      key = "<leader>gd";
-      action = "<cmd>lua vim.cmd('Gvdiffsplit')<cr>";
-      options.desc = "Git Diff";
+      key = "<leader>gf";
+      action = "<cmd>lua Snacks.lazygit.log_file()<cr>";
+      options.desc = "Lazygit Current File History";
     }
     {
       mode = "n";
       key = "<leader>gl";
-      action = "<cmd>lua vim.cmd('Git log')<cr>";
-      options.desc = "Git Log";
+      action = "<cmd>lua Snacks.lazygit.log()<cr>";
+      options.desc = "Lazygit Log";
+    }
+    {
+      mode = "n";
+      key = "<leader>gs";
+      action = "<cmd>Git<cr>";
+      options.desc = "Git Status";
+    }
+    {
+      mode = "n";
+      key = "<leader>gc";
+      action = "<cmd>Git commit<cr>";
+      options.desc = "Git Commit";
+    }
+    {
+      mode = "n";
+      key = "<leader>gp";
+      action = "<cmd>Git push<cr>";
+      options.desc = "Git Push";
+    }
+    {
+      mode = "n";
+      key = "<leader>gP";
+      action = "<cmd>Git pull<cr>";
+      options.desc = "Git Pull";
+    }
+    {
+      mode = "n";
+      key = "<leader>gb";
+      action = "<cmd>Git blame<cr>";
+      options.desc = "Git Blame";
+    }
+    {
+      mode = "n";
+      key = "<leader>gB";
+      action.__raw = ''
+        function()
+          require("gitsigns").toggle_current_line_blame()
+        end
+      '';
+      options.desc = "Toggle Git Blame Line";
+    }
+    {
+      mode = "n";
+      key = "<leader>gd";
+      action = "<cmd>DiffviewOpen<cr>";
+      options.desc = "DiffView Open";
+    }
+    {
+      mode = "n";
+      key = "<leader>gD";
+      action = "<cmd>DiffviewClose<cr>";
+      options.desc = "DiffView Close";
+    }
+    {
+      mode = "n";
+      key = "<leader>gh";
+      action = "<cmd>DiffviewFileHistory<cr>";
+      options.desc = "File History";
+    }
+    {
+      mode = "n";
+      key = "<leader>gH";
+      action = "<cmd>DiffviewFileHistory %<cr>";
+      options.desc = "Current File History";
     }
 
     # ===== BUFFER GROUP - <leader>b =====
@@ -419,6 +510,23 @@
     }
 
     # ===== UI GROUP - <leader>u =====
+    {
+      mode = "n";
+      key = "<leader>uG";
+      action.__raw = ''
+        function()
+          local gs = require("gitsigns")
+          local config = require("gitsigns.config").config
+          local current = config.signcolumn
+          gs.toggle_signs(not current)
+          require("snacks").notify(
+            "Git signs " .. (not current and "enabled" or "disabled"), 
+            { title = "Git Signs" }
+          )
+        end
+      '';
+      options.desc = "Toggle Git Signs";
+    }
     {
       mode = "n";
       key = "<leader>un";

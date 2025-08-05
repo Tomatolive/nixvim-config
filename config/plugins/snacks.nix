@@ -5,12 +5,12 @@
     # =====================================================================
     snacks = {
       enable = true;
-      
+
       settings = {
         # =================================================================
         # Module BIGFILE - Optimisations pour les gros fichiers
         # =================================================================
-        bigfile = { 
+        bigfile = {
           enabled = true;
           notify = true;
           size = 1048576; # 1MB
@@ -29,37 +29,37 @@
             end
           '';
         };
-        
+
         # =================================================================
         # Module DASHBOARD - Écran d'accueil
         # =================================================================
-        dashboard = { 
+        dashboard = {
           enabled = true;
           width = 60;
           row = null;
           col = null;
           pane_gap = 4;
           autokeys = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-          
+
           sections = [
             { section = "header"; }
             { section = "keys"; gap = 1; padding = 1; }
-            { 
-              section = "recent_files"; 
-              icon = " "; 
-              title = "Recent Files"; 
-              indent = 2; 
-              padding = 1; 
+            {
+              section = "recent_files";
+              icon = " ";
+              title = "Recent Files";
+              indent = 2;
+              padding = 1;
             }
-            { 
-              section = "projects"; 
-              icon = " "; 
-              title = "Projects"; 
-              indent = 2; 
-              padding = 1; 
+            {
+              section = "projects";
+              icon = " ";
+              title = "Projects";
+              indent = 2;
+              padding = 1;
             }
           ];
-          
+
           preset = {
             keys = [
               { icon = " "; key = "f"; desc = "Find File"; action = ":lua Snacks.picker.files()"; }
@@ -72,11 +72,11 @@
             ];
           };
         };
-        
+
         # =================================================================
         # Module INDENT - Guides d'indentation
         # =================================================================
-        indent = { 
+        indent = {
           enabled = true;
           animate = {
             enabled = false;
@@ -94,11 +94,11 @@
             enabled = false;
           };
         };
-        
+
         # =================================================================
         # Module INPUT - Amélioration de vim.ui.input
         # =================================================================
-        input = { 
+        input = {
           enabled = true;
           icon = " ";
           icon_pos = "left";
@@ -109,11 +109,11 @@
           };
           expand = true;
         };
-        
+
         # =================================================================
         # Module NOTIFIER - Système de notifications
         # =================================================================
-        notifier = { 
+        notifier = {
           enabled = true;
           timeout = 3000;
           width = {
@@ -144,11 +144,11 @@
           top_down = true;
           date_format = "%R";
         };
-        
+
         # =================================================================
         # Module PICKER - Fuzzy finder
         # =================================================================
-        picker = { 
+        picker = {
           enabled = true;
           icons = {
             git = {
@@ -182,7 +182,7 @@
               Variable = "󰀫 ";
             };
           };
-          
+
           sources = {
             explorer = {
               auto_close = false;
@@ -200,18 +200,18 @@
             };
           };
         };
-        
+
         # =================================================================
         # Module QUICKFILE - Ouverture rapide de fichiers
         # =================================================================
-        quickfile = { 
+        quickfile = {
           enabled = true;
         };
-        
+
         # =================================================================
         # Module SCOPE - Mise en évidence du scope actuel
         # =================================================================
-        scope = { 
+        scope = {
           enabled = true;
           min_size = 2;
           max_size = 20;
@@ -221,7 +221,7 @@
             blocks = [
               "function_item"
               "function_definition"
-              "method_definition"  
+              "method_definition"
               "class_definition"
               "if_statement"
               "for_statement"
@@ -231,11 +231,11 @@
             ];
           };
         };
-        
+
         # =================================================================
         # Module SCROLL - Défilement fluide
         # =================================================================
-        scroll = { 
+        scroll = {
           enabled = true;
           animate = {
             duration = { step = 15; total = 250; };
@@ -243,11 +243,11 @@
           };
           spamming = 10;
         };
-        
+
         # =================================================================
         # Module STATUSCOLUMN - Colonne de statut moderne
         # =================================================================
-        statuscolumn = { 
+        statuscolumn = {
           enabled = true;
           left = [ "mark" "sign" ];
           right = [ "fold" "git" ];
@@ -259,11 +259,11 @@
             patterns = [ "GitSign" "MiniDiffSign" ];
           };
         };
-        
+
         # =================================================================
         # Module WORDS - Mise en évidence des mots sous le curseur
         # =================================================================
-        words = { 
+        words = {
           enabled = true;
           debounce = 200;
           notify_jump = false;
@@ -272,7 +272,7 @@
           jumplist = true;
           modes = [ "n" "i" "c" ];
         };
-        
+
         # =================================================================
         # Modules additionnels
         # =================================================================
@@ -282,7 +282,7 @@
         zen = { enabled = false; };
         profiler = { enabled = false; };
         scratch = { enabled = false; };
-        
+
         # =================================================================
         # Styles personnalisés
         # =================================================================
@@ -301,5 +301,7 @@
         };
       };
     };
+
+    telescope.enable = true;
   };
 }
