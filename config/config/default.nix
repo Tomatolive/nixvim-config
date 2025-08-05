@@ -25,6 +25,48 @@
         NoiceCmdlinePopupBorder = {
           fg = "#b8bb26";
         };
+
+        # Blink completion
+        BlinkCmpMenu = {
+          bg = "#3c3836";
+          fg = "#ebdbb2";
+        };
+        
+        BlinkCmpMenuBorder = {
+          fg = "#b8bb26";
+          bg = "#3c3836";
+        };
+        
+        BlinkCmpMenuSelection = {
+          bg = "#504945";
+          fg = "#ebdbb2";
+          bold = true;
+        };
+        
+        BlinkCmpDoc = {
+          bg = "#3c3836";
+          fg = "#ebdbb2";
+        };
+        
+        BlinkCmpDocBorder = {
+          fg = "#b8bb26";
+          bg = "#3c3836";
+        };
+        
+        BlinkCmpSignatureHelp = {
+          bg = "#3c3836";
+          fg = "#ebdbb2";
+        };
+        
+        BlinkCmpSignatureHelpBorder = {
+          fg = "#b8bb26";
+          bg = "#3c3836";
+        };
+        
+        BlinkCmpGhostText = {
+          fg = "#928374";
+          italic = true;
+        };
       };
     };
   };

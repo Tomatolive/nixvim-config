@@ -111,7 +111,7 @@
   ];
   
   # =====================================================================
-  # CONFIGURATION SUPPLÉMENTAIRE VIA LUA
+  # CONFIGURATION SUPPLÉMENTAIRE VIA LUA - SANS KEYMAPS
   # =====================================================================
   extraConfigLua = ''
     -- Configuration avancée pour nixd optimisé
@@ -146,68 +146,6 @@
         
         print("nixd performance optimizations applied")
       end
-    })
-    
-    -- ===================================================================
-    -- KEYMAPS SPÉCIFIQUES À NIX (via autocommands)
-    -- ===================================================================
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = "nix",
-      callback = function(event)
-        local bufnr = event.buf
-        local opts = { noremap = true, silent = true, buffer = bufnr }
-        
-        -- Format manuel RAPIDE (utilise conform au lieu de LSP)
-        vim.keymap.set('n', '<leader>lf', function()
-          require('conform').format({ 
-            async = true, 
-            timeout_ms = 2000,  -- Timeout court
-            lsp_fallback = false  -- Pas de fallback LSP (plus rapide)
-          })
-        end, vim.tbl_extend('force', opts, { desc = "Format buffer (Fast)" }))
-        
-        -- Commandes nixd spécifiques avec timeouts
-        vim.keymap.set('n', '<leader>lR', function()
-          vim.lsp.buf.rename()
-        end, vim.tbl_extend('force', opts, { desc = "Rename symbol (Nix)" }))
-        
-        vim.keymap.set('n', '<leader>ld', function()
-          -- Timeout court pour go-to-definition
-          vim.lsp.buf.definition({ timeout_ms = 2000 })
-        end, vim.tbl_extend('force', opts, { desc = "Go to definition (Fast)" }))
-        
-        vim.keymap.set('n', '<leader>lh', function()
-          vim.lsp.buf.hover()
-        end, vim.tbl_extend('force', opts, { desc = "Hover info (Nix)" }))
-        
-        vim.keymap.set('n', '<leader>la', function()
-          vim.lsp.buf.code_action({ timeout_ms = 1000 })
-        end, vim.tbl_extend('force', opts, { desc = "Code actions (Fast)" }))
-        
-        -- Fonction pour basculer vers completion rapide
-        vim.keymap.set('n', '<leader>ls', function()
-          print("Basculement vers completion rapide (buffer + snippets)")
-          -- Dans blink, cela privilégierait les sources non-LSP
-        end, vim.tbl_extend('force', opts, { desc = "Fast completion mode" }))
-        
-        -- ===== INTÉGRATION WHICH-KEY POUR NIX =====
-        vim.defer_fn(function()
-          local ok, wk = pcall(require, "which-key")
-          if ok then
-            wk.add({
-              { "<leader>l", group = "Nix (Optimized)", icon = " ", buffer = bufnr },
-              { "<leader>lf", desc = "Format (Fast)", icon = " ", buffer = bufnr },
-              { "<leader>ld", desc = "Definition (Fast)", icon = " ", buffer = bufnr },
-              { "<leader>lh", desc = "Hover Info", icon = " ", buffer = bufnr },
-              { "<leader>la", desc = "Actions (Fast)", icon = "󰌵 ", buffer = bufnr },
-              { "<leader>lR", desc = "Rename", icon = "󰑕 ", buffer = bufnr },
-              { "<leader>ls", desc = "Speed Mode", icon = "󰓅 ", buffer = bufnr },
-            })
-          end
-        end, 100)
-        
-        print("Nix keymaps loaded (optimized for nixd performance)")
-      end,
     })
     
     -- ===================================================================

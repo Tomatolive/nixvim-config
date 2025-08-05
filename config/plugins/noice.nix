@@ -399,107 +399,12 @@
   };
 
   # =====================================================================
-  # CONFIGURATION SUPPLÉMENTAIRE LUA
+  # CONFIGURATION SUPPLÉMENTAIRE LUA - SANS KEYMAPS
   # =====================================================================
   extraConfigLua = ''
     -- ===================================================================
-    -- HIGHLIGHTS PERSONNALISÉS POUR NOICE STYLE LAZYVIM
+    -- HIGHLIGHTS PERSONNALISÉS POUR NOICE STYLE LAZYVIM (commentés)
     -- ===================================================================
-    
-    -- vim.api.nvim_create_autocmd("ColorScheme", {
-    --   pattern = "*",
-    --   callback = function()
-    --     -- Popup de commande - couleurs exactes LazyVim
-    --     vim.api.nvim_set_hl(0, "NoiceCmdlinePopup", { 
-    --       bg = "#3c3836", 
-    --       fg = "#ebdbb2" 
-    --     })
-    --     vim.api.nvim_set_hl(0, "NoiceCmdlinePopupBorder", { 
-    --       fg = "#fabd2f", 
-    --       bg = "NONE" 
-    --     })
-    --     vim.api.nvim_set_hl(0, "NoiceCmdlinePopupTitle", { 
-    --       fg = "#fabd2f", 
-    --       bg = "NONE", 
-    --       bold = true 
-    --     })
-    --
-    --     -- Icon et prompt dans la cmdline
-    --     vim.api.nvim_set_hl(0, "NoiceCmdlineIcon", { 
-    --       fg = "#83a598" 
-    --     })
-    --
-    --     -- Menu popup (autocomplétion)
-    --     vim.api.nvim_set_hl(0, "NoicePopupmenu", { 
-    --       bg = "#3c3836", 
-    --       fg = "#ebdbb2" 
-    --     })
-    --     vim.api.nvim_set_hl(0, "NoicePopupmenuBorder", { 
-    --       fg = "#fabd2f", 
-    --       bg = "NONE" 
-    --     })
-    --     vim.api.nvim_set_hl(0, "NoicePopupmenuSelected", { 
-    --       bg = "#504945", 
-    --       fg = "#ebdbb2", 
-    --       bold = true 
-    --     })
-    --
-    --     -- Documentation hover
-    --     vim.api.nvim_set_hl(0, "NoiceHover", { 
-    --       bg = "#3c3836", 
-    --       fg = "#ebdbb2" 
-    --     })
-    --     vim.api.nvim_set_hl(0, "NoiceHoverBorder", { 
-    --       fg = "#83a598", 
-    --       bg = "NONE" 
-    --     })
-    --
-    --     -- Confirmation
-    --     vim.api.nvim_set_hl(0, "NoiceConfirm", { 
-    --       bg = "#3c3836", 
-    --       fg = "#ebdbb2" 
-    --     })
-    --     vim.api.nvim_set_hl(0, "NoiceConfirmBorder", { 
-    --       fg = "#fabd2f", 
-    --       bg = "NONE" 
-    --     })
-    --
-    --     -- Mini messages - style LazyVim
-    --     vim.api.nvim_set_hl(0, "NoiceMini", { 
-    --       bg = "NONE", 
-    --       fg = "#928374" 
-    --     })
-    --
-    --     -- Split pour longs messages
-    --     vim.api.nvim_set_hl(0, "NoiceSplit", { 
-    --       bg = "#282828", 
-    --       fg = "#ebdbb2" 
-    --     })
-    --     vim.api.nvim_set_hl(0, "NoiceSplitBorder", { 
-    --       fg = "#fabd2f", 
-    --       bg = "NONE" 
-    --     })
-    --
-    --     -- Messages formatés
-    --     vim.api.nvim_set_hl(0, "NoiceFormatProgressTodo", { 
-    --       fg = "#928374" 
-    --     })
-    --     vim.api.nvim_set_hl(0, "NoiceFormatProgressDone", { 
-    --       fg = "#b8bb26" 
-    --     })
-    --
-    --     -- LSP progress
-    --     vim.api.nvim_set_hl(0, "NoiceLspProgressTitle", { 
-    --       fg = "#83a598" 
-    --     })
-    --     vim.api.nvim_set_hl(0, "NoiceLspProgressClient", { 
-    --       fg = "#d3869b" 
-    --     })
-    --     vim.api.nvim_set_hl(0, "NoiceLspProgressSpinner", { 
-    --       fg = "#fabd2f" 
-    --     })
-    --   end,
-    -- })
     
     -- Appliquer immédiatement si gruvbox est déjà chargé
     vim.defer_fn(function()
@@ -516,49 +421,9 @@
       telescope.load_extension("noice")
     end
     
-    -- Fonction pour ouvrir l'historique des messages
-    vim.keymap.set("n", "<leader>snh", "<cmd>Noice telescope<cr>", { 
-      desc = "Noice Message History" 
-    })
-    
-    -- Fonction pour voir les stats Noice
-    vim.keymap.set("n", "<leader>sns", "<cmd>Noice stats<cr>", { 
-      desc = "Noice Stats" 
-    })
-    
-    -- Fonction pour déboguer Noice
-    _G.debug_noice = function()
-      print("=== Noice Debug ===")
-      
-      local ok, noice = pcall(require, "noice")
-      if ok then
-        print("Noice loaded: ✓")
-        
-        -- Stats
-        local stats = noice.stats()
-        print("Messages processed:", stats.messages or 0)
-        print("Views active:", stats.views or 0)
-        
-        -- Configuration active
-        local config = noice.config
-        print("Cmdline enabled:", config.cmdline.enabled)
-        print("Messages enabled:", config.messages.enabled)
-        print("Popupmenu enabled:", config.popupmenu.enabled)
-        
-      else
-        print("Noice not loaded: ✗")
-      end
-      
-      print("Try :Noice to see current status")
-    end
-    
     -- ===================================================================
     -- COMMANDES PERSONNALISÉES
     -- ===================================================================
-    
-    vim.api.nvim_create_user_command("NoiceDebug", function()
-      debug_noice()
-    end, { desc = "Debug Noice configuration" })
     
     vim.api.nvim_create_user_command("NoiceToggle", function()
       vim.cmd("Noice disable")
@@ -568,6 +433,5 @@
       end, 100)
     end, { desc = "Toggle Noice on/off" })
     
-    print("Noice LazyVim-style configuration loaded")
   '';
 }

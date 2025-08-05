@@ -190,7 +190,6 @@
       options.desc = "Next buffer";
     }
 
-
     # Déplacer buffers
     {
       mode = "n";
@@ -684,6 +683,20 @@
       options.desc = "Dismiss All";
     }
 
+    # ===== SEARCH GROUP - <leader>s (pour Snacks/Noice) =====
+    {
+      mode = "n";
+      key = "<leader>snh";
+      action = "<cmd>Noice telescope<cr>";
+      options.desc = "Noice Message History";
+    }
+    {
+      mode = "n";
+      key = "<leader>sns";
+      action = "<cmd>Noice stats<cr>";
+      options.desc = "Noice Stats";
+    }
+
     # =====================================================================
     # NAVIGATION - g, [, ], z prefixes
     # =====================================================================
@@ -821,6 +834,322 @@
       '';
       options.desc = "Show All Keymaps";
     }
+
+    # =====================================================================
+    # KEYMAPS SPÉCIFIQUES AUX LANGAGES (FileType-specific)
+    # =====================================================================
+
+    # ===== KEYMAPS NIX - <leader>l =====
+    {
+      mode = "n";
+      key = "<leader>lf";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "nix" then
+            require('conform').format({ 
+              async = true, 
+              timeout_ms = 2000,
+              lsp_fallback = false
+            })
+          end
+        end
+      '';
+      options.desc = "Format Nix (Fast)";
+    }
+    {
+      mode = "n";
+      key = "<leader>lR";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "nix" then
+            vim.lsp.buf.rename()
+          end
+        end
+      '';
+      options.desc = "Rename (Nix)";
+    }
+    {
+      mode = "n";
+      key = "<leader>ld";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "nix" then
+            vim.lsp.buf.definition({ timeout_ms = 2000 })
+          end
+        end
+      '';
+      options.desc = "Definition (Fast)";
+    }
+    {
+      mode = "n";
+      key = "<leader>lh";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "nix" then
+            vim.lsp.buf.hover()
+          end
+        end
+      '';
+      options.desc = "Hover (Nix)";
+    }
+    {
+      mode = "n";
+      key = "<leader>la";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "nix" then
+            vim.lsp.buf.code_action({ timeout_ms = 1000 })
+          end
+        end
+      '';
+      options.desc = "Actions (Fast)";
+    }
+    {
+      mode = "n";
+      key = "<leader>ls";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "nix" then
+            print("Basculement vers completion rapide (buffer + snippets)")
+          end
+        end
+      '';
+      options.desc = "Speed Mode";
+    }
+
+    # ===== KEYMAPS HASKELL - <leader>h =====
+    {
+      mode = "n";
+      key = "<leader>hi";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            vim.lsp.buf.hover()
+          end
+        end
+      '';
+      options.desc = "Type Info";
+    }
+    {
+      mode = "n";
+      key = "<leader>hI";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            vim.lsp.buf.signature_help()
+          end
+        end
+      '';
+      options.desc = "Signature Help";
+    }
+    {
+      mode = "n";
+      key = "<leader>hs";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            haskell_hoogle_search()
+          end
+        end
+      '';
+      options.desc = "Hoogle Search";
+    }
+    {
+      mode = "n";
+      key = "<leader>hd";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            haskell_hoogle_search()
+          end
+        end
+      '';
+      options.desc = "Hoogle Docs";
+    }
+    {
+      mode = "n";
+      key = "<leader>hr";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            haskell_toggle_repl()
+          end
+        end
+      '';
+      options.desc = "Toggle REPL";
+    }
+    {
+      mode = "n";
+      key = "<leader>hl";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            haskell_load_file()
+          end
+        end
+      '';
+      options.desc = "Load in REPL";
+    }
+    {
+      mode = "v";
+      key = "<leader>he";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            haskell_execute_selection()
+          end
+        end
+      '';
+      options.desc = "Execute Selection";
+    }
+    {
+      mode = "n";
+      key = "<leader>he";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            haskell_execute_line()
+          end
+        end
+      '';
+      options.desc = "Execute Line";
+    }
+    {
+      mode = "n";
+      key = "<leader>hc";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            haskell_clear_repl()
+          end
+        end
+      '';
+      options.desc = "Clear REPL";
+    }
+    {
+      mode = "n";
+      key = "<leader>hb";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            haskell_build_project()
+          end
+        end
+      '';
+      options.desc = "Build";
+    }
+    {
+      mode = "n";
+      key = "<leader>ht";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            haskell_test_project()
+          end
+        end
+      '';
+      options.desc = "Test";
+    }
+    {
+      mode = "n";
+      key = "<leader>hC";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            haskell_clean_build()
+          end
+        end
+      '';
+      options.desc = "Clean Build";
+    }
+    {
+      mode = "n";
+      key = "<leader>hq";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            haskell_quick_compile()
+          end
+        end
+      '';
+      options.desc = "Quick Compile";
+    }
+    {
+      mode = "n";
+      key = "<leader>hf";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            require('conform').format({ async = true, lsp_fallback = true })
+          end
+        end
+      '';
+      options.desc = "Format";
+    }
+    {
+      mode = "n";
+      key = "<leader>hE";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            vim.diagnostic.setloclist()
+          end
+        end
+      '';
+      options.desc = "Diagnostics";
+    }
+    {
+      mode = "n";
+      key = "<leader>hR";
+      action.__raw = ''
+        function()
+          if vim.bo.filetype == "haskell" then
+            haskell_restart_lsp()
+          end
+        end
+      '';
+      options.desc = "Restart LSP";
+    }
+
+    # =====================================================================
+    # KEYMAPS BLINK COMPLETION
+    # =====================================================================
+    {
+      mode = "i";
+      key = "<C-Space>";
+      action.__raw = ''
+        function()
+          local ok, blink = pcall(require, 'blink.cmp')
+          if ok and blink.show then
+            blink.show()
+          else
+            return vim.api.nvim_replace_termcodes('<C-x><C-n>', true, false, true)
+          end
+        end
+      '';
+      options = {
+        desc = "Trigger completion";
+        silent = true;
+      };
+    }
+    {
+      mode = "i";
+      key = "<C-x><C-o>";
+      action.__raw = ''
+        function()
+          local ok, blink = pcall(require, 'blink.cmp')
+          if ok and blink.show then
+            blink.show({ sources = { "lsp" } })
+          else
+            return vim.api.nvim_replace_termcodes('<C-x><C-o>', true, false, true)
+          end
+        end
+      '';
+      options = {
+        desc = "LSP completion";
+        silent = true;
+      };
+    }
   ];
 
   # =====================================================================
@@ -844,5 +1173,7 @@
         end, 100)
       end,
     })
+    
+    print("All keymaps loaded centrally")
   '';
 }

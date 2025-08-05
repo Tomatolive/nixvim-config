@@ -1,6 +1,6 @@
 {
   # =====================================================================
-  # CONFIGURATION GIT - Version corrigée compatible noice
+  # CONFIGURATION GIT
   # =====================================================================
 
   plugins = {
@@ -83,14 +83,10 @@
   };
 
   # =====================================================================
-  # CONFIGURATION SUPPLÉMENTAIRE LUA - VERSION SIMPLIFIÉE
+  # CONFIGURATION SUPPLÉMENTAIRE LUA
   # =====================================================================
 
   extraConfigLua = ''
-    -- ===================================================================
-    -- CONFIGURATION GITSIGNS AVEC KEYMAPS STYLE LAZYVIM - VERSION MINIMALE
-    -- ===================================================================
-    
     -- ===================================================================
     -- CONFIGURATION DIFFVIEW - COMPATIBLE NOICE
     -- ===================================================================
@@ -171,7 +167,7 @@
     })
     
     -- ===================================================================
-    -- COMMANDES UTILES (SANS MESSAGES DEBUG)
+    -- COMMANDES UTILES
     -- ===================================================================
     
     vim.api.nvim_create_user_command("GitFileHistory", function()

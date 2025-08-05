@@ -288,175 +288,69 @@
       end
     end, 1000)
 
-    -- Couleurs personnalisées pour gruvbox
-    vim.api.nvim_create_autocmd("ColorScheme", {
-      pattern = "gruvbox*",
-      callback = function()
-        -- Mode colors
-        vim.api.nvim_set_hl(0, "lualine_a_normal", { 
-          fg = "#282828", 
-          bg = "#83a598", 
-          bold = true 
-        })
-        vim.api.nvim_set_hl(0, "lualine_a_insert", { 
-          fg = "#282828", 
-          bg = "#b8bb26", 
-          bold = true 
-        })
-        vim.api.nvim_set_hl(0, "lualine_a_visual", { 
-          fg = "#282828", 
-          bg = "#fe8019", 
-          bold = true 
-        })
-        vim.api.nvim_set_hl(0, "lualine_a_replace", { 
-          fg = "#282828", 
-          bg = "#fb4934", 
-          bold = true 
-        })
-        vim.api.nvim_set_hl(0, "lualine_a_command", { 
-          fg = "#282828", 
-          bg = "#d3869b", 
-          bold = true 
-        })
-        vim.api.nvim_set_hl(0, "lualine_a_terminal", { 
-          fg = "#282828", 
-          bg = "#8ec07c", 
-          bold = true 
-        })
-
-        -- Section colors
-        vim.api.nvim_set_hl(0, "lualine_b_normal", { 
-          fg = "#ebdbb2", 
-          bg = "#504945" 
-        })
-        vim.api.nvim_set_hl(0, "lualine_c_normal", { 
-          fg = "#a89984", 
-          bg = "#3c3836" 
-        })
-        vim.api.nvim_set_hl(0, "lualine_x_normal", { 
-          fg = "#a89984", 
-          bg = "#3c3836" 
-        })
-        vim.api.nvim_set_hl(0, "lualine_y_normal", { 
-          fg = "#ebdbb2", 
-          bg = "#504945" 
-        })
-        vim.api.nvim_set_hl(0, "lualine_z_normal", { 
-          fg = "#282828", 
-          bg = "#83a598",
-          bold = true 
-        })
-      end,
-    })
+    -- -- Couleurs personnalisées pour gruvbox
+    -- vim.api.nvim_create_autocmd("ColorScheme", {
+    --   pattern = "gruvbox*",
+    --   callback = function()
+    --     -- Mode colors
+    --     vim.api.nvim_set_hl(0, "lualine_a_normal", { 
+    --       fg = "#282828", 
+    --       bg = "#83a598", 
+    --       bold = true 
+    --     })
+    --     vim.api.nvim_set_hl(0, "lualine_a_insert", { 
+    --       fg = "#282828", 
+    --       bg = "#b8bb26", 
+    --       bold = true 
+    --     })
+    --     vim.api.nvim_set_hl(0, "lualine_a_visual", { 
+    --       fg = "#282828", 
+    --       bg = "#fe8019", 
+    --       bold = true 
+    --     })
+    --     vim.api.nvim_set_hl(0, "lualine_a_replace", { 
+    --       fg = "#282828", 
+    --       bg = "#fb4934", 
+    --       bold = true 
+    --     })
+    --     vim.api.nvim_set_hl(0, "lualine_a_command", { 
+    --       fg = "#282828", 
+    --       bg = "#d3869b", 
+    --       bold = true 
+    --     })
+    --     vim.api.nvim_set_hl(0, "lualine_a_terminal", { 
+    --       fg = "#282828", 
+    --       bg = "#8ec07c", 
+    --       bold = true 
+    --     })
+    --
+    --     -- Section colors
+    --     vim.api.nvim_set_hl(0, "lualine_b_normal", { 
+    --       fg = "#ebdbb2", 
+    --       bg = "#504945" 
+    --     })
+    --     vim.api.nvim_set_hl(0, "lualine_c_normal", { 
+    --       fg = "#a89984", 
+    --       bg = "#3c3836" 
+    --     })
+    --     vim.api.nvim_set_hl(0, "lualine_x_normal", { 
+    --       fg = "#a89984", 
+    --       bg = "#3c3836" 
+    --     })
+    --     vim.api.nvim_set_hl(0, "lualine_y_normal", { 
+    --       fg = "#ebdbb2", 
+    --       bg = "#504945" 
+    --     })
+    --     vim.api.nvim_set_hl(0, "lualine_z_normal", { 
+    --       fg = "#282828", 
+    --       bg = "#83a598",
+    --       bold = true 
+    --     })
+    --   end,
+    -- })
 
     -- Appliquer immédiatement
-    vim.cmd("doautocmd ColorScheme")
+    -- vim.cmd("doautocmd ColorScheme")
 
-    -- Fonctions utilitaires
-    _G.debug_lualine = function()
-      print("=== Lualine Debug ===")
-      
-      local ok, lualine = pcall(require, "lualine")
-      if ok then
-        print("Lualine loaded: ✓")
-        print("Laststatus:", vim.o.laststatus)
-        print("Globalstatus:", vim.o.laststatus == 3)
-        
-        -- Vérifier les extensions
-        local extensions = {"neo-tree", "lazy", "fzf"}
-        for _, ext in ipairs(extensions) do
-          local has_ext = pcall(require, ext)
-          print("Extension " .. ext .. ":", has_ext and "✓" or "✗")
-        end
-        
-        -- Vérifier snacks components
-        local snacks_ok, snacks = pcall(require, "snacks")
-        if snacks_ok then
-          print("Snacks available:")
-          print("  - profiler:", snacks.profiler and "✓" or "✗")
-          print("  - util:", snacks.util and "✓" or "✗")
-        end
-        
-        -- Vérifier noice
-        local noice_ok, noice = pcall(require, "noice")
-        if noice_ok then
-          print("Noice available: ✓")
-          print("  - command status:", noice.api.status.command.has())
-          print("  - mode status:", noice.api.status.mode.has())
-        else
-          print("Noice available: ✗")
-        end
-        
-      else
-        print("Lualine not loaded: ✗")
-      end
-    end
-
-    -- Fonction pour tester les composants lualine
-    _G.test_lualine_components = function()
-      print("=== Test Lualine Components ===")
-      
-      -- Test chaque composant individuellement
-      print("Testing components for table returns...")
-      
-      -- Test snacks profiler
-      local ok, snacks = pcall(require, "snacks")
-      if ok and snacks.profiler and snacks.profiler.status then
-        local status = snacks.profiler.status()
-        print("Snacks profiler status:", type(status), status)
-      end
-      
-      -- Test noice
-      local noice_ok, noice = pcall(require, "noice")
-      if noice_ok and noice.api then
-        print("Noice API available")
-        if noice.api.status and noice.api.status.command then
-          local has_cmd = noice.api.status.command.has()
-          print("Noice command has:", has_cmd)
-          if has_cmd then
-            local cmd = noice.api.status.command.get()
-            print("Noice command get:", type(cmd), cmd)
-          end
-        end
-      end
-      
-      -- Test lazy
-      local lazy_ok, lazy = pcall(require, "lazy.status")
-      if lazy_ok then
-        print("Lazy status available")
-        if lazy.has_updates then
-          local has_updates = lazy.has_updates()
-          print("Lazy has updates:", has_updates)
-          if has_updates and lazy.updates then
-            local updates = lazy.updates()
-            print("Lazy updates:", type(updates), updates)
-          end
-        end
-      end
-      
-      -- Test clock
-      local clock = os.date("%R")
-      print("Clock:", type(clock), clock)
-      
-      print("")
-      print("All components should return strings, not tables!")
-    end
-
-    -- Commandes personnalisées
-    vim.api.nvim_create_user_command("LualineDebug", function()
-      debug_lualine()
-    end, { desc = "Debug lualine configuration" })
-
-    vim.api.nvim_create_user_command("LualineTest", function()
-      test_lualine_components()
-    end, { desc = "Test lualine components" })
-
-    vim.api.nvim_create_user_command("LualineReload", function()
-      package.loaded["lualine"] = nil
-      require("lualine").setup()
-      print("Lualine reloaded")
-    end, { desc = "Reload lualine configuration" })
-
-    print("Lualine LazyVim-style configuration loaded")
   '';
 }
