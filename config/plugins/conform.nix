@@ -11,6 +11,8 @@
       formatters_by_ft = {
         nix = [ "nixpkgs_fmt" ];
         haskell = [ "ormolu" ];
+        c = [ "clang_format" ];
+        cpp = [ "clang_format" ];
       };
 
       # Format on save - simple

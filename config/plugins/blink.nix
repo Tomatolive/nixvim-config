@@ -120,6 +120,8 @@
           per_filetype = {
             nix = [ "snippets" "lsp" "buffer" "path" ];
             haskell = [ "lsp" "snippets" "buffer" ];
+            c = [ "lsp" "snippets" "buffer" "path" ];
+            cpp = [ "lsp" "snippets" "buffer" "path" ];
           };
         };
 
@@ -172,7 +174,7 @@
   # FRIENDLY-SNIPPETS - Plugin requis pour les snippets
   # =====================================================================
   extraPlugins = with pkgs.vimPlugins; [
-    friendly-snippets  # ← AJOUTÉ : Plugin qui contient les snippets
+    friendly-snippets # ← AJOUTÉ : Plugin qui contient les snippets
   ];
 
   # =====================================================================

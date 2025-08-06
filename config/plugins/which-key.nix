@@ -38,6 +38,7 @@
           { "<leader>x", group = "󱖫 Diagnostics" },
           { "<leader>t", group = "󰆍 Terminal" },
           { "<leader>n", group = "󰂚 Notifications" },
+          { "<leader>C", group = "󰙱 C/C++" },
           
           -- Navigation
           { "g", group = "󰈮 Goto" },

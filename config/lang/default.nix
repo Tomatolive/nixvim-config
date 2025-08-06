@@ -5,6 +5,7 @@
   # =====================================================================
 
   imports = [
+    ./c.nix
     ./nix.nix
     ./haskell.nix
   ];
@@ -23,7 +24,7 @@
     alejandra
     ormolu
     stylish-haskell
-    
+
     # Linters
     hlint
     deadnix
@@ -35,7 +36,7 @@
   # =====================================================================
   plugins.treesitter = {
     enable = true;
-    
+
     # IMPORTANT: Les grammaires ne sont PAS téléchargées automatiquement !
     grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
       # Langages de base
@@ -48,7 +49,7 @@
       # Langages actuels
       nix
       haskell
-      
+
       # Langages courants (ajoute selon tes besoins)
       python
       rust
@@ -122,7 +123,7 @@
     };
   };
 
-    extraConfigLua = ''
+  extraConfigLua = ''
     -- Configuration des icônes de diagnostic dans la marge
     vim.diagnostic.config({
       signs = {

@@ -267,6 +267,68 @@
       options.desc = "Increase window width";
     }
 
+    # ===== DROPBAR - Juste l'essentiel =====
+    {
+      mode = "n";
+      key = "<leader><tab>";
+      action.__raw = ''
+        function()
+          require('dropbar.api').pick()
+        end
+      '';
+      options.desc = "Pick Symbol (Interactive)";
+    }
+
+    # ===== C/C++ GROUP - <leader>C =====
+    {
+      mode = "n";
+      key = "<leader>Ca";
+      action = "<cmd>ClangdAST<cr>";
+      options.desc = "View AST";
+    }
+    {
+      mode = "v";
+      key = "<leader>Ca";
+      action = ":<C-u>ClangdAST<cr>";
+      options.desc = "View AST (selection)";
+    }
+    {
+      mode = "n";
+      key = "<leader>Cs";
+      action = "<cmd>ClangdSymbolInfo<cr>";
+      options.desc = "Symbol Info";
+    }
+    {
+      mode = "n";
+      key = "<leader>Ct";
+      action = "<cmd>ClangdTypeHierarchy<cr>";
+      options.desc = "Type Hierarchy";
+    }
+    {
+      mode = "n";
+      key = "<leader>Cm";
+      action = "<cmd>ClangdMemoryUsage<cr>";
+      options.desc = "Memory Usage";
+    }
+    {
+      mode = "n";
+      key = "<leader>Ch";
+      action = "<cmd>ClangdSwitchSourceHeader<cr>";
+      options.desc = "Switch Header/Source";
+    }
+    {
+      mode = "n";
+      key = "<leader>Cc";
+      action = "<cmd>GenerateCompileCommands<cr>";
+      options.desc = "Generate compile_commands.json";
+    }
+    {
+      mode = "n";
+      key = "<leader>Cf";
+      action = "<cmd>CreateCompileFlags<cr>";
+      options.desc = "Create compile_flags.txt";
+    }
+
     # =====================================================================
     # LEADER MAPPINGS - Organisés par fonctionnalité - VERSION SIMPLIFIÉE
     # =====================================================================
@@ -361,8 +423,12 @@
     {
       mode = "n";
       key = "<leader>bd";
-      action = "<cmd>bdelete<cr>";
-      options.desc = "Delete Buffer";
+      action.__raw = ''
+        function()
+          require("snacks").bufdelete()
+        end
+      '';
+      options.desc = "Delete Buffer (smart)";
     }
     {
       mode = "n";
@@ -371,7 +437,7 @@
       options.desc = "Save Buffer";
     }
 
-    # ===== CODE GROUP - <leader>c - VERSION SIMPLIFIÉE =====
+    # ===== CODE GROUP - <leader>c - VERSION SIMPLIFIÉE + CODE LENS =====
     {
       mode = "n";
       key = "<leader>ca";
@@ -382,7 +448,7 @@
       mode = "n";
       key = "<leader>cr";
       action = "<cmd>lua vim.lsp.buf.rename()<cr>";
-      options.desc = "Rename";
+      options.desc = "Rename Symbol";
     }
     {
       mode = "n";
@@ -402,24 +468,56 @@
       action = "<cmd>lua vim.diagnostic.setloclist()<cr>";
       options.desc = "Buffer Diagnostics";
     }
+    {
+      mode = "n";
+      key = "<leader>cl";
+      action.__raw = ''
+        function()
+          vim.lsp.codelens.run()
+        end
+      '';
+      options.desc = "Run Code Lens";
+    }
+    {
+      mode = "n";
+      key = "<leader>cL";
+      action.__raw = ''
+        function()
+          vim.lsp.codelens.refresh()
+        end
+      '';
+      options.desc = "Refresh Code Lens";
+    }
 
-    # ===== UI GROUP - <leader>u =====
+    # ===== UI GROUP - <leader>u (utilise snacks.toggle) =====
     {
       mode = "n";
       key = "<leader>ul";
-      action = "<cmd>set nu!<cr>";
+      action.__raw = ''
+        function()
+          require("snacks").toggle.option("number", { name = "Line Numbers" })
+        end
+      '';
       options.desc = "Toggle Line Numbers";
     }
     {
       mode = "n";
       key = "<leader>ur";
-      action = "<cmd>set rnu!<cr>";
+      action.__raw = ''
+        function()
+          require("snacks").toggle.option("relativenumber", { name = "Relative Numbers" })
+        end
+      '';
       options.desc = "Toggle Relative Numbers";
     }
     {
       mode = "n";
       key = "<leader>uw";
-      action = "<cmd>set wrap!<cr>";
+      action.__raw = ''
+        function()
+          require("snacks").toggle.option("wrap", { name = "Word Wrap" })
+        end
+      '';
       options.desc = "Toggle Word Wrap";
     }
 
@@ -459,7 +557,104 @@
       options.desc = "Dismiss All";
     }
 
+    # ===== SNACKS UTILITIES - <leader>s =====
+    {
+      mode = "n";
+      key = "<leader>sr";
+      action.__raw = ''
+        function()
+          require("snacks").rename.rename_file()
+        end
+      '';
+      options.desc = "Rename File";
+    }
+    {
+      mode = "n";
+      key = "<leader>ss";
+      action.__raw = ''
+        function()
+          require("snacks").scratch()
+        end
+      '';
+      options.desc = "Scratch Buffer";
+    }
+    {
+      mode = "n";
+      key = "<leader>sz";
+      action.__raw = ''
+        function()
+          require("snacks").zen()
+        end
+      '';
+      options.desc = "Zen Mode";
+    }
+
     # ===== HASKELL GROUP - <leader>h =====
+    {
+      mode = "n";
+      key = "<leader>hr";
+      action.__raw = ''
+        function()
+          require('haskell-tools').repl.toggle()
+        end
+      '';
+      options.desc = "Toggle REPL";
+    }
+    {
+      mode = "n";
+      key = "<leader>hl";
+      action.__raw = ''
+        function()
+          local file = vim.api.nvim_buf_get_name(0)
+          if file ~= "" then
+            require('haskell-tools').repl.load_file(file)
+          else
+            require('haskell-tools').repl.toggle()
+          end
+        end
+      '';
+      options.desc = "Load file in REPL";
+    }
+    {
+      mode = [ "n" "v" ];
+      key = "<leader>he";
+      action.__raw = ''
+        function()
+          require('haskell-tools').repl.operator()
+        end
+      '';
+      options.desc = "Evaluate in REPL";
+    }
+    {
+      mode = "n";
+      key = "<leader>hs";
+      action.__raw = ''
+        function()
+          local word = vim.fn.expand('<cword>')
+          if word and word ~= "" then
+            if vim.fn.executable('hoogle') == 1 then
+              require("snacks").terminal.open("hoogle --info " .. vim.fn.shellescape(word), {
+                title = "Hoogle - " .. word,
+                size = { width = 0.8, height = 0.6 }
+              })
+            else
+              require("snacks").notify("hoogle not available", { title = "Haskell", level = "warn" })
+            end
+          end
+        end
+      '';
+      options.desc = "Hoogle Search";
+    }
+    {
+      mode = "n";
+      key = "<leader>hc";
+      action.__raw = ''
+        function()
+          require('haskell-tools').lsp.buf_eval_all()
+        end
+      '';
+      options.desc = "Evaluate All";
+    }
 
     # =====================================================================
     # NAVIGATION - g, [, ], z prefixes - Nixvim configure automatiquement
