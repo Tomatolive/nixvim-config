@@ -1,7 +1,8 @@
 { pkgs, ... }:
 {
   # =====================================================================
-  # CONFIGURATION HASKELL - haskell-tools.nvim avec fallback LSP standard
+  # CONFIGURATION HASKELL - Spécificités uniquement
+  # LSP/Format/Lint gérés par l'écosystème unifié dans lang/default.nix
   # =====================================================================
 
   # =====================================================================
@@ -13,15 +14,15 @@
   ];
 
   # =====================================================================
-  # LSP HASKELL STANDARD (fallback si haskell-tools ne fonctionne pas)
+  # LSP HASKELL STANDARD (sera configuré par l'écosystème unifié)
   # =====================================================================
   plugins.lsp.servers.hls = {
-    enable = false; # Désactivé par défaut, activé si haskell-tools fail
+    enable = true;
     filetypes = [ "haskell" "lhaskell" ];
 
     settings = {
       haskell = {
-        formattingProvider = "ormolu";
+        formattingProvider = "ormolu"; # Sera désactivé par l'écosystème unifié
         checkParents = "CheckOnSave";
         checkProject = true;
         maxCompletions = 40;
@@ -38,7 +39,8 @@
   };
 
   # =====================================================================
-  # PACKAGES REQUIS POUR HASKELL
+  # PACKAGES SPÉCIFIQUES HASKELL
+  # (les formatters/linters sont dans default.nix)
   # =====================================================================
   extraPackages = with pkgs; [
     # Compilateur et outils de base
@@ -49,46 +51,24 @@
     # Language Server
     haskell-language-server
 
-    # Outils de formatage et linting
-    ormolu
-    hlint
-
-    # Outils de recherche et documentation
+    # Outils de recherche et documentation (spécifiques Haskell)
     haskellPackages.hoogle
     haskellPackages.fast-tags
 
-    # REPL et outils interactifs
+    # REPL et outils interactifs (spécifiques Haskell)
     ghcid
   ];
-
-  # =====================================================================
-  # FORMATAGE AVEC ORMOLU
-  # =====================================================================
-  plugins.conform-nvim.settings = {
-    formatters_by_ft = {
-      haskell = [ "ormolu" ];
-    };
-
-    formatters = {
-      ormolu = {
-        command = "ormolu";
-        args = [ ];
-        stdin = true;
-      };
-    };
-  };
 
   # =====================================================================
   # AUTOCOMMANDS POUR HASKELL
   # =====================================================================
   autoCmd = [
-    # Configuration pour les fichiers Haskell
     {
       event = [ "FileType" ];
       pattern = [ "haskell" "lhaskell" ];
       callback.__raw = ''
         function()
-          -- Configuration d'indentation Haskell (2 espaces standard)
+          -- Configuration d'indentation Haskell
           vim.bo.tabstop = 2
           vim.bo.shiftwidth = 2
           vim.bo.expandtab = true
@@ -100,17 +80,27 @@
           -- Options spécifiques Haskell
           vim.wo.foldmethod = "indent"
           vim.wo.foldlevel = 99
+          
+          -- Configuration Blink pour Haskell (HLS est rapide)
+          local blink_ok, blink = pcall(require, 'blink.cmp')
+          if blink_ok and blink.update_sources then
+            pcall(function()
+              blink.update_sources({
+                per_filetype = {
+                  haskell = { "lsp", "snippets", "buffer" }  -- LSP en premier (rapide)
+                }
+              })
+            end)
+          end
         end
       '';
     }
 
-    # Configuration pour les fichiers Cabal
     {
       event = [ "FileType" ];
       pattern = [ "cabal" "cabalproject" ];
       callback.__raw = ''
         function()
-          -- Configuration Cabal
           vim.bo.tabstop = 2
           vim.bo.shiftwidth = 2
           vim.bo.expandtab = true
@@ -121,7 +111,8 @@
   ];
 
   # =====================================================================
-  # CONFIGURATION SUPPLÉMENTAIRE
+  # FONCTIONS SPÉCIFIQUES HASKELL - REPL, Build, Documentation
+  # (pas liées à l'écosystème LSP standard)
   # =====================================================================
   extraConfigLua = ''
     -- ===================================================================
@@ -131,11 +122,11 @@
     local ht = nil
     
     -- ===================================================================
-    -- FONCTIONS UTILITAIRES
+    -- FONCTIONS UTILITAIRES HASKELL
     -- ===================================================================
     
-    -- Fonction pour détecter le type de projet (Stack vs Cabal)
-    local function detect_project_type()
+    -- Détecter le type de projet
+    local function detect_haskell_project_type()
       local stack_file = vim.fn.findfile('stack.yaml', '.;')
       local cabal_project = vim.fn.findfile('cabal.project', '.;')
       local cabal_file = vim.fn.glob('*.cabal')
@@ -145,12 +136,12 @@
       elseif cabal_project ~= "" or cabal_file ~= "" then
         return "cabal"
       else
-        return "unknown"
+        return "standalone"
       end
     end
     
-    -- Fonction pour ouvrir un terminal avec une commande
-    local function run_in_terminal(cmd, title)
+    -- Terminal Haskell
+    local function run_haskell_terminal(cmd, title)
       title = title or "Haskell"
       require("snacks").terminal.open(cmd, {
         cwd = vim.fn.getcwd(),
@@ -159,9 +150,9 @@
       })
     end
     
-    -- Fonction pour ouvrir GHCi (fallback si haskell-tools pas disponible)
+    -- GHCi fallback
     local function open_ghci_fallback()
-      local project_type = detect_project_type()
+      local project_type = detect_haskell_project_type()
       local cmd
       
       if project_type == "stack" then
@@ -172,22 +163,18 @@
         cmd = "ghci"
       end
       
-      run_in_terminal(cmd, "GHCi REPL")
+      run_haskell_terminal(cmd, "GHCi REPL")
     end
     
     -- ===================================================================
-    -- SETUP HASKELL-TOOLS (avec gestion d'erreur et fallback)
+    -- SETUP HASKELL-TOOLS
     -- ===================================================================
     
-    -- Fonction pour initialiser haskell-tools
     local function setup_haskell_tools()
-      -- Essayer de charger haskell-tools
       local ok, haskell_tools = pcall(require, 'haskell-tools')
       
       if ok and haskell_tools and haskell_tools.setup then
-        
-        -- Setup haskell-tools
-        local setup_ok, setup_err = pcall(function()
+        local setup_ok = pcall(function()
           haskell_tools.setup({
             tools = {
               repl = {
@@ -200,9 +187,10 @@
               },
             },
             hls = {
+              -- Note: formatting et capabilities gérés par l'écosystème unifié
               settings = {
                 haskell = {
-                  formattingProvider = 'ormolu',
+                  formattingProvider = 'ormolu', -- Sera désactivé
                   checkParents = 'CheckOnSave',
                   checkProject = true,
                   maxCompletions = 40,
@@ -223,18 +211,29 @@
         if setup_ok then
           haskell_tools_available = true
           ht = haskell_tools
+          require("snacks").notify(
+            "haskell-tools loaded (ecosystem: LSP unified)",
+            { title = "Haskell", timeout = 2000 }
+          )
           return true
+        else
+          require("snacks").notify(
+            "haskell-tools setup failed, using standard HLS",
+            { title = "Haskell", level = "warn" }
+          )
         end
       end
       
-      -- Fallback vers LSP standard
       return false
     end
     
     -- ===================================================================
-    -- FONCTIONS GLOBALES POUR HASKELL (appelées par les keymaps)
+    -- FONCTIONS GLOBALES SPÉCIFIQUES HASKELL
+    -- Note: Format/Rename/Actions gérés par l'écosystème unifié
+    -- Ces fonctions sont pour REPL, Build, Documentation uniquement
     -- ===================================================================
     
+    -- === REPL Functions ===
     _G.haskell_toggle_repl = function()
       if haskell_tools_available and ht.repl then
         ht.repl.toggle()
@@ -255,7 +254,7 @@
         local file = vim.api.nvim_buf_get_name(0)
         if file and file ~= "" then
           local cmd = "ghci " .. vim.fn.shellescape(file)
-          run_in_terminal(cmd, "GHCi - " .. vim.fn.fnamemodify(file, ':t'))
+          run_haskell_terminal(cmd, "GHCi - " .. vim.fn.fnamemodify(file, ':t'))
         else
           open_ghci_fallback()
         end
@@ -271,7 +270,10 @@
         local lines = vim.api.nvim_buf_get_lines(0, start_row - 1, end_row, false)
         local selection = table.concat(lines, "\n")
         vim.fn.setreg('+', selection)
-        print("Selection copied to clipboard - paste in GHCi")
+        require("snacks").notify(
+          "Selection copied - paste in GHCi",
+          { title = "Haskell" }
+        )
         open_ghci_fallback()
       end
     end
@@ -290,7 +292,10 @@
         local line = vim.api.nvim_get_current_line()
         if line and line:match("%S") then
           vim.fn.setreg('+', line)
-          print("Line copied to clipboard - paste in GHCi")
+          require("snacks").notify(
+            "Line copied - paste in GHCi",
+            { title = "Haskell" }
+          )
           open_ghci_fallback()
         end
       end
@@ -303,7 +308,7 @@
           ht.repl.toggle()
         end, 500)
       else
-        -- Fermer les terminaux GHCi et en ouvrir un nouveau
+        -- Fermer les terminaux GHCi
         local buffers = vim.api.nvim_list_bufs()
         for _, buf in ipairs(buffers) do
           if vim.bo[buf].buftype == "terminal" then
@@ -317,8 +322,9 @@
       end
     end
     
+    -- === Build Functions ===
     _G.haskell_build_project = function()
-      local project_type = detect_project_type()
+      local project_type = detect_haskell_project_type()
       local cmd
       
       if project_type == "stack" then
@@ -329,11 +335,11 @@
         cmd = "ghc --make " .. vim.fn.expand('%')
       end
       
-      run_in_terminal(cmd, "Build")
+      run_haskell_terminal(cmd, "Build")
     end
     
     _G.haskell_test_project = function()
-      local project_type = detect_project_type()
+      local project_type = detect_haskell_project_type()
       local cmd
       
       if project_type == "stack" then
@@ -341,15 +347,18 @@
       elseif project_type == "cabal" then
         cmd = "cabal test"
       else
-        print("No test configuration found")
+        require("snacks").notify(
+          "No test configuration found",
+          { title = "Haskell", level = "warn" }
+        )
         return
       end
       
-      run_in_terminal(cmd, "Tests")
+      run_haskell_terminal(cmd, "Tests")
     end
     
     _G.haskell_clean_build = function()
-      local project_type = detect_project_type()
+      local project_type = detect_haskell_project_type()
       local cmd
       
       if project_type == "stack" then
@@ -360,19 +369,23 @@
         cmd = "rm -f *.hi *.o " .. vim.fn.expand('%:r') .. " && ghc --make " .. vim.fn.expand('%')
       end
       
-      run_in_terminal(cmd, "Clean Build")
+      run_haskell_terminal(cmd, "Clean Build")
     end
     
     _G.haskell_quick_compile = function()
       local file = vim.api.nvim_buf_get_name(0)
       if file and file ~= "" then
         local cmd = "ghc -Wall " .. vim.fn.shellescape(file)
-        run_in_terminal(cmd, "Quick Compile")
+        run_haskell_terminal(cmd, "Quick Compile")
       else
-        print("No file to compile")
+        require("snacks").notify(
+          "No file to compile",
+          { title = "Haskell", level = "warn" }
+        )
       end
     end
     
+    -- === Documentation Functions ===
     _G.haskell_hoogle_search = function()
       if haskell_tools_available and ht.hoogle then
         ht.hoogle.hoogle_signature()
@@ -384,30 +397,207 @@
           for _, browser in ipairs(browsers) do
             if vim.fn.executable(browser) == 1 then
               vim.fn.system(browser .. ' "' .. url .. '"')
-              print("Opening Hoogle for: " .. word)
+              require("snacks").notify(
+                "Opening Hoogle for: " .. word,
+                { title = "Haskell" }
+              )
               return
             end
           end
-          print("URL: " .. url)
+          require("snacks").notify(
+            "Hoogle URL: " .. url,
+            { title = "Haskell" }
+          )
+        else
+          require("snacks").notify(
+            "No word under cursor",
+            { title = "Haskell", level = "warn" }
+          )
         end
       end
     end
     
-    _G.haskell_restart_lsp = function()
-      if haskell_tools_available and ht.lsp and ht.lsp.restart then
-        ht.lsp.restart()
+    _G.haskell_docs_search = function()
+      local word = vim.fn.expand('<cword>')
+      if word and word ~= "" then
+        local cmd = "hoogle --info " .. vim.fn.shellescape(word)
+        run_haskell_terminal(cmd, "Hoogle Info - " .. word)
       else
-        vim.cmd("LspRestart")
+        require("snacks").notify(
+          "No word under cursor", 
+          { title = "Haskell", level = "warn" }
+        )
       end
     end
     
+    _G.haskell_hackage_search = function()
+      local word = vim.fn.expand('<cword>')
+      if word and word ~= "" then
+        local url = "https://hackage.haskell.org/packages/search?terms=" .. word
+        local browsers = {"xdg-open", "open", "start"}
+        for _, browser in ipairs(browsers) do
+          if vim.fn.executable(browser) == 1 then
+            vim.fn.system(browser .. ' "' .. url .. '"')
+            require("snacks").notify(
+              "Opening Hackage for: " .. word,
+              { title = "Haskell" }
+            )
+            return
+          end
+        end
+        require("snacks").notify(
+          "Hackage URL: " .. url,
+          { title = "Haskell" }
+        )
+      else
+        require("snacks").notify(
+          "No word under cursor",
+          { title = "Haskell", level = "warn" }
+        )
+      end
+    end
+    
+    -- === Project Functions ===
+    _G.haskell_run_project = function()
+      local project_type = detect_haskell_project_type()
+      local cmd
+      
+      if project_type == "stack" then
+        cmd = "stack run"
+      elseif project_type == "cabal" then
+        cmd = "cabal run"
+      else
+        local file = vim.api.nvim_buf_get_name(0)
+        if file and file ~= "" then
+          local exe = vim.fn.expand('%:r')
+          cmd = "./" .. exe
+        else
+          require("snacks").notify(
+            "No executable to run",
+            { title = "Haskell", level = "warn" }
+          )
+          return
+        end
+      end
+      
+      run_haskell_terminal(cmd, "Run")
+    end
+    
+    _G.haskell_install_deps = function()
+      local project_type = detect_haskell_project_type()
+      local cmd
+      
+      if project_type == "stack" then
+        cmd = "stack install --dependencies-only"
+      elseif project_type == "cabal" then
+        cmd = "cabal install --dependencies-only"
+      else
+        require("snacks").notify(
+          "No project configuration found",
+          { title = "Haskell", level = "warn" }
+        )
+        return
+      end
+      
+      run_haskell_terminal(cmd, "Install Dependencies")
+    end
+    
     -- ===================================================================
-    -- INITIALISATION
+    -- INITIALISATION HASKELL-TOOLS
     -- ===================================================================
     
-    -- Essayer de charger haskell-tools au démarrage
     vim.defer_fn(function()
-      setup_haskell_tools()
+      local success = setup_haskell_tools()
+      if not success then
+        require("snacks").notify(
+          "Using standard HLS (ecosystem: LSP unified)",
+          { title = "Haskell", level = "info" }
+        )
+      end
     end, 2000)
+    
+    -- ===================================================================
+    -- COMMANDES SPÉCIFIQUES HASKELL
+    -- ===================================================================
+    
+    -- REPL commands
+    vim.api.nvim_create_user_command("HaskellRepl", function()
+      haskell_toggle_repl()
+    end, { desc = "Toggle Haskell REPL" })
+    
+    vim.api.nvim_create_user_command("HaskellLoad", function()
+      haskell_load_file()
+    end, { desc = "Load current file in REPL" })
+    
+    -- Build commands
+    vim.api.nvim_create_user_command("HaskellBuild", function()
+      haskell_build_project()
+    end, { desc = "Build Haskell project" })
+    
+    vim.api.nvim_create_user_command("HaskellTest", function()
+      haskell_test_project()
+    end, { desc = "Test Haskell project" })
+    
+    vim.api.nvim_create_user_command("HaskellRun", function()
+      haskell_run_project()
+    end, { desc = "Run Haskell project" })
+    
+    vim.api.nvim_create_user_command("HaskellClean", function()
+      haskell_clean_build()
+    end, { desc = "Clean and build Haskell project" })
+    
+    vim.api.nvim_create_user_command("HaskellCompile", function()
+      haskell_quick_compile()
+    end, { desc = "Quick compile current file" })
+    
+    vim.api.nvim_create_user_command("HaskellDeps", function()
+      haskell_install_deps()
+    end, { desc = "Install project dependencies" })
+    
+    -- Documentation commands
+    vim.api.nvim_create_user_command("HaskellHoogle", function()
+      haskell_hoogle_search()
+    end, { desc = "Hoogle search for word under cursor" })
+    
+    vim.api.nvim_create_user_command("HaskellDocs", function()
+      haskell_docs_search()
+    end, { desc = "Hoogle docs for word under cursor" })
+    
+    vim.api.nvim_create_user_command("HaskellHackage", function()
+      haskell_hackage_search()
+    end, { desc = "Hackage search for word under cursor" })
+    
+    -- Info command
+    vim.api.nvim_create_user_command("HaskellInfo", function()
+      local project_type = detect_haskell_project_type()
+      local clients = vim.lsp.get_clients({ bufnr = 0, name = "haskell-language-server" })
+      local ht_available = haskell_tools_available and "✓" or "✗"
+      
+      print("=== Haskell Configuration ===")
+      print("Project type: " .. project_type)
+      print("haskell-tools: " .. ht_available)
+      print("HLS clients: " .. #clients)
+      
+      if #clients > 0 then
+        for _, client in ipairs(clients) do
+          print("  - " .. client.name .. " (root: " .. (client.config.root_dir or "none") .. ")")
+        end
+      end
+      
+      print("")
+      print("Ecosystem status:")
+      print("  Format: managed by conform (ormolu)")
+      print("  Lint: managed by nvim-lint (hlint)")
+      print("  Actions: managed by unified LSP + none-ls")
+      print("")
+      print("Haskell-specific commands:")
+      print("  :HaskellRepl/:HaskellLoad - REPL management")
+      print("  :HaskellBuild/:HaskellTest/:HaskellRun - Build system")
+      print("  :HaskellHoogle/:HaskellDocs/:HaskellHackage - Documentation")
+      print("")
+      print("Unified LSP actions available via <leader>c*")
+    end, { desc = "Show Haskell configuration info" })
+    
+    print("Haskell language configuration loaded (ecosystem managed globally)")
   '';
 }

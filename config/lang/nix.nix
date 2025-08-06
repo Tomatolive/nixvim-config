@@ -1,30 +1,30 @@
 { pkgs, ... }:
 {
   # =====================================================================
-  # CONFIGURATION NIX - LSP optimisé pour la vitesse
+  # CONFIGURATION NIX - Spécificités uniquement
+  # LSP/Format/Lint gérés par l'écosystème unifié dans lang/default.nix
   # =====================================================================
   
   # =====================================================================
-  # LSP - nixd OPTIMISÉ pour la performance
+  # LSP - nixd SPÉCIFIQUE (configuration sera override par l'écosystème)
   # =====================================================================
   plugins.lsp.servers.nixd = {
     enable = true;
     
     settings = {
-      # Optimisation 1: Configuration nixpkgs allégée
+      # Configuration nixpkgs allégée pour performance
       nixpkgs = {
-        # Utiliser une évaluation plus légère
         expr = "import <nixpkgs> { }";
       };
       
-      # Optimisation 2: Désactiver le formatage (utilise conform.nvim à la place)
+      # Formatage désactivé (géré par conform dans l'écosystème unifié)
       formatting = {
-        command = null;  # Désactiver pour éviter les requêtes
+        command = null;
       };
       
-      # Optimisation 3: Réduire les options évaluées
+      # Options réduites pour performance
+      # Décommentez si vous avez besoin de completion NixOS/Home-Manager :
       options = {
-        # Commentez ces lignes pour accélérer (pas de completion NixOS/Home-Manager)
         # nixos = {
         #   expr = "(builtins.getFlake \"/etc/nixos\").nixosConfigurations.HOSTNAME.options";
         # };
@@ -33,57 +33,38 @@
         # };
       };
       
-      # Optimisation 4: Paramètres de performance
+      # Paramètres de performance
       diagnostic = {
-        suppress = [ "sema-escaping-with" ];  # Supprime certains diagnostics lents
+        suppress = [ "sema-escaping-with" ];
       };
     };
   };
   
   # =====================================================================
-  # ALTERNATIVE RAPIDE : nil LSP (commenté par défaut)
-  # Décommentez pour passer à nil (beaucoup plus rapide)
+  # ALTERNATIVE RAPIDE : nil LSP
+  # Décommentez et désactivez nixd pour une expérience plus rapide
   # =====================================================================
   
   # plugins.lsp.servers.nil-ls = {
   #   enable = true;
   #   settings = {
-  #     # nil est beaucoup plus rapide que nixd
   #     formatting = {
-  #       command = [ "nixpkgs-fmt" ];
+  #       command = [ "nixpkgs-fmt" ]; # Sera ignoré par l'écosystème unifié
   #     };
   #   };
   # };
   
   # =====================================================================
-  # FORMATAGE - nixpkgs-fmt via conform.nvim (plus rapide que LSP)
-  # =====================================================================
-  plugins.conform-nvim.settings = {
-    formatters_by_ft = {
-      nix = [ "nixpkgs_fmt" ];
-    };
-    
-    formatters = {
-      nixpkgs_fmt = {
-        command = "nixpkgs-fmt";
-        args = [ ];
-        stdin = true;
-        timeout_ms = 2000;  # Timeout rapide
-      };
-    };
-  };
-  
-  # =====================================================================
-  # PACKAGES REQUIS
+  # PACKAGES SPÉCIFIQUES NIX (les formatters/linters sont dans default.nix)
   # =====================================================================
   extraPackages = with pkgs; [
+    # LSP seulement
     nixd
-    # nil_ls  # Décommentez si vous passez à nil
-    nixpkgs-fmt
+    # nil # Décommentez si vous utilisez nil au lieu de nixd
   ];
   
   # =====================================================================
-  # AUTOCOMMANDS POUR NIX
+  # AUTOCOMMANDS SPÉCIFIQUES NIX
   # =====================================================================
   autoCmd = [
     {
@@ -104,115 +85,199 @@
           vim.wo.foldmethod = "indent"
           vim.wo.foldlevel = 99
           
-          print("Nix configuration loaded with optimized nixd")
+          -- Configuration Blink pour nixd (lent) - privilégier sources rapides
+          local blink_ok, blink = pcall(require, 'blink.cmp')
+          if blink_ok and blink.update_sources then
+            pcall(function()
+              blink.update_sources({
+                per_filetype = {
+                  nix = { "buffer", "snippets", "lsp", "path" }  -- LSP en 3e position
+                }
+              })
+            end)
+          end
         end
       '';
     }
   ];
   
   # =====================================================================
-  # CONFIGURATION SUPPLÉMENTAIRE VIA LUA - SANS KEYMAPS
+  # FONCTIONS SPÉCIFIQUES NIX - Build, Check, Eval
+  # (pas liées à l'écosystème LSP standard)
   # =====================================================================
   extraConfigLua = ''
-    -- Configuration avancée pour nixd optimisé
-    
     -- ===================================================================
-    -- OPTIMISATIONS SPÉCIFIQUES NIXD
+    -- FONCTIONS UTILITAIRES SPÉCIFIQUES NIX
     -- ===================================================================
     
-    vim.api.nvim_create_autocmd("LspAttach", {
-      callback = function(event)
-        local client = vim.lsp.get_client_by_id(event.data.client_id)
-        if not client or client.name ~= "nixd" then
-          return
-        end
-        
-        print("Optimizing nixd for performance...")
-        
-        -- Configuration de performance pour nixd
-        client.config.flags = client.config.flags or {}
-        client.config.flags.debounce_text_changes = 500  -- Plus de debounce
-        client.config.flags.allow_incremental_sync = true
-        
-        -- Désactiver certaines fonctionnalités lentes
-        if client.server_capabilities then
-          -- Garder les fonctionnalités essentielles
-          client.server_capabilities.documentFormattingProvider = false  -- Utilise conform à la place
-          client.server_capabilities.documentRangeFormattingProvider = false
-          
-          -- Réduire la fréquence des diagnostics
-          client.config.update_in_insert = false
-        end
-        
-        print("nixd performance optimizations applied")
-      end
-    })
-    
-    -- ===================================================================
-    -- FONCTIONS UTILITAIRES
-    -- ===================================================================
-    
-    -- Fonction pour tester les performances nixd
+    -- Fonction pour tester les performances nixd (diagnostic)
     _G.test_nixd_performance = function()
-      print("=== Test Performance nixd ===")
+      print("=== nixd Performance Test ===")
       
       local clients = vim.lsp.get_clients({ name = "nixd" })
       if #clients > 0 then
-        print("nixd actif")
+        print("nixd active")
         for _, client in ipairs(clients) do
-          print("Client ID:", client.id)
-          print("Root dir:", client.config.root_dir)
+          print("  Client ID: " .. client.id)
+          print("  Root dir: " .. (client.config.root_dir or "none"))
           
           local flags = client.config.flags or {}
-          print("Debounce:", flags.debounce_text_changes or "default")
-          print("Incremental sync:", flags.allow_incremental_sync or false)
+          print("  Debounce: " .. (flags.debounce_text_changes or "default"))
+          print("  Incremental sync: " .. tostring(flags.allow_incremental_sync or false))
         end
       else
-        print("nixd pas actif")
+        print("nixd not active")
       end
       
       print("")
-      print("Test de vitesse:")
-      print("1. Tapez 'pkgs.' dans un fichier .nix")
-      print("2. Observez le délai de completion")
-      print("3. Si trop lent, utilisez <leader>ls pour mode rapide")
+      print("Performance test:")
+      print("1. Type 'pkgs.' in a .nix file")
+      print("2. Observe completion delay")
+      print("3. If too slow, consider switching to nil LSP")
+      print("")
+      print("Ecosystem status:")
+      print("  Format: managed by conform (nixpkgs-fmt)")
+      print("  Lint: managed by nvim-lint + none-ls (deadnix, statix)")
+      print("  Actions: managed by unified LSP + none-ls")
     end
     
-    -- Fonction pour basculer vers nil (LSP alternatif plus rapide)
+    -- Fonction pour suggérer nil comme alternative
     _G.suggest_nil_alternative = function()
-      print("=== Alternative plus rapide : nil ===")
+      print("=== Alternative: nil LSP ===")
       print("")
-      print("nixd est lent car il charge tout nixpkgs.")
-      print("nil est un LSP Nix plus rapide mais avec moins de fonctionnalités.")
+      print("nixd: + Full nixpkgs completion, - Slow")
+      print("nil:  + Fast, - Basic completion only")
       print("")
-      print("Pour passer à nil:")
-      print("1. Dans config/lang/nix.nix:")
-      print("   - Désactivez nixd: enable = false")
-      print("   - Activez nil-ls: enable = true")
-      print("2. Ajoutez 'nil_ls' aux extraPackages")
-      print("3. Rebuilder avec 'nix run .'")
+      print("To switch to nil:")
+      print("1. In config/lang/nix.nix:")
+      print("   - Set nixd: enable = false")
+      print("   - Set nil-ls: enable = true")
+      print("2. Add 'nil' to extraPackages")
+      print("3. Rebuild with 'nix run .'")
       print("")
-      print("nil vs nixd:")
-      print("  nil:  + Rapide, - Moins de features")
-      print("  nixd: + Plus de features, - Lent")
+      print("Note: Formatting/Linting will work the same with both!")
     end
     
-    -- Commandes personnalisées
+    -- Fonctions de build/check Nix (spécifiques au langage)
+    _G.nix_build_current = function()
+      local file = vim.api.nvim_buf_get_name(0)
+      if not file or file == "" then
+        require("snacks").notify("No file to build", { title = "Nix" })
+        return
+      end
+      
+      local is_flake = vim.fn.findfile('flake.nix', '.;') ~= ""
+      local cmd
+      
+      if is_flake then
+        cmd = "nix build --no-link --show-trace"
+      else
+        cmd = "nix-build " .. vim.fn.shellescape(file)
+      end
+      
+      require("snacks").terminal.open(cmd, {
+        cwd = vim.fn.getcwd(),
+        title = "Nix Build",
+        size = { width = 0.8, height = 0.6 }
+      })
+    end
+    
+    _G.nix_check_current = function()
+      local file = vim.api.nvim_buf_get_name(0)
+      if not file or file == "" then
+        require("snacks").notify("No file to check", { title = "Nix" })
+        return
+      end
+      
+      local is_flake = vim.fn.findfile('flake.nix', '.;') ~= ""
+      local cmd
+      
+      if is_flake then
+        cmd = "nix flake check --show-trace"
+      else
+        cmd = "nix-instantiate --parse " .. vim.fn.shellescape(file)
+      end
+      
+      require("snacks").terminal.open(cmd, {
+        cwd = vim.fn.getcwd(), 
+        title = "Nix Check",
+        size = { width = 0.8, height = 0.6 }
+      })
+    end
+    
+    _G.nix_eval_expression = function()
+      local expr = vim.fn.input("Nix expression: ")
+      if expr and expr ~= "" then
+        local cmd = "nix eval --expr '" .. expr .. "'"
+        require("snacks").terminal.open(cmd, {
+          title = "Nix Eval",
+          size = { width = 0.8, height = 0.4 }
+        })
+      end
+    end
+    
+    _G.nix_develop = function()
+      local is_flake = vim.fn.findfile('flake.nix', '.;') ~= ""
+      if is_flake then
+        require("snacks").terminal.open("nix develop", {
+          title = "Nix Develop",
+          size = { width = 0.9, height = 0.7 }
+        })
+      else
+        require("snacks").notify(
+          "No flake.nix found - nix develop requires a flake",
+          { title = "Nix", level = "warn" }
+        )
+      end
+    end
+    
+    _G.nix_show_flake = function()
+      local is_flake = vim.fn.findfile('flake.nix', '.;') ~= ""
+      if is_flake then
+        require("snacks").terminal.open("nix flake show", {
+          title = "Flake Outputs",
+          size = { width = 0.8, height = 0.6 }
+        })
+      else
+        require("snacks").notify(
+          "No flake.nix found",
+          { title = "Nix", level = "warn" }
+        )
+      end
+    end
+    
+    -- ===================================================================
+    -- COMMANDES SPÉCIFIQUES NIX
+    -- ===================================================================
+    
     vim.api.nvim_create_user_command("NixdPerformance", function()
       test_nixd_performance()
-    end, { desc = "Test nixd performance" })
-    
-    vim.api.nvim_create_user_command("NixFormat", function()
-      require("conform").format({ 
-        async = true, 
-        lsp_fallback = false,
-        timeout_ms = 2000
-      })
-      print("Formatted with nixpkgs-fmt (fast)")
-    end, { desc = "Format current Nix file (fast)" })
+    end, { desc = "Test nixd performance and ecosystem status" })
     
     vim.api.nvim_create_user_command("SuggestNil", function()
       suggest_nil_alternative()
     end, { desc = "Info about nil LSP alternative" })
+    
+    vim.api.nvim_create_user_command("NixBuild", function()
+      nix_build_current()
+    end, { desc = "Build current Nix file/flake" })
+    
+    vim.api.nvim_create_user_command("NixCheck", function()
+      nix_check_current()  
+    end, { desc = "Check current Nix file/flake" })
+    
+    vim.api.nvim_create_user_command("NixEval", function()
+      nix_eval_expression()
+    end, { desc = "Evaluate Nix expression" })
+    
+    vim.api.nvim_create_user_command("NixDevelop", function()
+      nix_develop()
+    end, { desc = "Enter nix develop shell" })
+    
+    vim.api.nvim_create_user_command("NixShow", function()
+      nix_show_flake()
+    end, { desc = "Show flake outputs" })
+    
+    print("Nix language configuration loaded (ecosystem managed globally)")
   '';
 }

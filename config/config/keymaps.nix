@@ -1,6 +1,7 @@
 {
   # =====================================================================
   # KEYMAPS COMPLETS - Configuration JKLM et organisation par groupes
+  # Intégré avec l'écosystème LSP unifié (conform + none-ls + nvim-lint)
   # =====================================================================
 
   keymaps = [
@@ -560,27 +561,135 @@
       options.desc = "Reload Buffer";
     }
 
-    # ===== CODE GROUP - <leader>c =====
+    # ===== CODE GROUP - <leader>c - UNIFIÉ LSP + CONFORM + NONE-LS + LINT =====
     {
       mode = "n";
       key = "<leader>ca";
-      action = "<cmd>lua vim.lsp.buf.code_action()<cr>";
-      options.desc = "Code Action";
+      action = "<cmd>lua _G.unified_code_action()<cr>";
+      options.desc = "Code Actions (Unified)";
     }
     {
       mode = "n";
       key = "<leader>cr";
-      action = "<cmd>lua vim.lsp.buf.rename()<cr>";
-      options.desc = "Rename";
+      action = "<cmd>lua _G.unified_rename()<cr>";
+      options.desc = "Rename (Unified)";
     }
     {
       mode = "n";
       key = "<leader>cf";
-      action = "<cmd>lua vim.lsp.buf.format()<cr>";
-      options.desc = "Format";
+      action = "<cmd>lua _G.unified_format()<cr>";
+      options.desc = "Format (Unified)";
+    }
+    {
+      mode = "n";
+      key = "<leader>cF";
+      action = "<cmd>lua _G.unified_format({ async = true })<cr>";
+      options.desc = "Format Async";
+    }
+    {
+      mode = "n";
+      key = "<leader>cC";
+      action = "<cmd>lua _G.cycle_formatter()<cr>";
+      options.desc = "Cycle Formatter";
+    }
+    {
+      mode = "n";
+      key = "<leader>ct";
+      action = "<cmd>FormatToggle<cr>";
+      options.desc = "Toggle Auto-Format";
+    }
+    {
+      mode = "n";
+      key = "<leader>cl";
+      action = "<cmd>LintToggle<cr>";
+      options.desc = "Toggle Linting";
+    }
+    {
+      mode = "n";
+      key = "<leader>cL";
+      action = "<cmd>Lint<cr>";
+      options.desc = "Lint Now";
+    }
+    {
+      mode = "n";
+      key = "<leader>cc";
+      action = "<cmd>LintClear<cr>";
+      options.desc = "Clear Lint";
+    }
+    {
+      mode = "n";
+      key = "<leader>ci";
+      action = "<cmd>LspInfo<cr>";
+      options.desc = "LSP Info (Unified)";
+    }
+    {
+      mode = "n";
+      key = "<leader>cI";
+      action = "<cmd>FormatInfo<cr>";
+      options.desc = "Format Info";
+    }
+    {
+      mode = "n";
+      key = "<leader>cH";
+      action = "<cmd>FormatHealth<cr>";
+      options.desc = "Format Health";
+    }
+    {
+      mode = "n";
+      key = "<leader>ch";
+      action = "<cmd>LintHealth<cr>";
+      options.desc = "Lint Health";
+    }
+    {
+      mode = "n";
+      key = "<leader>cR";
+      action = "<cmd>LspRestart<cr>";
+      options.desc = "Restart LSP";
+    }
+    {
+      mode = "n";
+      key = "<leader>cn";
+      action = "<cmd>NullLsInfo<cr>";
+      options.desc = "none-ls Info";
+    }
+    {
+      mode = "n";
+      key = "<leader>cN";
+      action = "<cmd>NullLsToggle<cr>";
+      options.desc = "none-ls Toggle";
+    }
+    {
+      mode = "n";
+      key = "<leader>cS";
+      action = "<cmd>EcosystemStatus<cr>";
+      options.desc = "Ecosystem Status";
+    }
+    {
+      mode = "n";
+      key = "<leader>cE";
+      action = "<cmd>EcosystemHealth<cr>";
+      options.desc = "Ecosystem Health";
+    }
+    {
+      mode = "n";
+      key = "<leader>cX";
+      action = "<cmd>EcosystemReset<cr>";
+      options.desc = "Reset Ecosystem";
+    }
+    {
+      mode = "n";
+      key = "<leader>cd";
+      action = "<cmd>lua vim.diagnostic.open_float()<cr>";
+      options.desc = "Line Diagnostics";
+    }
+    {
+      mode = "n";
+      key = "<leader>cD";
+      action = "<cmd>lua vim.diagnostic.setloclist()<cr>";
+      options.desc = "Buffer Diagnostics";
     }
 
-    # ===== UI GROUP - <leader>u =====
+    # ===== UI GROUP - <leader>u - ÉTENDU AVEC ÉCOSYSTÈME LSP =====
     {
       mode = "n";
       key = "<leader>uG";
@@ -621,6 +730,42 @@
       key = "<leader>uw";
       action = "<cmd>set wrap!<cr>";
       options.desc = "Toggle Word Wrap";
+    }
+    {
+      mode = "n";
+      key = "<leader>ud";
+      action = "<cmd>ToggleDiagnostics<cr>";
+      options.desc = "Toggle Diagnostics";
+    }
+    {
+      mode = "n";
+      key = "<leader>uf";
+      action = "<cmd>FormatToggle<cr>";
+      options.desc = "Toggle Auto-Format";
+    }
+    {
+      mode = "n";
+      key = "<leader>uL";
+      action = "<cmd>LintToggle<cr>";
+      options.desc = "Toggle Auto-Lint";
+    }
+    {
+      mode = "n";
+      key = "<leader>uF";
+      action = "<cmd>FormatHealth<cr>";
+      options.desc = "Format Health";
+    }
+    {
+      mode = "n";
+      key = "<leader>uh";
+      action = "<cmd>LintHealth<cr>";
+      options.desc = "Lint Health";
+    }
+    {
+      mode = "n";
+      key = "<leader>ui";
+      action = "<cmd>WhichKeyEcosystem<cr>";
+      options.desc = "LSP Ecosystem Status";
     }
 
     # ===== DIAGNOSTICS GROUP - <leader>x =====
@@ -701,7 +846,7 @@
     # NAVIGATION - g, [, ], z prefixes
     # =====================================================================
 
-    # ===== GOTO NAVIGATION =====
+    # ===== GOTO NAVIGATION - Utilise les fonctions natives =====
     {
       mode = "n";
       key = "gd";
@@ -738,6 +883,18 @@
       action = "<cmd>lua vim.lsp.buf.hover()<cr>";
       options.desc = "Hover Documentation";
     }
+    {
+      mode = "n";
+      key = "K";
+      action = "<cmd>lua vim.lsp.buf.hover()<cr>";
+      options.desc = "Hover Documentation";
+    }
+    {
+      mode = [ "n" "i" ];
+      key = "<C-k>";
+      action = "<cmd>lua vim.lsp.buf.signature_help()<cr>";
+      options.desc = "Signature Help";
+    }
 
     # ===== NAVIGATION PRÉCÉDENT/SUIVANT =====
     {
@@ -751,6 +908,18 @@
       key = "]d";
       action = "<cmd>lua vim.diagnostic.goto_next()<cr>";
       options.desc = "Next Diagnostic";
+    }
+    {
+      mode = "n";
+      key = "[D";
+      action = "<cmd>lua vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })<cr>";
+      options.desc = "Previous Error";
+    }
+    {
+      mode = "n";
+      key = "]D";
+      action = "<cmd>lua vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })<cr>";
+      options.desc = "Next Error";
     }
     {
       mode = "n";
@@ -772,7 +941,7 @@
           if vim.wo.diff then
             vim.cmd.normal({ "]c", bang = true })
           else
-            gs.nav_hunk("next")
+            require("gitsigns").nav_hunk("next")
           end
         end
       '';
@@ -786,7 +955,7 @@
           if vim.wo.diff then
             vim.cmd.normal({ "[c", bang = true })
           else
-            gs.nav_hunk("prev")
+            require("gitsigns").nav_hunk("prev")
           end
         end
       '';
@@ -797,7 +966,7 @@
       key = "]H";
       action.__raw = ''
         function()
-          gs.nav_hunk("last")
+          require("gitsigns").nav_hunk("last")
         end
       '';
       options.desc = "Last Hunk";
@@ -807,7 +976,7 @@
       key = "[H";
       action.__raw = ''
         function()
-          gs.nav_hunk("first")
+          require("gitsigns").nav_hunk("first")
         end
       '';
       options.desc = "First Hunk";
@@ -836,279 +1005,201 @@
     }
 
     # =====================================================================
-    # KEYMAPS SPÉCIFIQUES AUX LANGAGES (FileType-specific)
+    # KEYMAPS SPÉCIFIQUES AUX LANGAGES (FileType-specific) - ALLÉGÉS
     # =====================================================================
 
-    # ===== KEYMAPS NIX - <leader>l =====
+    # ===== KEYMAPS NIX - <leader>l - ALLÉGÉS =====
     {
       mode = "n";
       key = "<leader>lf";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "nix" then
-            require('conform').format({ 
-              async = true, 
-              timeout_ms = 2000,
-              lsp_fallback = false
-            })
-          end
-        end
-      '';
+      action = "<cmd>lua _G.unified_format({ quiet = true })<cr>";
       options.desc = "Format Nix (Fast)";
     }
     {
       mode = "n";
-      key = "<leader>lR";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "nix" then
-            vim.lsp.buf.rename()
-          end
-        end
-      '';
-      options.desc = "Rename (Nix)";
+      key = "<leader>la";
+      action = "<cmd>lua _G.unified_code_action()<cr>";
+      options.desc = "Actions (Unified)";
+    }
+    {
+      mode = "n";
+      key = "<leader>lr";
+      action = "<cmd>lua _G.unified_rename()<cr>";
+      options.desc = "Rename (Unified)";
     }
     {
       mode = "n";
       key = "<leader>ld";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "nix" then
-            vim.lsp.buf.definition({ timeout_ms = 2000 })
-          end
-        end
-      '';
-      options.desc = "Definition (Fast)";
+      action = "<cmd>lua vim.lsp.buf.definition()<cr>";
+      options.desc = "Definition";
     }
     {
       mode = "n";
       key = "<leader>lh";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "nix" then
-            vim.lsp.buf.hover()
-          end
-        end
-      '';
-      options.desc = "Hover (Nix)";
+      action = "<cmd>lua vim.lsp.buf.hover()<cr>";
+      options.desc = "Hover";
     }
     {
       mode = "n";
-      key = "<leader>la";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "nix" then
-            vim.lsp.buf.code_action({ timeout_ms = 1000 })
-          end
-        end
-      '';
-      options.desc = "Actions (Fast)";
-    }
-    {
-      mode = "n";
-      key = "<leader>ls";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "nix" then
-            print("Basculement vers completion rapide (buffer + snippets)")
-          end
-        end
-      '';
-      options.desc = "Speed Mode";
+      key = "<leader>ll";
+      action = "<cmd>LintInfo<cr>";
+      options.desc = "Lint Info";
     }
 
-    # ===== KEYMAPS HASKELL - <leader>h =====
+    # ===== KEYMAPS HASKELL - <leader>h - ALLÉGÉS =====
+    {
+      mode = "n";
+      key = "<leader>hf";
+      action = "<cmd>lua _G.unified_format()<cr>";
+      options.desc = "Format";
+    }
+    {
+      mode = "n";
+      key = "<leader>ha";
+      action = "<cmd>lua _G.unified_code_action()<cr>";
+      options.desc = "Actions (Unified)";
+    }
+    {
+      mode = "n";
+      key = "<leader>hr";
+      action = "<cmd>lua _G.unified_rename()<cr>";
+      options.desc = "Rename (Unified)";
+    }
     {
       mode = "n";
       key = "<leader>hi";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            vim.lsp.buf.hover()
-          end
-        end
-      '';
+      action = "<cmd>lua vim.lsp.buf.hover()<cr>";
       options.desc = "Type Info";
     }
     {
       mode = "n";
       key = "<leader>hI";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            vim.lsp.buf.signature_help()
-          end
-        end
-      '';
+      action = "<cmd>lua vim.lsp.buf.signature_help()<cr>";
       options.desc = "Signature Help";
     }
     {
       mode = "n";
+      key = "<leader>hl";
+      action = "<cmd>LintInfo<cr>";
+      options.desc = "Lint Info";
+    }
+
+    # ===== KEYMAPS HASKELL SPÉCIFIQUES - REPL, BUILD, DOCS, RUN =====
+    {
+      mode = "n";
       key = "<leader>hs";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            haskell_hoogle_search()
-          end
-        end
-      '';
+      action = "<cmd>lua _G.haskell_hoogle_search()<cr>";
       options.desc = "Hoogle Search";
     }
     {
       mode = "n";
       key = "<leader>hd";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            haskell_hoogle_search()
-          end
-        end
-      '';
+      action = "<cmd>lua _G.haskell_docs_search()<cr>";
       options.desc = "Hoogle Docs";
     }
     {
       mode = "n";
-      key = "<leader>hr";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            haskell_toggle_repl()
-          end
-        end
-      '';
+      key = "<leader>hH";
+      action = "<cmd>lua _G.haskell_hackage_search()<cr>";
+      options.desc = "Hackage Search";
+    }
+    {
+      mode = "n";
+      key = "<leader>hR";
+      action = "<cmd>lua _G.haskell_toggle_repl()<cr>";
       options.desc = "Toggle REPL";
     }
     {
       mode = "n";
-      key = "<leader>hl";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            haskell_load_file()
-          end
-        end
-      '';
+      key = "<leader>hL";
+      action = "<cmd>lua _G.haskell_load_file()<cr>";
       options.desc = "Load in REPL";
     }
     {
       mode = "v";
       key = "<leader>he";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            haskell_execute_selection()
-          end
-        end
-      '';
+      action = "<cmd>lua _G.haskell_execute_selection()<cr>";
       options.desc = "Execute Selection";
     }
     {
       mode = "n";
       key = "<leader>he";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            haskell_execute_line()
-          end
-        end
-      '';
+      action = "<cmd>lua _G.haskell_execute_line()<cr>";
       options.desc = "Execute Line";
     }
     {
       mode = "n";
       key = "<leader>hc";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            haskell_clear_repl()
-          end
-        end
-      '';
+      action = "<cmd>lua _G.haskell_clear_repl()<cr>";
       options.desc = "Clear REPL";
     }
     {
       mode = "n";
       key = "<leader>hb";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            haskell_build_project()
-          end
-        end
-      '';
+      action = "<cmd>lua _G.haskell_build_project()<cr>";
       options.desc = "Build";
     }
     {
       mode = "n";
       key = "<leader>ht";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            haskell_test_project()
-          end
-        end
-      '';
+      action = "<cmd>lua _G.haskell_test_project()<cr>";
       options.desc = "Test";
     }
     {
       mode = "n";
+      key = "<leader>hr";
+      action = "<cmd>lua _G.haskell_run_project()<cr>";
+      options.desc = "Run Project";
+    }
+    {
+      mode = "n";
       key = "<leader>hC";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            haskell_clean_build()
-          end
-        end
-      '';
+      action = "<cmd>lua _G.haskell_clean_build()<cr>";
       options.desc = "Clean Build";
     }
     {
       mode = "n";
       key = "<leader>hq";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            haskell_quick_compile()
-          end
-        end
-      '';
+      action = "<cmd>lua _G.haskell_quick_compile()<cr>";
       options.desc = "Quick Compile";
     }
     {
       mode = "n";
-      key = "<leader>hf";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            require('conform').format({ async = true, lsp_fallback = true })
-          end
-        end
-      '';
-      options.desc = "Format";
+      key = "<leader>hD";
+      action = "<cmd>lua _G.haskell_install_deps()<cr>";
+      options.desc = "Install Deps";
+    }
+
+    # ===== KEYMAPS NIX SPÉCIFIQUES - BUILD, CHECK, EVAL, DEVELOP =====
+    {
+      mode = "n";
+      key = "<leader>lb";
+      action = "<cmd>lua _G.nix_build_current()<cr>";
+      options.desc = "Build/Flake";
     }
     {
       mode = "n";
-      key = "<leader>hE";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            vim.diagnostic.setloclist()
-          end
-        end
-      '';
-      options.desc = "Diagnostics";
+      key = "<leader>lc";
+      action = "<cmd>lua _G.nix_check_current()<cr>";
+      options.desc = "Check/Parse";
     }
     {
       mode = "n";
-      key = "<leader>hR";
-      action.__raw = ''
-        function()
-          if vim.bo.filetype == "haskell" then
-            haskell_restart_lsp()
-          end
-        end
-      '';
-      options.desc = "Restart LSP";
+      key = "<leader>le";
+      action = "<cmd>lua _G.nix_eval_expression()<cr>";
+      options.desc = "Eval Expression";
+    }
+    {
+      mode = "n";
+      key = "<leader>ls";
+      action = "<cmd>lua _G.nix_show_flake()<cr>";
+      options.desc = "Show Flake";
+    }
+    {
+      mode = "n";
+      key = "<leader>lD";
+      action = "<cmd>lua _G.nix_develop()<cr>";
+      options.desc = "Nix Develop";
     }
 
     # =====================================================================
@@ -1153,7 +1244,7 @@
   ];
 
   # =====================================================================
-  # SUPPRESSION DE KEYMAPS CONFLICTUELS
+  # SUPPRESSION DE KEYMAPS CONFLICTUELS + LSP
   # =====================================================================
 
   extraConfigLua = ''
@@ -1170,10 +1261,32 @@
           safe_del_keymap({"n", "i", "v"}, "<A-j>")
           safe_del_keymap("n", "<S-h>")
           safe_del_keymap("n", "<S-l>")
+          
+          -- Supprimer les keymaps LSP par défaut pour éviter les doublons
+          safe_del_keymap("n", "<leader>ca") -- On utilise nos versions unifiées
+          safe_del_keymap("n", "<leader>cr")
+          safe_del_keymap("n", "<leader>cf")
         end, 100)
       end,
     })
     
-    print("All keymaps loaded centrally")
+    -- Fonction globale pour debug keymaps
+    _G.debug_keymaps = function()
+      print("=== Unified LSP Keymaps ===")
+      print("Available global functions:")
+      print("  - _G.unified_code_action()")
+      print("  - _G.unified_rename()")
+      print("  - _G.unified_format(opts)")
+      print("  - _G.toggle_auto_format()")
+      print("  - _G.toggle_linting()")
+      print("  - _G.lsp_info()")
+      print("  - _G.unified_lsp_restart()")
+      print("")
+      print("State:")
+      print("  Auto-format: " .. tostring(_G.lsp_unified_state.auto_format))
+      print("  Auto-lint: " .. tostring(_G.lsp_unified_state.auto_lint))
+    end
+    
+    print("Unified LSP keymaps loaded")
   '';
 }

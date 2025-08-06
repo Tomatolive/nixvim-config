@@ -118,16 +118,6 @@
 
             # Haskell: LSP rapide, on peut le privilégier  
             haskell = [ "lsp" "snippets" "buffer" ];
-
-            # Lua: LSP rapide généralement
-            lua = [ "lsp" "snippets" "buffer" ];
-
-            # Markdown: pas de LSP, sources rapides
-            markdown = [ "buffer" "path" "snippets" ];
-
-            # JSON, YAML: LSP souvent lent
-            json = [ "snippets" "lsp" "buffer" ];
-            yaml = [ "snippets" "lsp" "buffer" ];
           };
         };
 
