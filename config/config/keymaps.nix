@@ -459,6 +459,8 @@
       options.desc = "Dismiss All";
     }
 
+    # ===== HASKELL GROUP - <leader>h =====
+
     # =====================================================================
     # NAVIGATION - g, [, ], z prefixes - Nixvim configure automatiquement
     # =====================================================================
