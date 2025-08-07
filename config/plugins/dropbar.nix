@@ -4,7 +4,7 @@
   # =====================================================================
 
   plugins.dropbar = {
-    enable = true;
+    enable = false;
 
     settings = {
       general = {
@@ -70,17 +70,4 @@
       };
     };
   };
-
-  # =====================================================================
-  # CONFIGURATION MINIMALE - Juste les highlights gruvbox + gestion conflits
-  # =====================================================================
-  extraConfigLua = ''
-    -- Notification simple
-    vim.defer_fn(function()
-      require("snacks").notify("Dropbar ready", { 
-        title = "Dropbar", 
-        timeout = 1000 
-      })
-    end, 1000)
-  '';
 }

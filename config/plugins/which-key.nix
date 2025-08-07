@@ -30,15 +30,16 @@
       local ok, wk = pcall(require, "which-key")
       if ok then
         wk.add({
-          { "<leader>f", group = "󰈞 Find" },
-          { "<leader>g", group = "󰊢 Git" },
-          { "<leader>b", group = "󰓩 Buffers" },
-          { "<leader>c", group = "󰘦 Code" },
-          { "<leader>u", group = "󰙵 UI" },
-          { "<leader>x", group = "󱖫 Diagnostics" },
-          { "<leader>t", group = "󰆍 Terminal" },
-          { "<leader>n", group = "󰂚 Notifications" },
-          { "<leader>C", group = "󰙱 C/C++" },
+          { "<leader>b", group = "Buffers" },
+          { "<leader>c", group = "Code" },
+          { "<leader>f", group = "Find" },
+          { "<leader>g", group = "Git" },
+          { "<leader>n", group = "Notifications" },
+          { "<leader>r", group = "Persistence" },
+          { "<leader>s", group = "Snacks" },
+          { "<leader>t", group = "Terminal" },
+          { "<leader>u", group = "UI" },
+          { "<leader>x", group = "Diagnostics" },
           
           -- Navigation
           { "g", group = "󰈮 Goto" },
@@ -60,13 +61,13 @@
           
           if ft == "nix" then
             wk.add({
-              { "<leader>l", group = "󱄅 Nix", buffer = bufnr },
+              { "<leader>N", group = "󱄅 Nix", buffer = bufnr },
             })
             
           elseif ft == "haskell" then
             -- Configuration Haskell SIMPLIFIÉE - conforme aux docs
             wk.add({
-              { "<leader>h", group = " Haskell (haskell-tools)", buffer = bufnr },
+              { "<leader>h", group = "󰲒 Haskell", buffer = bufnr },
               
               -- Keymaps haskell-tools (API officielle)
               { "<leader>hr", desc = "Toggle REPL", icon = "", buffer = bufnr },
@@ -77,6 +78,11 @@
               
               -- Note: LSP standard géré automatiquement par haskell-tools
               -- Plus besoin de keymaps custom - tout est auto-configuré !
+            })
+
+          elseif ft == "c" or ft == "cpp" then
+            wk.add({
+              { "<leader>C", group = "󰙱 C/C++", buffer = bufnr },
             })
           end
         end, 500)

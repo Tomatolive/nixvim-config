@@ -50,10 +50,5 @@
         require("snacks").notify("No Makefile or CMakeLists.txt found", { level = "warn" })
       end
     end, { desc = "Generate compile_commands.json" })
-    
-    -- Notification simple
-    vim.defer_fn(function()
-      require("snacks").notify("C/C++ ready", { title = "clangd", timeout = 1000 })
-    end, 1000)
   '';
 }

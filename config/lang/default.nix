@@ -184,13 +184,5 @@
     vim.api.nvim_set_hl(0, "DiagnosticSignWarn", { fg = "#fabd2f" })   -- Jaune
     vim.api.nvim_set_hl(0, "DiagnosticSignInfo", { fg = "#83a598" })   -- Bleu
     vim.api.nvim_set_hl(0, "DiagnosticSignHint", { fg = "#8ec07c" })   -- Vert
-    
-    -- Message de confirmation
-    vim.defer_fn(function()
-      require("snacks").notify("Diagnostic icons and config loaded", { 
-        title = "Config", 
-        timeout = 1000 
-      })
-    end, 1000)
   '';
 }

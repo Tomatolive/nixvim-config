@@ -150,6 +150,24 @@
       action = "<cmd>nohlsearch<cr>";
       options.desc = "Clear search highlight";
     }
+    {
+      mode = [
+        "n"
+        "x"
+      ];
+      key = "p";
+      action = "<Plug>(YankyPutAfter)";
+      options.desc = "Put After";
+    }
+    {
+      mode = [
+        "n"
+        "x"
+      ];
+      key = "P";
+      action = "<Plug>(YankyPutBefore)";
+      options.desc = "Put Before";
+    }
 
     # ===== MODE INSERTION =====
     {
@@ -522,6 +540,7 @@
     }
 
     # ===== DIAGNOSTICS GROUP - <leader>x =====
+    # NOTE : quickfix/loclist souvent vides
     {
       mode = "n";
       key = "<leader>xx";
@@ -533,6 +552,27 @@
       key = "<leader>xl";
       action = "<cmd>lopen<cr>";
       options.desc = "Location List";
+    }
+    # Diagnostics (le plus utile - toujours des résultats)
+    {
+      mode = "n";
+      key = "<leader>xx";
+      action = "<cmd>Trouble diagnostics toggle<cr>";
+      options.desc = "Diagnostics (Trouble)";
+    }
+    # Diagnostics buffer courant (toujours utile)  
+    {
+      mode = "n";
+      key = "<leader>xX";
+      action = "<cmd>Trouble diagnostics toggle filter.buf=0<cr>";
+      options.desc = "Buffer Diagnostics (Trouble)";
+    }
+    # Symboles LSP (utile avec LSP)
+    {
+      mode = "n";
+      key = "<leader>xs";
+      action = "<cmd>Trouble symbols toggle<cr>";
+      options.desc = "Symbols (Trouble)";
     }
 
     # ===== TERMINAL GROUP - <leader>t =====
@@ -555,6 +595,40 @@
       key = "<leader>nd";
       action = "<cmd>lua Snacks.notifier.hide()<cr>";
       options.desc = "Dismiss All";
+    }
+
+    # ===== PASTE GROUP - <leader>p =====
+    {
+      mode = "n";
+      key = "<leader>p";
+      action = "<cmd>YankyRingHistory<cr>";
+      options.desc = "Yank History";
+    }
+
+    # ===== PERSISTENCE/SESSION GROUP - <leader>r =====
+    {
+      mode = "n";
+      key = "<leader>rs";
+      action.__raw = ''function() require("persistence").load() end'';
+      options.desc = "Restore Session";
+    }
+    {
+      mode = "n";
+      key = "<leader>rS";
+      action.__raw = ''function() require("persistence").select() end'';
+      options.desc = "Select Session";
+    }
+    {
+      mode = "n";
+      key = "<leader>rl";
+      action.__raw = ''function() require("persistence").load({ last = true }) end'';
+      options.desc = "Last Session";
+    }
+    {
+      mode = "n";
+      key = "<leader>rd";
+      action.__raw = ''function() require("persistence").stop() end'';
+      options.desc = "Don't Save Session";
     }
 
     # ===== SNACKS UTILITIES - <leader>s =====
@@ -716,6 +790,34 @@
         end
       '';
       options.desc = "Prev Hunk";
+    }
+
+    # Navigation dans l'historique
+    {
+      mode = "n";
+      key = "[y";
+      action = "<Plug>(YankyCycleForward)";
+      options.desc = "Cycle Forward Yank";
+    }
+    {
+      mode = "n";
+      key = "]y";
+      action = "<Plug>(YankyCycleBackward)";
+      options.desc = "Cycle Backward Yank";
+    }
+
+    # Navigation TODO
+    {
+      mode = "n";
+      key = "]t";
+      action.__raw = ''function() require("todo-comments").jump_next() end'';
+      options.desc = "Next Todo Comment";
+    }
+    {
+      mode = "n";
+      key = "[t";
+      action.__raw = ''function() require("todo-comments").jump_prev() end'';
+      options.desc = "Previous Todo Comment";
     }
 
     # ===== WHICH-KEY =====
