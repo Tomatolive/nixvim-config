@@ -307,7 +307,11 @@
       options.desc = "Increase window width";
     }
 
-    # ===== DROPBAR - Juste l'essentiel =====
+    # =====================================================================
+    # LEADER MAPPINGS - Organisés par fonctionnalité - VERSION SIMPLIFIÉE
+    # =====================================================================
+
+    # ===== DROPBAR  =====
     {
       mode = "n";
       key = "<leader><tab>";
@@ -318,60 +322,6 @@
       '';
       options.desc = "Pick Symbol (Interactive)";
     }
-
-    # ===== C/C++ GROUP - <leader>C =====
-    {
-      mode = "n";
-      key = "<leader>Ca";
-      action = "<cmd>ClangdAST<cr>";
-      options.desc = "View AST";
-    }
-    {
-      mode = "v";
-      key = "<leader>Ca";
-      action = ":<C-u>ClangdAST<cr>";
-      options.desc = "View AST (selection)";
-    }
-    {
-      mode = "n";
-      key = "<leader>Cs";
-      action = "<cmd>ClangdSymbolInfo<cr>";
-      options.desc = "Symbol Info";
-    }
-    {
-      mode = "n";
-      key = "<leader>Ct";
-      action = "<cmd>ClangdTypeHierarchy<cr>";
-      options.desc = "Type Hierarchy";
-    }
-    {
-      mode = "n";
-      key = "<leader>Cm";
-      action = "<cmd>ClangdMemoryUsage<cr>";
-      options.desc = "Memory Usage";
-    }
-    {
-      mode = "n";
-      key = "<leader>Ch";
-      action = "<cmd>ClangdSwitchSourceHeader<cr>";
-      options.desc = "Switch Header/Source";
-    }
-    {
-      mode = "n";
-      key = "<leader>Cc";
-      action = "<cmd>GenerateCompileCommands<cr>";
-      options.desc = "Generate compile_commands.json";
-    }
-    {
-      mode = "n";
-      key = "<leader>Cf";
-      action = "<cmd>CreateCompileFlags<cr>";
-      options.desc = "Create compile_flags.txt";
-    }
-
-    # =====================================================================
-    # LEADER MAPPINGS - Organisés par fonctionnalité - VERSION SIMPLIFIÉE
-    # =====================================================================
 
     # ===== EXPLORATEUR =====
     {
@@ -519,7 +469,7 @@
       options.desc = "Select Scratch Buffer";
     }
 
-    # ===== CODE GROUP - <leader>c - VERSION SIMPLIFIÉE + CODE LENS =====
+    # ===== CODE GROUP - <leader>c =====
     {
       mode = "n";
       key = "<leader>ca";
@@ -571,19 +521,7 @@
       options.desc = "Refresh Code Lens";
     }
 
-    # ===== UI GROUP - <leader>u (toggles automatiques Snacks) =====
-    # NOTE : Tous les keymaps UI sont maintenant gérés par Snacks.toggle dans l'autoCmd :
-    # <leader>ul → Toggle Line Numbers      <leader>ur → Toggle Relative Numbers
-    # <leader>uw → Toggle Word Wrap         <leader>us → Toggle Spell Check
-    # <leader>ud → Toggle Diagnostics       <leader>uc → Toggle Conceal Level
-    # <leader>uS → Toggle Smooth Scroll     <leader>ua → Toggle Animations
-    # <leader>uG → Toggle Sign Column       <leader>uL → Toggle List Chars
-    # <leader>uT → Toggle Treesitter        <leader>uh → Toggle Inlay Hints
-    # <leader>ug → Toggle Indent Animations <leader>uz → Toggle Zen Mode
-    # <leader>ud → Toggle Dim               <leader>uW → Toggle Word Highlights
-
     # ===== DIAGNOSTICS GROUP - <leader>x =====
-    # NOTE : quickfix/loclist souvent vides
     {
       mode = "n";
       key = "<leader>xx";
@@ -803,107 +741,6 @@
       key = "<leader>su";
       action.__raw = ''function() require("snacks").picker.undo() end'';
       options.desc = "Undotree";
-    }
-
-    # ===== HASKELL GROUP - <leader>h =====
-    {
-      mode = "n";
-      key = "<leader>hr";
-      action.__raw = ''
-        function()
-          require('haskell-tools').repl.toggle()
-        end
-      '';
-      options.desc = "Toggle REPL";
-    }
-    {
-      mode = "n";
-      key = "<leader>hl";
-      action.__raw = ''
-        function()
-          local file = vim.api.nvim_buf_get_name(0)
-          if file ~= "" then
-            require('haskell-tools').repl.load_file(file)
-          else
-            require('haskell-tools').repl.toggle()
-          end
-        end
-      '';
-      options.desc = "Load file in REPL";
-    }
-    {
-      mode = [
-        "n"
-        "v"
-      ];
-      key = "<leader>he";
-      action.__raw = ''
-        function()
-          require('haskell-tools').repl.operator()
-        end
-      '';
-      options.desc = "Evaluate in REPL";
-    }
-    {
-      mode = "n";
-      key = "<leader>hs";
-      action.__raw = ''
-        function()
-          local word = vim.fn.expand('<cword>')
-          if word and word ~= "" then
-            if vim.fn.executable('hoogle') == 1 then
-              require("snacks").terminal.open("hoogle --info " .. vim.fn.shellescape(word), {
-                title = "Hoogle - " .. word,
-                size = { width = 0.8, height = 0.6 }
-              })
-            else
-              require("snacks").notify("hoogle not available", { title = "Haskell", level = "warn" })
-            end
-          end
-        end
-      '';
-      options.desc = "Hoogle Search";
-    }
-    {
-      mode = "n";
-      key = "<leader>hc";
-      action.__raw = ''
-        function()
-          require('haskell-tools').lsp.buf_eval_all()
-        end
-      '';
-      options.desc = "Evaluate All";
-    }
-
-    # ===== MARKDOWN GROUP - <leader>m =====
-    {
-      mode = "n";
-      key = "<leader>mt";
-      action = "<cmd>Markview toggle<cr>";
-      options.desc = "Toggle Markview";
-    }
-    {
-      mode = "n";
-      key = "<leader>mp";
-      action = "<cmd>MarkdownPreviewToggle<cr>";
-      options.desc = "Toggle Preview (Browser)";
-    }
-    {
-      mode = "n";
-      key = "<leader>me";
-      action.__raw = ''
-        function()
-          local file = vim.api.nvim_buf_get_name(0)
-          if file and file ~= "" then
-            local output = vim.fn.fnamemodify(file, ":r") .. ".html"
-            require("snacks").terminal.open("pandoc " .. vim.fn.shellescape(file) .. " -o " .. vim.fn.shellescape(output), {
-              title = "Pandoc Export",
-              size = { width = 0.8, height = 0.6 }
-            })
-          end
-        end
-      '';
-      options.desc = "Export to HTML (Pandoc)";
     }
 
     # =====================================================================

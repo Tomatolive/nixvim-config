@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   # =====================================================================
-  # CONFIGURATION MARKDOWN - Version avec plugins natifs Nixvim
+  # CONFIGURATION MARKDOWN - Avec keymaps locaux
   # =====================================================================
 
   # =====================================================================
@@ -62,7 +62,7 @@
   ];
 
   # =====================================================================
-  # AUTOCOMMANDS MARKDOWN - CORRIGÉ
+  # AUTOCOMMANDS MARKDOWN AVEC KEYMAPS LOCAUX
   # =====================================================================
   autoCmd = [
     {
@@ -70,6 +70,8 @@
       pattern = [ "markdown" ];
       callback.__raw = ''
         function()
+          local bufnr = vim.api.nvim_get_current_buf()
+          
           -- Options markdown essentielles
           vim.bo.textwidth = 80
           vim.wo.wrap = true  -- ← CORRIGÉ : window-local option
@@ -79,6 +81,40 @@
           -- Spell check
           vim.wo.spell = true  -- ← CORRIGÉ : window-local option
           vim.bo.spelllang = "en,fr"
+          
+          -- KEYMAPS LOCAUX - Seulement pour les buffers Markdown !
+          local opts = { buffer = bufnr, desc = "" }
+          
+          -- Toggle Markview
+          opts.desc = "Toggle Markview"
+          vim.keymap.set("n", "<leader>mt", "<cmd>Markview toggle<cr>", opts)
+          
+          -- Toggle Preview (Browser)
+          opts.desc = "Toggle Preview (Browser)"
+          vim.keymap.set("n", "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", opts)
+          
+          -- Export to HTML (Pandoc)
+          opts.desc = "Export to HTML (Pandoc)"
+          vim.keymap.set("n", "<leader>me", function()
+            local file = vim.api.nvim_buf_get_name(0)
+            if file and file ~= "" then
+              local output = vim.fn.fnamemodify(file, ":r") .. ".html"
+              require("snacks").terminal.open("pandoc " .. vim.fn.shellescape(file) .. " -o " .. vim.fn.shellescape(output), {
+                title = "Pandoc Export",
+                size = { width = 0.8, height = 0.6 }
+              })
+            end
+          end, opts)
+          
+          -- Configuration which-key pour ce buffer seulement
+          vim.defer_fn(function()
+            local ok, wk = pcall(require, "which-key")
+            if ok then
+              wk.add({
+                { "<leader>m", group = " Markdown", buffer = bufnr },
+              })
+            end
+          end, 100)
         end
       '';
     }
