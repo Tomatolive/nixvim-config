@@ -12,6 +12,7 @@
       haskell = [ "hlint" ];
       c = [ "cppcheck" ];
       cpp = [ "cppcheck" "cpplint" ];
+      markdown = [ "markdownlint" ];
     };
 
     # Nixvim configure automatiquement les autocommands et tout le reste

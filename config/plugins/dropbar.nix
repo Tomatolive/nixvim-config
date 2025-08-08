@@ -4,7 +4,7 @@
   # =====================================================================
 
   plugins.dropbar = {
-    enable = false;
+    enable = true;
 
     settings = {
       general = {

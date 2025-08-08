@@ -32,11 +32,11 @@
         wk.add({
           { "<leader>b", group = "Buffers" },
           { "<leader>c", group = "Code" },
-          { "<leader>f", group = "Find" },
+          { "<leader>f", group = "Find/File" },
           { "<leader>g", group = "Git" },
           { "<leader>n", group = "Notifications" },
           { "<leader>r", group = "Persistence" },
-          { "<leader>s", group = "Snacks" },
+          { "<leader>s", group = "Search" },
           { "<leader>t", group = "Terminal" },
           { "<leader>u", group = "UI" },
           { "<leader>x", group = "Diagnostics" },
@@ -83,6 +83,11 @@
           elseif ft == "c" or ft == "cpp" then
             wk.add({
               { "<leader>C", group = "󰙱 C/C++", buffer = bufnr },
+            })
+
+          elseif ft == "markdown" then
+            wk.add({
+              { "<leader>m", group = "Markdown", buffer = bufnr },
             })
           end
         end, 500)

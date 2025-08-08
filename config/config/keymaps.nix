@@ -7,13 +7,21 @@
   keymaps = [
     # ===== MOUVEMENT CUSTOM (JKLM au lieu de HJKL) =====
     {
-      mode = [ "n" "v" "o" ];
+      mode = [
+        "n"
+        "v"
+        "o"
+      ];
       key = "j";
       action = "h";
       options.desc = "Move left";
     }
     {
-      mode = [ "n" "v" "o" ];
+      mode = [
+        "n"
+        "v"
+        "o"
+      ];
       key = "k";
       action = "v:count == 0 ? 'gj' : 'j'";
       options = {
@@ -23,7 +31,10 @@
       };
     }
     {
-      mode = [ "n" "v" ];
+      mode = [
+        "n"
+        "v"
+      ];
       key = "<Down>";
       action = "v:count == 0 ? 'gj' : 'j'";
       options = {
@@ -33,7 +44,11 @@
       };
     }
     {
-      mode = [ "n" "v" "o" ];
+      mode = [
+        "n"
+        "v"
+        "o"
+      ];
       key = "l";
       action = "v:count == 0 ? 'gk' : 'k'";
       options = {
@@ -43,7 +58,10 @@
       };
     }
     {
-      mode = [ "n" "v" ];
+      mode = [
+        "n"
+        "v"
+      ];
       key = "<Up>";
       action = "v:count == 0 ? 'gk' : 'k'";
       options = {
@@ -53,7 +71,11 @@
       };
     }
     {
-      mode = [ "n" "v" "o" ];
+      mode = [
+        "n"
+        "v"
+        "o"
+      ];
       key = "m";
       action = "l";
       options.desc = "Move right";
@@ -374,9 +396,25 @@
     }
     {
       mode = "n";
+      key = "<leader>fn";
+      action = "<cmd>ene | startinsert<cr>";
+      options.desc = "New File";
+    }
+    {
+      mode = "n";
       key = "<leader>fr";
       action = "<cmd>lua Snacks.picker.recent()<cr>";
       options.desc = "Recent Files";
+    }
+    {
+      mode = "n";
+      key = "<leader>fR";
+      action.__raw = ''
+        function()
+          require("snacks").rename.rename_file()
+        end
+      '';
+      options.desc = "Rename File";
     }
     {
       mode = "n";
@@ -400,12 +438,6 @@
     }
     {
       mode = "n";
-      key = "<leader>gs";
-      action = "<cmd>Git<cr>";
-      options.desc = "Git Status";
-    }
-    {
-      mode = "n";
       key = "<leader>gc";
       action = "<cmd>Git commit<cr>";
       options.desc = "Git Commit";
@@ -422,16 +454,34 @@
       action = "<cmd>Git blame<cr>";
       options.desc = "Git Blame";
     }
+    {
+      mode = "n";
+      key = "<leader>gd";
+      action.__raw = ''function() require("snacks").picker.git_diff() end'';
+      options.desc = "Git Diff (hunks)";
+    }
+    {
+      mode = "n";
+      key = "<leader>gs";
+      action.__raw = ''function() require("snacks").picker.git_status() end'';
+      options.desc = "Git Status";
+    }
 
     # Git hunks (gitsigns intégré automatiquement par Nixvim)
     {
-      mode = [ "n" "v" ];
+      mode = [
+        "n"
+        "v"
+      ];
       key = "<leader>ghs";
       action = "<cmd>Gitsigns stage_hunk<CR>";
       options.desc = "Stage Hunk";
     }
     {
-      mode = [ "n" "v" ];
+      mode = [
+        "n"
+        "v"
+      ];
       key = "<leader>ghr";
       action = "<cmd>Gitsigns reset_hunk<CR>";
       options.desc = "Reset Hunk";
@@ -451,8 +501,22 @@
     {
       mode = "n";
       key = "<leader>bs";
-      action = "<cmd>w<cr>";
-      options.desc = "Save Buffer";
+      action.__raw = ''
+        function()
+          require("snacks").scratch()
+        end
+      '';
+      options.desc = "Scratch Buffer";
+    }
+    {
+      mode = "n";
+      key = "<leader>bS";
+      action.__raw = ''
+        function()
+          require("snacks").scratch.select()
+        end
+      '';
+      options.desc = "Select Scratch Buffer";
     }
 
     # ===== CODE GROUP - <leader>c - VERSION SIMPLIFIÉE + CODE LENS =====
@@ -507,37 +571,16 @@
       options.desc = "Refresh Code Lens";
     }
 
-    # ===== UI GROUP - <leader>u (utilise snacks.toggle) =====
-    {
-      mode = "n";
-      key = "<leader>ul";
-      action.__raw = ''
-        function()
-          require("snacks").toggle.option("number", { name = "Line Numbers" })
-        end
-      '';
-      options.desc = "Toggle Line Numbers";
-    }
-    {
-      mode = "n";
-      key = "<leader>ur";
-      action.__raw = ''
-        function()
-          require("snacks").toggle.option("relativenumber", { name = "Relative Numbers" })
-        end
-      '';
-      options.desc = "Toggle Relative Numbers";
-    }
-    {
-      mode = "n";
-      key = "<leader>uw";
-      action.__raw = ''
-        function()
-          require("snacks").toggle.option("wrap", { name = "Word Wrap" })
-        end
-      '';
-      options.desc = "Toggle Word Wrap";
-    }
+    # ===== UI GROUP - <leader>u (toggles automatiques Snacks) =====
+    # NOTE : Tous les keymaps UI sont maintenant gérés par Snacks.toggle dans l'autoCmd :
+    # <leader>ul → Toggle Line Numbers      <leader>ur → Toggle Relative Numbers
+    # <leader>uw → Toggle Word Wrap         <leader>us → Toggle Spell Check
+    # <leader>ud → Toggle Diagnostics       <leader>uc → Toggle Conceal Level
+    # <leader>uS → Toggle Smooth Scroll     <leader>ua → Toggle Animations
+    # <leader>uG → Toggle Sign Column       <leader>uL → Toggle List Chars
+    # <leader>uT → Toggle Treesitter        <leader>uh → Toggle Inlay Hints
+    # <leader>ug → Toggle Indent Animations <leader>uz → Toggle Zen Mode
+    # <leader>ud → Toggle Dim               <leader>uW → Toggle Word Highlights
 
     # ===== DIAGNOSTICS GROUP - <leader>x =====
     # NOTE : quickfix/loclist souvent vides
@@ -560,7 +603,7 @@
       action = "<cmd>Trouble diagnostics toggle<cr>";
       options.desc = "Diagnostics (Trouble)";
     }
-    # Diagnostics buffer courant (toujours utile)  
+    # Diagnostics buffer courant (toujours utile)
     {
       mode = "n";
       key = "<leader>xX";
@@ -631,36 +674,135 @@
       options.desc = "Don't Save Session";
     }
 
-    # ===== SNACKS UTILITIES - <leader>s =====
+    # ===== SEARCH GROUP - <leader>s =====
+    # Buffer and Grep
     {
       mode = "n";
-      key = "<leader>sr";
-      action.__raw = ''
-        function()
-          require("snacks").rename.rename_file()
-        end
-      '';
-      options.desc = "Rename File";
+      key = "<leader>sb";
+      action.__raw = ''function() require("snacks").picker.lines() end'';
+      options.desc = "Buffer Lines";
     }
     {
       mode = "n";
-      key = "<leader>ss";
-      action.__raw = ''
-        function()
-          require("snacks").scratch()
-        end
-      '';
-      options.desc = "Scratch Buffer";
+      key = "<leader>sB";
+      action.__raw = ''function() require("snacks").picker.grep_buffers() end'';
+      options.desc = "Grep Open Buffers";
+    }
+    {
+      mode = [
+        "n"
+        "x"
+      ];
+      key = "<leader>sw";
+      action.__raw = ''function() require("lazyvim.util").pick("grep_word")() end'';
+      options.desc = "Visual selection or word (Root Dir)";
+    }
+    {
+      mode = [
+        "n"
+        "x"
+      ];
+      key = "<leader>sW";
+      action.__raw = ''function() require("lazyvim.util").pick("grep_word", { root = false })() end'';
+      options.desc = "Visual selection or word (cwd)";
+    }
+
+    # Search operations
+    {
+      mode = "n";
+      key = "<leader>s\"";
+      action.__raw = ''function() require("snacks").picker.registers() end'';
+      options.desc = "Registers";
     }
     {
       mode = "n";
-      key = "<leader>sz";
-      action.__raw = ''
-        function()
-          require("snacks").zen()
-        end
-      '';
-      options.desc = "Zen Mode";
+      key = "<leader>s/";
+      action.__raw = ''function() require("snacks").picker.search_history() end'';
+      options.desc = "Search History";
+    }
+    {
+      mode = "n";
+      key = "<leader>sc";
+      action.__raw = ''function() require("snacks").picker.command_history() end'';
+      options.desc = "Command History";
+    }
+    {
+      mode = "n";
+      key = "<leader>sC";
+      action.__raw = ''function() require("snacks").picker.commands() end'';
+      options.desc = "Commands";
+    }
+    {
+      mode = "n";
+      key = "<leader>sd";
+      action.__raw = ''function() require("snacks").picker.diagnostics() end'';
+      options.desc = "Diagnostics";
+    }
+    {
+      mode = "n";
+      key = "<leader>sD";
+      action.__raw = ''function() require("snacks").picker.diagnostics_buffer() end'';
+      options.desc = "Buffer Diagnostics";
+    }
+    {
+      mode = "n";
+      key = "<leader>sh";
+      action.__raw = ''function() require("snacks").picker.help() end'';
+      options.desc = "Help Pages";
+    }
+    {
+      mode = "n";
+      key = "<leader>sH";
+      action.__raw = ''function() require("snacks").picker.highlights() end'';
+      options.desc = "Highlights";
+    }
+    {
+      mode = "n";
+      key = "<leader>si";
+      action.__raw = ''function() require("snacks").picker.icons() end'';
+      options.desc = "Icons";
+    }
+    {
+      mode = "n";
+      key = "<leader>sj";
+      action.__raw = ''function() require("snacks").picker.jumps() end'';
+      options.desc = "Jumps";
+    }
+    {
+      mode = "n";
+      key = "<leader>sk";
+      action.__raw = ''function() require("snacks").picker.keymaps() end'';
+      options.desc = "Keymaps";
+    }
+    {
+      mode = "n";
+      key = "<leader>sl";
+      action.__raw = ''function() require("snacks").picker.loclist() end'';
+      options.desc = "Location List";
+    }
+    {
+      mode = "n";
+      key = "<leader>sM";
+      action.__raw = ''function() require("snacks").picker.man() end'';
+      options.desc = "Man Pages";
+    }
+    {
+      mode = "n";
+      key = "<leader>sm";
+      action.__raw = ''function() require("snacks").picker.marks() end'';
+      options.desc = "Marks";
+    }
+    {
+      mode = "n";
+      key = "<leader>sR";
+      action.__raw = ''function() require("snacks").picker.resume() end'';
+      options.desc = "Resume";
+    }
+    {
+      mode = "n";
+      key = "<leader>su";
+      action.__raw = ''function() require("snacks").picker.undo() end'';
+      options.desc = "Undotree";
     }
 
     # ===== HASKELL GROUP - <leader>h =====
@@ -690,7 +832,10 @@
       options.desc = "Load file in REPL";
     }
     {
-      mode = [ "n" "v" ];
+      mode = [
+        "n"
+        "v"
+      ];
       key = "<leader>he";
       action.__raw = ''
         function()
@@ -728,6 +873,37 @@
         end
       '';
       options.desc = "Evaluate All";
+    }
+
+    # ===== MARKDOWN GROUP - <leader>m =====
+    {
+      mode = "n";
+      key = "<leader>mt";
+      action = "<cmd>Markview toggle<cr>";
+      options.desc = "Toggle Markview";
+    }
+    {
+      mode = "n";
+      key = "<leader>mp";
+      action = "<cmd>MarkdownPreviewToggle<cr>";
+      options.desc = "Toggle Preview (Browser)";
+    }
+    {
+      mode = "n";
+      key = "<leader>me";
+      action.__raw = ''
+        function()
+          local file = vim.api.nvim_buf_get_name(0)
+          if file and file ~= "" then
+            local output = vim.fn.fnamemodify(file, ":r") .. ".html"
+            require("snacks").terminal.open("pandoc " .. vim.fn.shellescape(file) .. " -o " .. vim.fn.shellescape(output), {
+              title = "Pandoc Export",
+              size = { width = 0.8, height = 0.6 }
+            })
+          end
+        end
+      '';
+      options.desc = "Export to HTML (Pandoc)";
     }
 
     # =====================================================================

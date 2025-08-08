@@ -13,6 +13,7 @@
         haskell = [ "ormolu" ];
         c = [ "clang_format" ];
         cpp = [ "clang_format" ];
+        markdown = [ "prettier" ];
       };
 
       # Format on save - simple

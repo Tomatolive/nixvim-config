@@ -26,9 +26,9 @@
         WhichKey = { fg = "#fadb2f"; };
         WhichKeyDesc = { fg = "#689d6a"; };
         WhichKeyGroup = { fg = "#fe8019"; };
-        WhichKeyNormal = { bg = "#3c3836"; };
-        WhichKeyBorder = { fg = "#689d6a"; bg = "#3c3836"; };
-        WhichKeyTitle = { fg = "#689d6a"; bg = "#3c3836"; };
+        WhichKeyNormal = { bg = "#32302F"; };
+        WhichKeyBorder = { fg = "#689d6a"; bg = "#32302F"; };
+        WhichKeyTitle = { fg = "#689d6a"; bg = "#32302F"; };
 
         # Noice cmdline
         NoiceCmdlinePopupBorder = {
@@ -36,23 +36,17 @@
         };
 
         # Blink completion
-        BlinkCmpMenu = { bg = "#3c3836"; fg = "#ebdbb2"; };
-        BlinkCmpMenuBorder = { fg = "#b8bb26"; bg = "#3c3836"; };
+        BlinkCmpMenu = { bg = "#32302F"; fg = "#ebdbb2"; };
+        BlinkCmpMenuBorder = { fg = "#b8bb26"; bg = "#32302F"; };
         BlinkCmpMenuSelection = { bg = "#504945"; fg = "#ebdbb2"; bold = true; };
-        BlinkCmpDoc = { bg = "#3c3836"; fg = "#ebdbb2"; };
-        BlinkCmpDocBorder = { fg = "#b8bb26"; bg = "#3c3836"; };
-        BlinkCmpSignatureHelp = { bg = "#3c3836"; fg = "#ebdbb2"; };
-        BlinkCmpSignatureHelpBorder = { fg = "#b8bb26"; bg = "#3c3836"; };
+        BlinkCmpDoc = { bg = "#32302F"; fg = "#ebdbb2"; };
+        BlinkCmpDocBorder = { fg = "#b8bb26"; bg = "#32302F"; };
+        BlinkCmpSignatureHelp = { bg = "#32302F"; fg = "#ebdbb2"; };
+        BlinkCmpSignatureHelpBorder = { fg = "#b8bb26"; bg = "#32302F"; };
         BlinkCmpGhostText = { fg = "#928374"; italic = true; };
 
         # Dropbar
-        # DropBarNormal = { fg = "#928374"; bg = "#32302F"; italic = true; };
-        # DropBarIconUIIndicator = { fg = "#928374"; bg = "#32302F"; italic = true; };
-        # DropBarIconUIIndicatorSelected = { fg = "#928374"; bg = "#32302F"; italic = true; };
-        # DropBarIconUIPickerIcon = { fg = "#928374"; bg = "#32302F"; italic = true; };
-        # DropBarMenuCurrentContext = { fg = "#928374"; bg = "#32302F"; italic = true; };
-        # DropBarMenuNormalFloat = { fg = "#928374"; bg = "#32302F"; italic = true; };
-        # DropBarMenuFloatBorder = { fg = "#928374"; bg = "#32302F"; italic = true; };
+        WinBar = { bg = "#32302F"; };
       };
     };
   };
@@ -116,5 +110,13 @@
       nvimRuntime = false; # Gain marginal, complexité++
       luaLib = false; # Idem
     };
+
+    # Permet de combiner les plugins pour réduire l'espace disque
+    # combinePlugins = {
+    #   enable = true;
+    #   standalonePlugins = [
+    #     "friendly-snippets"  # ← OBLIGATOIRE sinon blink ne voit pas les snippets
+    #   ];
+    # };
   };
 }

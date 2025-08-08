@@ -49,6 +49,9 @@
     # =================================================================
     spider = {
       enable = true;
+      settings = {
+        skipInsignificantPunctuation = true; # ignore ;, :, etc.
+      };
       # Configuration minimale recommandée
       keymaps = {
         motions = {
@@ -102,15 +105,6 @@
     persistence = {
       enable = true;
       # Défauts parfaits : sauvegarde dans ~/.local/state/nvim/sessions
-      # Pas de configuration nécessaire !
-    };
-
-    # =================================================================
-    # TODO-COMMENTS - Highlight et gestion TODO/FIXME (Folke)
-    # =================================================================
-    todo-comments = {
-      enable = true;
-      # Défauts excellents : TODO, FIXME, HACK, WARN, PERF, NOTE avec couleurs
       # Pas de configuration nécessaire !
     };
   };

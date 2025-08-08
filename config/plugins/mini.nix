@@ -51,6 +51,10 @@
       # Mise en évidence de patterns
       hipatterns = {
         highlighters = {
+          fixme = { pattern = "%f[%w]()FIXME()%f[%W]"; group = "MiniHipatternsFixme"; };
+          hack  = { pattern = "%f[%w]()HACK()%f[%W]";  group = "MiniHipatternsHack";  };
+          todo  = { pattern = "%f[%w]()TODO()%f[%W]";  group = "MiniHipatternsTodo";  };
+          note  = { pattern = "%f[%w]()NOTE()%f[%W]";  group = "MiniHipatternsNote";  };
           hex_color = {
             __raw = ''require('mini.hipatterns').gen_highlighter.hex_color()'';
           };
@@ -90,6 +94,31 @@
         mappings = {
           toggle = "gS"; # Split ↔ join arguments/listes
         };
+      };
+
+      # Navigation avec [ et ] pour différents objets
+      bracketed = {
+        # Configuration minimale - active la plupart des mappings utiles
+        # Évite automatiquement les conflits avec tes keymaps existants
+        # (qui utilisent déjà d, b, h, y, t)
+        
+        # Désactive les mappings qui rentrent en conflit avec tes keymaps
+        buffer = { suffix = ""; }; # Désactive [b ]b (tu as déjà ça)
+        diagnostic = { suffix = ""; }; # Désactive [d ]d (tu as déjà ça)
+        yank = { suffix = ""; }; # Désactive [y ]y (tu as yanky)
+        
+        # Active les autres mappings utiles (pas de conflit)
+        comment = { suffix = "c"; }; # [c ]c pour les commentaires
+        conflict = { suffix = "x"; }; # [x ]x pour les conflits git
+        file = { suffix = "f"; }; # [f ]f pour les fichiers dans le directory
+        indent = { suffix = "i"; }; # [i ]i pour les niveaux d'indentation
+        jump = { suffix = "j"; }; # [j ]j pour la jump list
+        location = { suffix = "l"; }; # [l ]l pour la location list  
+        oldfile = { suffix = "o"; }; # [o ]o pour les fichiers récents
+        quickfix = { suffix = "q"; }; # [q ]q pour la quickfix list
+        treesitter = { suffix = "n"; }; # [n ]n pour les nodes treesitter
+        undo = { suffix = "u"; }; # [u ]u pour l'undo tree
+        window = { suffix = "w"; }; # [w ]w pour les fenêtres
       };
     };
   };
