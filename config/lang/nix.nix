@@ -3,7 +3,7 @@
   # =====================================================================
   # CONFIGURATION NIX - Avec keymaps locaux
   # =====================================================================
-  
+
   # LSP - configuration minimale
   plugins.lsp.servers.nixd = {
     enable = true;
@@ -11,12 +11,12 @@
       nixpkgs.expr = "import <nixpkgs> { }";
     };
   };
-  
+
   # Packages
   extraPackages = with pkgs; [
     nixd
   ];
-  
+
   # =====================================================================
   # AUTOCOMMANDS AVEC KEYMAPS LOCAUX
   # =====================================================================
@@ -80,7 +80,7 @@
             local ok, wk = pcall(require, "which-key")
             if ok then
               wk.add({
-                { "<leader>N", group = "󱄅 Nix", buffer = bufnr },
+                { "<leader>N", group = "Nix", icon = { icon = "󱄅", color = "blue" }, buffer = bufnr },
               })
             end
           end, 100)

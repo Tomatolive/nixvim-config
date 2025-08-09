@@ -1,4 +1,4 @@
 {
   # Import all your configuration modules here
-  imports = [ ./config ./lang ./plugins ];
+  imports = [ ./core ./lang ./plugins ];
 }

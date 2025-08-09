@@ -111,7 +111,7 @@
             local ok, wk = pcall(require, "which-key")
             if ok then
               wk.add({
-                { "<leader>m", group = " Markdown", buffer = bufnr },
+                { "<leader>m", group = "Markdown", icon = { icon = "", color = "orange" }, buffer = bufnr },
               })
             end
           end, 100)

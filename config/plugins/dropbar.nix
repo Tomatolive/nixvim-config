@@ -7,7 +7,7 @@
     enable = true;
 
     settings = {
-      general = {
+      bar = {
         # Désactiver plus conservativement pour éviter conflits avec snacks
         enable = {
           __raw = ''

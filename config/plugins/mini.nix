@@ -22,7 +22,7 @@
           command = false;
           terminal = false;
         };
-        silent = true; # Évite les conflits avec noice
+        # silent = true; # Évite les conflits avec noice
       };
 
       # Surround simple
@@ -35,7 +35,7 @@
           highlight = "gsh";
           replace = "gsr";
         };
-        silent = true; # Évite les conflits avec noice
+        # silent = true; # Évite les conflits avec noice
       };
 
       # Commentaires
@@ -45,18 +45,25 @@
           comment_line = "gcc";
           comment_visual = "gc";
         };
-        silent = true; # Évite les conflits avec noice
+        # silent = true; # Évite les conflits avec noice
       };
 
       # Mise en évidence de patterns
       hipatterns = {
         highlighters = {
-          fixme = { pattern = "%f[%w]()FIXME()%f[%W]"; group = "MiniHipatternsFixme"; };
-          hack  = { pattern = "%f[%w]()HACK()%f[%W]";  group = "MiniHipatternsHack";  };
-          todo  = { pattern = "%f[%w]()TODO()%f[%W]";  group = "MiniHipatternsTodo";  };
-          note  = { pattern = "%f[%w]()NOTE()%f[%W]";  group = "MiniHipatternsNote";  };
           hex_color = {
             __raw = ''require('mini.hipatterns').gen_highlighter.hex_color()'';
+          };
+          # Couleurs courtes (#rgb)
+          shorthand = {
+            pattern = "()#%x%x%x()%f[^%x%w]";
+            group.__raw = ''
+              function(_, _, data)
+                local match = data.full_match
+                local r, g, b = match:sub(2, 2), match:sub(3, 3), match:sub(4, 4)
+                return require('mini.hipatterns').compute_hex_color_group("#" .. r .. r .. g .. g .. b .. b, "bg")
+              end
+            '';
           };
         };
       };
@@ -101,12 +108,12 @@
         # Configuration minimale - active la plupart des mappings utiles
         # Évite automatiquement les conflits avec tes keymaps existants
         # (qui utilisent déjà d, b, h, y, t)
-        
+
         # Désactive les mappings qui rentrent en conflit avec tes keymaps
         buffer = { suffix = ""; }; # Désactive [b ]b (tu as déjà ça)
         diagnostic = { suffix = ""; }; # Désactive [d ]d (tu as déjà ça)
         yank = { suffix = ""; }; # Désactive [y ]y (tu as yanky)
-        
+
         # Active les autres mappings utiles (pas de conflit)
         comment = { suffix = "c"; }; # [c ]c pour les commentaires
         conflict = { suffix = "x"; }; # [x ]x pour les conflits git

@@ -470,18 +470,18 @@
     }
 
     # ===== CODE GROUP - <leader>c =====
-    {
-      mode = "n";
-      key = "<leader>ca";
-      action = "<cmd>lua vim.lsp.buf.code_action()<cr>";
-      options.desc = "Code Actions";
-    }
-    {
-      mode = "n";
-      key = "<leader>cr";
-      action = "<cmd>lua vim.lsp.buf.rename()<cr>";
-      options.desc = "Rename Symbol";
-    }
+    # {
+    #   mode = "n";
+    #   key = "<leader>ca";
+    #   action = "<cmd>lua vim.lsp.buf.code_action()<cr>";
+    #   options.desc = "Code Actions";
+    # }
+    # {
+    #   mode = "n";
+    #   key = "<leader>cr";
+    #   action = "<cmd>lua vim.lsp.buf.rename()<cr>";
+    #   options.desc = "Rename Symbol";
+    # }
     {
       mode = "n";
       key = "<leader>cf";

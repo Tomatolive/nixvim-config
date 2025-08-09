@@ -98,7 +98,7 @@
             local ok, wk = pcall(require, "which-key")
             if ok then
               wk.add({
-                { "<leader>h", group = "󰲒 Haskell", buffer = bufnr },
+                { "<leader>h", group = "Haskell", icon = { icon = "󰲒", color = "purple" }, buffer = bufnr },
               })
             end
           end, 100)

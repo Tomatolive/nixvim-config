@@ -88,7 +88,7 @@
             local ok, wk = pcall(require, "which-key")
             if ok then
               wk.add({
-                { "<leader>C", group = "󰙱 C/C++", buffer = bufnr },
+                { "<leader>C", group = "C/C++", icon = { icon = "󰙱", color = "blue" } buffer = bufnr },
               })
             end
           end, 100)

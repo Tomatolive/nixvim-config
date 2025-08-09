@@ -64,6 +64,15 @@
     };
 
     # =================================================================
+    # TODO-COMMENTS - Highlight et gestion TODO/FIXME (Folke)
+    # =================================================================
+    todo-comments = {
+      enable = true;
+      # Défauts excellents : TODO, FIXME, HACK, WARN, PERF, NOTE avec couleurs
+      # Pas de configuration nécessaire !
+    };
+
+    # =================================================================
     # AUTO-SAVE - Sauvegarde automatique intelligente
     # =================================================================
     auto-save = {
