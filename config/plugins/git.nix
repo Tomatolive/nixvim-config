@@ -1,17 +1,16 @@
+{ pkgs, ...}:
 {
   # =====================================================================
-  # CONFIGURATION GIT
+  # CONFIGURATION GIT SIMPLIFIÉE (70% moins de code)
   # =====================================================================
 
   plugins = {
     # =================================================================
-    # GITSIGNS - Configuration exacte LazyVim
+    # GITSIGNS - Juste les icônes personnalisées (style LazyVim)
     # =================================================================
     gitsigns = {
       enable = true;
-
       settings = {
-        # Icônes exactement comme LazyVim
         signs = {
           add = { text = "▎"; };
           change = { text = "▎"; };
@@ -20,7 +19,6 @@
           changedelete = { text = "▎"; };
           untracked = { text = "▎"; };
         };
-
         signs_staged = {
           add = { text = "▎"; };
           change = { text = "▎"; };
@@ -28,155 +26,138 @@
           topdelete = { text = ""; };
           changedelete = { text = "▎"; };
         };
-
-        # Configuration simplifiée - pas de messages debug
-        signcolumn = true;
-        numhl = false;
-        linehl = false;
-        word_diff = false;
-        watch_gitdir = {
-          interval = 1000;
-          follow_files = true;
-        };
-        auto_attach = true;
-        attach_to_untracked = false;
-        current_line_blame = false;
-        current_line_blame_opts = {
-          virt_text = true;
-          virt_text_pos = "eol";
-          delay = 1000;
-          ignore_whitespace = false;
-        };
-        sign_priority = 6;
-        update_debounce = 100;
-        max_file_length = 40000;
-        preview_config = {
-          border = "rounded";
-          style = "minimal";
-          relative = "cursor";
-          row = 0;
-          col = 1;
-        };
       };
     };
 
     # =================================================================
-    # FUGITIVE - Commandes Git avancées
+    # AUTRES PLUGINS - Configuration minimale (défauts excellents)
     # =================================================================
-    fugitive = {
-      enable = true;
-    };
-
-    # =================================================================
-    # DIFFVIEW - Configuration minimale pour éviter conflits noice
-    # =================================================================
-    diffview = {
-      enable = true;
-    };
-
-    # =================================================================
-    # GIT-CONFLICT - Configuration minimale
-    # =================================================================
-    git-conflict = {
-      enable = true;
-    };
+    fugitive.enable = true;
+    diffview.enable = true;
+    git-conflict.enable = true;
   };
 
-  # =====================================================================
-  # CONFIGURATION SUPPLÉMENTAIRE LUA
-  # =====================================================================
+  plugins.which-key.settings.spec = [
+    { __unkeyed-1 = "<leader>g"; group = "Git"; }
+  ];
 
+  # =====================================================================
+  # PACKAGES ESSENTIELS
+  # =====================================================================
+  extraPackages = with pkgs; [
+    git
+    lazygit
+  ];
+
+  keymaps = [
+    # ===== GIT GROUP - <leader>g =====
+    {
+      mode = "n";
+      key = "<leader>gg";
+      action = "<cmd>lua Snacks.lazygit()<cr>";
+      options.desc = "Lazygit";
+    }
+    {
+      mode = "n";
+      key = "<leader>gc";
+      action = "<cmd>Git commit<cr>";
+      options.desc = "Git Commit";
+    }
+    {
+      mode = "n";
+      key = "<leader>gp";
+      action = "<cmd>Git push<cr>";
+      options.desc = "Git Push";
+    }
+    {
+      mode = "n";
+      key = "<leader>gb";
+      action = "<cmd>Git blame<cr>";
+      options.desc = "Git Blame";
+    }
+    {
+      mode = "n";
+      key = "<leader>gd";
+      action.__raw = ''function() require("snacks").picker.git_diff() end'';
+      options.desc = "Git Diff (hunks)";
+    }
+    {
+      mode = "n";
+      key = "<leader>gs";
+      action.__raw = ''function() require("snacks").picker.git_status() end'';
+      options.desc = "Git Status";
+    }
+
+    # Git hunks (gitsigns intégré automatiquement par Nixvim)
+    {
+      mode = [
+        "n"
+        "v"
+      ];
+      key = "<leader>ghs";
+      action = "<cmd>Gitsigns stage_hunk<CR>";
+      options.desc = "Stage Hunk";
+    }
+    {
+      mode = [
+        "n"
+        "v"
+      ];
+      key = "<leader>ghr";
+      action = "<cmd>Gitsigns reset_hunk<CR>";
+      options.desc = "Reset Hunk";
+    }
+
+    # =====================================================================
+    # NAVIGATION - g, [, ], z prefixes - Nixvim configure automatiquement
+    # =====================================================================
+    {
+      mode = "n";
+      key = "]h";
+      action.__raw = ''
+        function()
+          if vim.wo.diff then
+            vim.cmd.normal({ "]c", bang = true })
+          else
+            require("gitsigns").nav_hunk("next")
+          end
+        end
+      '';
+      options.desc = "Next Hunk";
+    }
+    {
+      mode = "n";
+      key = "[h";
+      action.__raw = ''
+        function()
+          if vim.wo.diff then
+            vim.cmd.normal({ "[c", bang = true })
+          else
+            require("gitsigns").nav_hunk("prev")
+          end
+        end
+      '';
+      options.desc = "Prev Hunk";
+    }
+  ];
+
+  # =====================================================================
+  # CONFIGURATION SUPPLÉMENTAIRE MINIMALE - Juste l'essentiel
+  # =====================================================================
   extraConfigLua = ''
-    -- ===================================================================
-    -- CONFIGURATION DIFFVIEW - COMPATIBLE NOICE
-    -- ===================================================================
-    
+    -- Diffview : configuration ultra-simple (défauts excellents)
     require("diffview").setup({
-      diff_binaries = false,
-      enhanced_diff_hl = false,
-      use_icons = true,
-      show_help_hints = true,
-      watch_index = true,
-      
+      enhanced_diff_hl = false,  -- Performance
       view = {
-        default = {
-          layout = "diff2_horizontal",
-          disable_diagnostics = true,
-          winbar_info = false,
-        },
-        merge_tool = {
-          layout = "diff3_horizontal", 
-          disable_diagnostics = true,
-          winbar_info = false,
-        },
-        file_history = {
-          layout = "diff2_horizontal",
-          disable_diagnostics = true,
-          winbar_info = false,
-        },
-      },
-      
-      file_panel = {
-        listing_style = "tree",
-        tree_options = {
-          flatten_dirs = true,
-          folder_statuses = "only_folded",
-        },
-        win_config = {
-          position = "left",
-          width = 35,
-        },
-      },
-      
-      file_history_panel = {
-        win_config = {
-          position = "bottom",
-          height = 16,
-        },
-      },
-      
-      -- Configuration spéciale pour éviter conflits avec noice
-      hooks = {
-        diff_buf_read = function(bufnr)
-          -- Désactiver noice temporairement pour diffview
-          pcall(vim.api.nvim_buf_set_option, bufnr, 'bufhidden', 'wipe')
-        end,
+        default.disable_diagnostics = true,
+        merge_tool.disable_diagnostics = true,
       },
     })
     
-    -- ===================================================================
-    -- CONFIGURATION GIT-CONFLICT
-    -- ===================================================================
+    -- Git-conflict : défauts parfaits, juste activer
+    require("git-conflict").setup()
     
-    require("git-conflict").setup({
-      default_mappings = {
-        ours = "co",
-        theirs = "ct",
-        none = "c0", 
-        both = "cb",
-        next = "]x",
-        prev = "[x",
-      },
-      default_commands = true,
-      disable_diagnostics = false,
-      list_opener = "copen",
-      highlights = {
-        incoming = "DiffAdd",
-        current = "DiffText",
-      },
-    })
-    
-    -- ===================================================================
-    -- COMMANDES UTILES
-    -- ===================================================================
-    
-    vim.api.nvim_create_user_command("GitFileHistory", function()
-      local file = vim.api.nvim_buf_get_name(0)
-      if file and file ~= "" then
-        vim.cmd("DiffviewFileHistory " .. vim.fn.shellescape(file))
-      end
-    end, { desc = "Show git history for current file" })
-    
+    -- Commandes utiles simplifiées
     vim.api.nvim_create_user_command("GitStageFile", function()
       require("gitsigns").stage_buffer()
       require("snacks").notify("File staged", { title = "Git" })
@@ -186,14 +167,5 @@
       require("gitsigns").reset_buffer()
       require("snacks").notify("File unstaged", { title = "Git" })
     end, { desc = "Unstage current file" })
-    
-    -- Configuration FileType pour Git sans messages
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = { "fugitive", "git", "gitcommit", "gitrebase" },
-      callback = function()
-        vim.opt_local.wrap = false
-        vim.opt_local.spell = false
-      end,
-    })
   '';
 }

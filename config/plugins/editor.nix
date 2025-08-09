@@ -118,11 +118,102 @@
     };
   };
 
+  plugins.which-key.settings.spec = [
+    { __unkeyed-1 = "<leader>r"; group = "Persistence"; icon = { icon = ""; color = "blue"; }; }
+  ];
+
   # =====================================================================
   # DÉPENDANCES REQUISES
   # =====================================================================
   extraPlugins = with pkgs.vimPlugins; [
     plenary-nvim # Requis pour todo-comments.nvim
+  ];
+
+  keymaps = [
+    {
+      mode = [
+        "n"
+        "x"
+      ];
+      key = "p";
+      action = "<Plug>(YankyPutAfter)";
+      options.desc = "Put After";
+    }
+    {
+      mode = [
+        "n"
+        "x"
+      ];
+      key = "P";
+      action = "<Plug>(YankyPutBefore)";
+      options.desc = "Put Before";
+    }
+
+    # ===== PASTE GROUP - <leader>p =====
+    {
+      mode = "n";
+      key = "<leader>p";
+      action = "<cmd>YankyRingHistory<cr>";
+      options.desc = "Yank History";
+    }
+
+    # ===== PERSISTENCE/SESSION GROUP - <leader>r =====
+    {
+      mode = "n";
+      key = "<leader>rs";
+      action.__raw = ''function() require("persistence").load() end'';
+      options.desc = "Restore Session";
+    }
+    {
+      mode = "n";
+      key = "<leader>rS";
+      action.__raw = ''function() require("persistence").select() end'';
+      options.desc = "Select Session";
+    }
+    {
+      mode = "n";
+      key = "<leader>rl";
+      action.__raw = ''function() require("persistence").load({ last = true }) end'';
+      options.desc = "Last Session";
+    }
+    {
+      mode = "n";
+      key = "<leader>rd";
+      action.__raw = ''function() require("persistence").stop() end'';
+      options.desc = "Don't Save Session";
+    }
+
+    # =====================================================================
+    # NAVIGATION - g, [, ], z prefixes - Nixvim configure automatiquement
+    # =====================================================================
+
+    # Navigation dans l'historique
+    {
+      mode = "n";
+      key = "[y";
+      action = "<Plug>(YankyCycleForward)";
+      options.desc = "Cycle Forward Yank";
+    }
+    {
+      mode = "n";
+      key = "]y";
+      action = "<Plug>(YankyCycleBackward)";
+      options.desc = "Cycle Backward Yank";
+    }
+
+    # Navigation TODO
+    {
+      mode = "n";
+      key = "]t";
+      action.__raw = ''function() require("todo-comments").jump_next() end'';
+      options.desc = "Next Todo Comment";
+    }
+    {
+      mode = "n";
+      key = "[t";
+      action.__raw = ''function() require("todo-comments").jump_prev() end'';
+      options.desc = "Previous Todo Comment";
+    }
   ];
 
   # =====================================================================

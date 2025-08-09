@@ -55,7 +55,7 @@
         ];
 
         # ===== NOTIFICATIONS DÉSACTIVÉES =====
-        # Snacks.notifier gère tout
+        # NOTE : Snacks.notifier gère tout
         notify = {
           enabled = false;
         };

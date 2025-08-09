@@ -11,117 +11,107 @@
     ./markdown.nix
   ];
 
-  # =====================================================================
-  # LSP DE BASE
-  # =====================================================================
-  plugins.lsp.enable = true;
+  plugins = {
+    # =====================================================================
+    # LSP DE BASE
+    # =====================================================================
+    lsp.enable = true;
 
-  # =====================================================================
-  # PACKAGES GLOBAUX
-  # =====================================================================
-  extraPackages = with pkgs; [
-    # Formatters
-    nixpkgs-fmt
-    alejandra
-    ormolu
-    stylish-haskell
+    # =====================================================================
+    # TREESITTER - Configuration complète RESTAURÉE
+    # =====================================================================
+    treesitter = {
+      enable = true;
 
-    # Linters
-    hlint
-    deadnix
-    statix
-  ];
+      grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+        # Langages de base
+        lua
+        luadoc
+        luap
+        vim
+        vimdoc
+        query
+        regex
+        printf
 
-  # =====================================================================
-  # TREESITTER - Configuration complète RESTAURÉE
-  # =====================================================================
-  plugins.treesitter = {
-    enable = true;
+        # Shell
+        bash
+        fish
 
-    # IMPORTANT: Les grammaires ne sont PAS téléchargées automatiquement !
-    grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
-      # Langages de base
-      lua
-      vim
-      vimdoc
-      query
-      regex
+        # Git
+        diff
+        git_config
+        git_rebase
+        gitcommit
+        gitignore
 
-      # Langages actuels
-      nix
-      haskell
+        # Configuration et données
+        json
+        jsonc
+        yaml
+        toml
+        xml
+      ];
 
-      # Langages courants (ajoute selon tes besoins)
-      python
-      rust
-      javascript
-      typescript
-      go
-      c
-      cpp
-      java
-
-      # Web
-      html
-      css
-      scss
-
-      # Configuration et données
-      json
-      yaml
-      toml
-      xml
-
-      # Documentation
-      markdown
-      markdown_inline
-
-      # Shell
-      bash
-      fish
-
-      # Git
-      diff
-      git_config
-      git_rebase
-      gitcommit
-      gitignore
-    ];
-
-    settings = {
-      highlight = {
-        enable = true;
-        additional_vim_regex_highlighting = false;
-      };
-
-      indent = {
-        enable = true;
-      };
-
-      incremental_selection = {
-        enable = true;
-        keymaps = {
-          init_selection = "<C-space>";
-          node_incremental = "<C-space>";
-          scope_incremental = "<C-s>";
-          node_decremental = "<M-space>";
-        };
-      };
-
-      # Text objects utiles
-      textobjects = {
-        select = {
+      settings = {
+        highlight = {
           enable = true;
-          lookahead = true;
+          additional_vim_regex_highlighting = false;
+        };
+
+        indent = {
+          enable = true;
+        };
+
+        incremental_selection = {
+          enable = true;
           keymaps = {
-            "af" = "@function.outer";
-            "if" = "@function.inner";
-            "ac" = "@class.outer";
-            "ic" = "@class.inner";
+            init_selection = "<C-space>";
+            node_incremental = "<C-space>";
+            scope_incremental = "<C-s>";
+            node_decremental = "<M-space>";
+          };
+        };
+
+        # Plugin additionnel pour le contexte
+        treesitter-context = {
+          enable = true;
+          settings = {
+            enable = true;
+            max_lines = 0;
+            line_numbers = true;
+            trim_scope = "outer";
+            mode = "cursor";
+          };
+        };
+
+        # Text objects utiles
+        textobjects = {
+          select = {
+            enable = true;
+            lookahead = true;
+            keymaps = {
+              "af" = "@function.outer";
+              "if" = "@function.inner";
+              "ac" = "@class.outer";
+              "ic" = "@class.inner";
+            };
           };
         };
       };
     };
+
+    conform-nvim = {
+      enable = true;
+      settings = {
+        format_on_save = {
+          timeout_ms = 1000;
+          lsp_fallback = true; # Fallback vers LSP si conform n'a pas de formatter
+        };
+      };
+    };
+
+    lint.enable = true;
   };
 
   extraConfigLua = ''

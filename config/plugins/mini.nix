@@ -130,5 +130,10 @@
     };
   };
 
+  plugins.which-key.settings.spec = [
+    { __unkeyed-1 = "gs"; group = "Surround"; }
+    { __unkeyed-1 = "gp"; group = "Peek/Preview"; }
+  ];
+
   # Pas d'extraConfigLua complexe - Nixvim gère les intégrations
 }

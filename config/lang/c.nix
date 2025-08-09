@@ -16,11 +16,28 @@
     };
   };
 
-  # =====================================================================
-  # CLANGD LSP - Nixvim a d'excellents défauts, juste l'essentiel
-  # =====================================================================
-  plugins.lsp.servers.clangd = {
-    enable = true;
+  plugins = {
+    # =====================================================================
+    # CLANGD LSP - Nixvim a d'excellents défauts, juste l'essentiel
+    # =====================================================================
+    lsp.servers.clangd = {
+      enable = true;
+    };
+
+    treesitter.grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+      c
+      cpp
+    ];
+
+    conform-nvim.settings.formatters_by_ft = {
+      c = [ "clang_format" ];
+      cpp = [ "clang_format" ];
+    };
+
+    lint.lintersByFt = {
+      c = [ "cppcheck" ];
+      cpp = [ "cppcheck" "cpplint" ];
+    };
   };
 
   # =====================================================================
@@ -29,6 +46,8 @@
   extraPackages = with pkgs; [
     # Essentiel : clang-tools inclut clangd, clang-format, clang-tidy
     clang-tools
+    cppcheck
+    cpplint
 
     # Utile : pour générer compile_commands.json
     bear
@@ -88,7 +107,7 @@
             local ok, wk = pcall(require, "which-key")
             if ok then
               wk.add({
-                { "<leader>C", group = "C/C++", icon = { icon = "󰙱", color = "blue" } buffer = bufnr },
+                { "<leader>C", group = "C/C++", icon = { icon = "󰙱", color = "blue" }, buffer = bufnr },
               })
             end
           end, 100)

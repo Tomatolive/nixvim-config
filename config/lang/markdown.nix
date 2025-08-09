@@ -7,8 +7,21 @@
   # =====================================================================
   # LSP MARKDOWN
   # =====================================================================
-  plugins.lsp.servers.marksman = {
-    enable = true;
+  plugins = {
+    lsp.servers.marksman.enable = true;
+
+    treesitter.grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+      markdown
+      markdown_inline
+    ];
+
+    conform-nvim.settings.formatters_by_ft = {
+      markdown = [ "prettier" ];
+    };
+
+    lint.lintersByFt = {
+      markdown = [ "markdownlint" ];
+    };
   };
 
   # =====================================================================
@@ -21,10 +34,10 @@
       preview = {
         modes = [ "n" ]; # Juste en mode normal
         hybrid_modes = [ "n" ];
-        
+
         # Auto-enable pour markdown
         filetypes = [ "markdown" "quarto" "rmd" ];
-        
+
         # Performance
         debounce = 300;
       };

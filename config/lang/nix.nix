@@ -4,17 +4,34 @@
   # CONFIGURATION NIX - Avec keymaps locaux
   # =====================================================================
 
-  # LSP - configuration minimale
-  plugins.lsp.servers.nixd = {
-    enable = true;
-    settings = {
-      nixpkgs.expr = "import <nixpkgs> { }";
+  plugins = {
+    # LSP - configuration minimale
+    lsp.servers.nixd = {
+      enable = true;
+      settings = {
+        nixpkgs.expr = "import <nixpkgs> { }";
+      };
+    };
+
+    treesitter.grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+      nix
+    ];
+
+    conform-nvim.settings.formatters_by_ft = {
+      nix = [ "nixpkgs_fmt" ];
+    };
+
+    lint.lintersByFt = {
+      nix = [ "deadnix" "statix" ];
     };
   };
 
   # Packages
   extraPackages = with pkgs; [
     nixd
+    nixpkgs-fmt
+    deadnix
+    statix
   ];
 
   # =====================================================================

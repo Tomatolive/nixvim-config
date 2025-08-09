@@ -11,6 +11,20 @@
     haskell-tools-nvim
   ];
 
+  plugins = {
+    treesitter.grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+      haskell
+    ];
+
+    conform-nvim.settings.formatters_by_ft = {
+      haskell = [ "ormolu" ];
+    };
+
+    lint.lintersByFt = {
+      haskell = [ "hlint" ];
+    };
+  };
+
   # =====================================================================
   # PACKAGES REQUIS
   # =====================================================================
@@ -22,6 +36,8 @@
 
     # Language Server (géré automatiquement par haskell-tools)
     haskell-language-server
+    ormolu
+    hlint
 
     # Outils additionnels
     haskellPackages.hoogle
@@ -106,9 +122,9 @@
       '';
     }
   ];
-  
+
   extraConfigLua = ''
-      local ht = require('haskell-tools')
-      local bufnr = vim.api.nvim_get_current_buf()
+    local ht = require('haskell-tools')
+    local bufnr = vim.api.nvim_get_current_buf()
   '';
 }

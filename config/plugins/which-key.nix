@@ -19,26 +19,31 @@
       };
       delay = 200;
       
-      # Configuration des specs statiques SEULEMENT pour les groupes principaux
+      # Configuration des specs statiques
       spec = [
-        { __unkeyed-1 = "<leader>b"; group = "Buffers"; }
         { __unkeyed-1 = "<leader>c"; group = "Code"; }
-        { __unkeyed-1 = "<leader>f"; group = "Find/File"; }
-        { __unkeyed-1 = "<leader>g"; group = "Git"; }
-        { __unkeyed-1 = "<leader>n"; group = "Notifications"; }
-        { __unkeyed-1 = "<leader>r"; group = "Persistence"; }
-        { __unkeyed-1 = "<leader>s"; group = "Search"; }
-        { __unkeyed-1 = "<leader>t"; group = "Terminal"; }
-        { __unkeyed-1 = "<leader>u"; group = "UI"; }
         { __unkeyed-1 = "<leader>x"; group = "Diagnostics"; }
         
-        # Navigation
-        { __unkeyed-1 = "g"; group = "󰈮 Goto"; }
-        { __unkeyed-1 = "["; group = "󰒮 Previous"; }
-        { __unkeyed-1 = "]"; group = "󰒭 Next"; }
+        { __unkeyed-1 = "g"; group = "Goto"; }
+        { __unkeyed-1 = "["; group = "Previous"; }
+        { __unkeyed-1 = "]"; group = "Next"; }
+        { __unkeyed-1 = "z"; group = "Fold"; }
       ];
     };
   };
+
+  keymaps = [
+    {
+      mode = "n";
+      key = "<leader>?";
+      action.__raw = ''
+        function()
+          require("which-key").show({ global = false })
+        end
+      '';
+      options.desc = "Buffer Local Keymaps";
+    }
+  ];
 
   # =====================================================================
   # AUCUNE CONFIGURATION SUPPLÉMENTAIRE !
