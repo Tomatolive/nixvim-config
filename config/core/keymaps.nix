@@ -161,6 +161,58 @@
       options.desc = "End of line";
     }
 
+    {
+      mode = "i";
+      key = "<A-;>";
+      action.__raw = ''
+        function()
+          local line = vim.api.nvim_get_current_line()
+          local cursor_col = vim.api.nvim_win_get_cursor(0)[2]
+          local after_cursor = line:sub(cursor_col + 1)
+      
+          -- Si déjà un ; à la fin, ne rien faire
+          if line:match(";%s*$") then
+            return
+          end
+      
+          -- Patterns qui ne veulent PAS de ;
+          local no_semicolon_patterns = {
+            "^%s*#",           -- Macros C (#define, #include)
+            "^%s*if%s*%(.*%)%s*$",     -- if (...) 
+            "^%s*while%s*%(.*%)%s*$",  -- while (...)
+            "^%s*for%s*%(.*%)%s*$",    -- for (...)
+            "^%s*else%s*$",            -- else
+            "^%s*{%s*$",               -- { (début de bloc)
+            "^%s*.*{%s*$",             -- tout ce qui finit par {
+          }
+      
+          -- Vérifier si on est dans un cas qui ne veut pas de ;
+          for _, pattern in ipairs(no_semicolon_patterns) do
+            if line:match(pattern) then
+              return
+            end
+          end
+      
+          -- Ajouter ; à la fin de la ligne
+          vim.cmd("normal! A;")
+        end
+      '';
+      options.desc = "Smart semicolon";
+    }
+    {
+      mode = "i";
+      key = "<A-,>";
+      action.__raw = ''
+        function()
+          local line = vim.api.nvim_get_current_line()
+          if not line:match(",%s*$") then
+            vim.cmd("normal! A,")
+          end
+        end
+      '';
+      options.desc = "Smart comma";
+    }
+
     # ===== NAVIGATION BUFFERS =====
     {
       mode = "n";

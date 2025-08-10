@@ -50,7 +50,7 @@
     spider = {
       enable = true;
       settings = {
-        skipInsignificantPunctuation = true; # ignore ;, :, etc.
+        # skipInsignificantPunctuation = true; # ignore ;, :, etc.
       };
       # Configuration minimale recommandée
       keymaps = {
@@ -116,6 +116,13 @@
       # Défauts parfaits : sauvegarde dans ~/.local/state/nvim/sessions
       # Pas de configuration nécessaire !
     };
+
+    precognition = {
+      enable = true;
+      settings.showBlankVirtLine = false;
+    };
+
+    flash.enable = true;
   };
 
   plugins.which-key.settings.spec = [
@@ -131,22 +138,29 @@
 
   keymaps = [
     {
-      mode = [
-        "n"
-        "x"
-      ];
+      mode = [ "n" "x" ];
       key = "p";
       action = "<Plug>(YankyPutAfter)";
       options.desc = "Put After";
     }
     {
-      mode = [
-        "n"
-        "x"
-      ];
+      mode = [ "n" "x" ];
       key = "P";
       action = "<Plug>(YankyPutBefore)";
       options.desc = "Put Before";
+    }
+
+    {
+      mode = [ "n" "x" "o" ];
+      key = "s";
+      action.__raw = ''function() require("flash").jump() end'';
+      options.desc = "Flash Jump";
+    }
+    {
+      mode = [ "n" "x" "o" ];
+      key = "S";
+      action.__raw = ''function() require("flash").treesitter() end'';
+      options.desc = "Flash Treesitter";
     }
 
     # ===== PASTE GROUP - <leader>p =====

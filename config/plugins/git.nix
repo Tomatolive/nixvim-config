@@ -147,10 +147,10 @@
   extraConfigLua = ''
     -- Diffview : configuration ultra-simple (défauts excellents)
     require("diffview").setup({
-      enhanced_diff_hl = false,  -- Performance
+      enhanced_diff_hl = false,
       view = {
-        default.disable_diagnostics = true,
-        merge_tool.disable_diagnostics = true,
+        default = { disable_diagnostics = true },
+        merge_tool = { disable_diagnostics = true },
       },
     })
     

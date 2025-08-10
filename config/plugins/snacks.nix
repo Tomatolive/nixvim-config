@@ -66,37 +66,37 @@ I use
             ];
             keys = [
               {
-                icon = " ";
+                icon = " ";
                 key = "f";
                 desc = "Find File";
                 action = ":lua Snacks.dashboard.pick('files')";
               }
               {
-                icon = " ";
+                icon = " ";
                 key = "n";
                 desc = "New File";
                 action = ":ene | startinsert";
               }
               {
-                icon = " ";
+                icon = " ";
                 key = "g";
                 desc = "Find Text";
                 action = ":lua Snacks.dashboard.pick('live_grep')";
               }
               {
-                icon = " ";
+                icon = " ";
                 key = "r";
                 desc = "Recent Files";
                 action = ":lua Snacks.dashboard.pick('oldfiles')";
               }
               {
-                icon = " ";
+                icon = " ";
                 key = "s";
                 desc = "Sessions";
                 action.__raw = "function() require('persistence').select() end";
               }
               {
-                icon = " ";
+                icon = " ";
                 key = "q";
                 desc = "Quit";
                 action = ":qa";
@@ -299,24 +299,6 @@ I use
       action.__raw = ''function() require("snacks").picker.grep_buffers() end'';
       options.desc = "Grep Open Buffers";
     }
-    {
-      mode = [
-        "n"
-        "x"
-      ];
-      key = "<leader>sw";
-      action.__raw = ''function() require("lazyvim.util").pick("grep_word")() end'';
-      options.desc = "Visual selection or word (Root Dir)";
-    }
-    {
-      mode = [
-        "n"
-        "x"
-      ];
-      key = "<leader>sW";
-      action.__raw = ''function() require("lazyvim.util").pick("grep_word", { root = false })() end'';
-      options.desc = "Visual selection or word (cwd)";
-    }
 
     # Search operations
     {
@@ -402,6 +384,12 @@ I use
       key = "<leader>sm";
       action.__raw = ''function() require("snacks").picker.marks() end'';
       options.desc = "Marks";
+    }
+    {
+      mode = "n";
+      key = "<leader>fp";
+      action.__raw = ''function() require("snacks").picker.projects() end'';
+      options.desc = "Find Project";
     }
     {
       mode = "n";
