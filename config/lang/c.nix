@@ -38,6 +38,48 @@
       c = [ "cppcheck" ];
       cpp = [ "cppcheck" "cpplint" ];
     };
+
+    # =================================================================
+    # DAP-LLDB - Plugin native nixvim (fait tout le travail)
+    # =================================================================
+    dap-lldb = {
+      enable = true;
+      # Défauts excellents pour C/C++/Rust - zéro configuration !
+    };
+
+    dap.configurations = {
+      # Configuration GEF alternative (en plus des défauts dap-lldb LLDB)
+      c = [
+        {
+          name = "Debug with GEF (GDB Enhanced)";
+          type = "gdb";
+          request = "launch";
+          program.__raw = ''
+            function()
+              return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+            end
+          '';
+          cwd = "\${workspaceFolder}";
+          stopAtBeginningOfMainSubprogram = false;
+        }
+      ];
+    
+      # Même config pour C++
+      cpp = [
+        {
+          name = "Debug with GEF (GDB Enhanced)";
+          type = "gdb";
+          request = "launch";
+          program.__raw = ''
+            function()
+              return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+            end
+          '';
+          cwd = "\${workspaceFolder}";
+          stopAtBeginningOfMainSubprogram = false;
+        }
+      ];
+    };
   };
 
   # =====================================================================
@@ -51,6 +93,10 @@
 
     # Utile : pour générer compile_commands.json
     bear
+
+    lldb
+    gef
+    gdb
   ];
 
   # =====================================================================
@@ -101,6 +147,58 @@
           -- Create compile_flags.txt
           opts.desc = "Create compile_flags.txt"
           vim.keymap.set("n", "<leader>Cf", "<cmd>CreateCompileFlags<cr>", opts)
+
+          -- Debug
+          opts.desc = "Debug: Launch (LLDB)"
+          vim.keymap.set("n", "<leader>Cd", function()
+            -- Utilise les défauts dap-lldb (LLDB/CodeLLDB)
+            require('dap').continue()
+          end, opts)
+
+          opts.desc = "Debug: Launch (GEF)"
+          vim.keymap.set("n", "<leader>Cg", function()
+            -- Force l'utilisation de GEF
+            local configs = require('dap').configurations[vim.bo.filetype]
+            if configs then
+              for _, config in ipairs(configs) do
+                if config.type == "gdb" then
+                  require('dap').run(config)
+                  return
+                end
+              end
+            end
+            require("snacks").notify("GEF configuration not found", { level = "warn" })
+          end, opts)
+
+          opts.desc = "Debug: Build & Debug"
+          vim.keymap.set("n", "<leader>CD", function()
+            -- Compile avec debug symbols
+            local cwd = vim.fn.getcwd()
+            local build_cmd
+            
+            if vim.fn.filereadable(cwd .. "/Makefile") == 1 then
+              build_cmd = "make CFLAGS='-g'"
+            elseif vim.fn.filereadable(cwd .. "/CMakeLists.txt") == 1 then
+              build_cmd = "cmake -DCMAKE_BUILD_TYPE=Debug -B build && cmake --build build"
+            else
+              local file = vim.api.nvim_buf_get_name(0)
+              if file and file ~= "" then
+                local exe = vim.fn.fnamemodify(file, ":r")
+                build_cmd = "gcc -g -o " .. exe .. " " .. file
+              end
+            end
+            
+            if build_cmd then
+              require("snacks").terminal.open(build_cmd, {
+                title = "Build for Debug",
+                on_exit = function(_, code)
+                  if code == 0 then
+                    vim.defer_fn(function() require('dap').continue() end, 500)
+                  end
+                end
+              })
+            end
+          end, opts)
           
           -- Configuration which-key pour ce buffer seulement
           vim.defer_fn(function()
