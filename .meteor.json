@@ -1,0 +1,40 @@
+{
+  "boards": [
+    { "name": "NIXVIM", "description": "Nixvim configuration" },
+    { "name": "LANG", "description": "Language support" },
+    { "name": "PLUGINS", "description": "Plugins and integrations" },
+    { "name": "CONFIG", "description": "System configuration" },
+    { "name": "DOCS", "description": "Documentation" },
+    { "name": "NONE", "description": "No category" }
+  ],
+  "scopes": [
+    { "name": "core", "description": "Core configuration" },
+    { "name": "lang", "description": "Language support" },
+    { "name": "plugins", "description": "Plugins" },
+    { "name": "ui", "description": "User interface" },
+    { "name": "git", "description": "Git configuration" },
+    { "name": "lsp", "description": "Language Server Protocol" },
+    { "name": "editor", "description": "Editor functions" },
+    { "name": "keymaps", "description": "Key bindings" },
+    { "name": "colorscheme", "description": "Themes and colors" }
+  ],
+  "prefixes": [
+    { "type": "feat", "description": "a new feature" },
+    { "type": "fix", "description": "a bug fix" },
+    { "type": "docs", "description": "documentation only changes" },
+    { "type": "style", "description": "changes that do not affect the meaning of the code" },
+    { "type": "refactor", "description": "a code change that neither fixes a bug nor adds a feature" },
+    { "type": "perf", "description": "a code change that improves performance" },
+    { "type": "test", "description": "adding missing tests or correcting existing tests" },
+    { "type": "build", "description": "changes that affect the build system" },
+    { "type": "ci", "description": "changes to CI configuration files and scripts" },
+    { "type": "chore", "description": "other changes that don't modify src or test files" },
+    { "type": "revert", "description": "reverts a previous commit" }
+  ],
+  "commitTitleCharLimit": 72,
+  "commitBodyCharLimit": 100,
+  "commitBodyLineLength": 72,
+  "showIntro": false,
+  "messageTemplate": "@type(@scope): @message",
+  "messageWithTicketTemplate": "@ticket(@scope): <@type> @message"
+}

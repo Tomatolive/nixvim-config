@@ -1,7 +1,7 @@
 { pkgs, ...}:
 {
   # =====================================================================
-  # CONFIGURATION GIT SIMPLIFIÉE (70% moins de code)
+  # CONFIGURATION GIT + METEOR - Conventional Commits
   # =====================================================================
 
   plugins = {
@@ -42,11 +42,12 @@
   ];
 
   # =====================================================================
-  # PACKAGES ESSENTIELS
+  # PACKAGES ESSENTIELS + METEOR
   # =====================================================================
   extraPackages = with pkgs; [
     git
     lazygit
+    meteor-git  # ← CLI pour conventional commits
   ];
 
   keymaps = [
@@ -57,12 +58,37 @@
       action = "<cmd>lua Snacks.lazygit()<cr>";
       options.desc = "Lazygit";
     }
+    
+    # METEOR COMMITS - Remplace git commit classique
     {
       mode = "n";
       key = "<leader>gc";
-      action = "<cmd>Git commit<cr>";
-      options.desc = "Git Commit";
+      action.__raw = ''
+        function()
+          require("snacks").terminal.open("meteor", {
+            title = "Meteor - Conventional Commits",
+            size = { width = 0.8, height = 0.6 },
+            -- Terminal interactif qui se ferme après commit
+            on_exit = function()
+              require("snacks").notify("Commit created! 🚀", { 
+                title = "Meteor",
+                icon = "󰊢"
+              })
+            end
+          })
+        end
+      '';
+      options.desc = "Commit (Meteor)";
     }
+    
+    # Git commit classique en backup
+    {
+      mode = "n";
+      key = "<leader>gC";
+      action = "<cmd>Git commit<cr>";
+      options.desc = "Git Commit (Classic)";
+    }
+    
     {
       mode = "n";
       key = "<leader>gp";
@@ -142,7 +168,7 @@
   ];
 
   # =====================================================================
-  # CONFIGURATION SUPPLÉMENTAIRE MINIMALE - Juste l'essentiel
+  # CONFIGURATION SUPPLÉMENTAIRE - Meteor + Git
   # =====================================================================
   extraConfigLua = ''
     -- Diffview : configuration ultra-simple (défauts excellents)
@@ -167,5 +193,55 @@
       require("gitsigns").reset_buffer()
       require("snacks").notify("File unstaged", { title = "Git" })
     end, { desc = "Unstage current file" })
+    
+    -- METEOR : Commandes utiles pour conventional commits
+    vim.api.nvim_create_user_command("MeteorCommit", function()
+      require("snacks").terminal.open("meteor", {
+        title = "Meteor - Conventional Commits",
+        size = { width = 0.8, height = 0.6 }
+      })
+    end, { desc = "Open Meteor for conventional commits" })
+    
+    -- Fonction pour créer .meteor.json dans le projet
+    vim.api.nvim_create_user_command("MeteorConfig", function()
+      local config = {
+        boards = {
+          { name = "FEAT" },
+          { name = "FIX" },
+          { name = "DOCS" },
+          { name = "NONE" }
+        },
+        prefixes = {
+          { type = "feat", description = "a new feature" },
+          { type = "fix", description = "a bug fix" },
+          { type = "docs", description = "documentation only changes" },
+          { type = "style", description = "changes that do not affect the meaning of the code" },
+          { type = "refactor", description = "a code change that neither fixes a bug nor adds a feature" },
+          { type = "perf", description = "a code change that improves performance" },
+          { type = "test", description = "adding missing tests or correcting existing tests" },
+          { type = "chore", description = "changes to the build process or auxiliary tools" }
+        },
+        commitTitleCharLimit = 72,
+        commitBodyCharLimit = 72,
+        commitBodyLineLength = 72,
+        showIntro = false
+      }
+      
+      local json_content = vim.fn.json_encode(config)
+      local file = io.open(".meteor.json", "w")
+      if file then
+        file:write(json_content)
+        file:close()
+        require("snacks").notify("Created .meteor.json configuration", { 
+          title = "Meteor",
+          icon = "󰊢"
+        })
+      else
+        require("snacks").notify("Failed to create .meteor.json", { 
+          level = "error", 
+          title = "Meteor" 
+        })
+      end
+    end, { desc = "Create .meteor.json config file" })
   '';
 }
