@@ -1,5 +1,5 @@
 {
-  description = "A nixvim configuration";
+  description = "Tomatolive's Nixvim configuration";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
