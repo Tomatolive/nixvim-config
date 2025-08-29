@@ -104,7 +104,7 @@
         };
 
         # Pas trop agressif
-        debounce_delay = 1000;
+        debounce_delay = 135;
       };
     };
 
@@ -118,7 +118,7 @@
     };
 
     precognition = {
-      enable = true;
+      enable = false;
       settings.showBlankVirtLine = false;
     };
 
