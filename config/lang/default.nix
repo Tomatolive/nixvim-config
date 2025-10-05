@@ -5,10 +5,12 @@
   # =====================================================================
 
   imports = [
+    ./bash.nix
     ./c.nix
     ./nix.nix
     ./haskell.nix
     ./markdown.nix
+    ./python.nix
   ];
 
   plugins = {
@@ -111,7 +113,17 @@
       };
     };
 
-    lint.enable = true;
+    lint = {
+      enable = true;
+      autoCmd = {
+        callback.__raw = ''
+          function()
+            require('lint').try_lint()
+          end
+        '';
+        event = [ "BufEnter" "BufWritePost" "InsertLeave" "TextChanged" ];
+      };
+    };
   };
 
   extraConfigLua = ''

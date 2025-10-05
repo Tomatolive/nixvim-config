@@ -123,6 +123,8 @@
     };
 
     flash.enable = true;
+
+    hex.enable = true;
   };
 
   plugins.which-key.settings.spec = [
@@ -134,6 +136,10 @@
   # =====================================================================
   extraPlugins = with pkgs.vimPlugins; [
     plenary-nvim # Requis pour todo-comments.nvim
+  ];
+
+  extraPackages = with pkgs; [
+    xxd # Pour hex
   ];
 
   keymaps = [

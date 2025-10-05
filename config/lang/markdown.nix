@@ -100,15 +100,15 @@
           
           -- Toggle Markview
           opts.desc = "Toggle Markview"
-          vim.keymap.set("n", "<leader>mt", "<cmd>Markview toggle<cr>", opts)
+          vim.keymap.set("n", "<leader>Mt", "<cmd>Markview toggle<cr>", opts)
           
           -- Toggle Preview (Browser)
           opts.desc = "Toggle Preview (Browser)"
-          vim.keymap.set("n", "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", opts)
+          vim.keymap.set("n", "<leader>Mp", "<cmd>MarkdownPreviewToggle<cr>", opts)
           
           -- Export to HTML (Pandoc)
           opts.desc = "Export to HTML (Pandoc)"
-          vim.keymap.set("n", "<leader>me", function()
+          vim.keymap.set("n", "<leader>Me", function()
             local file = vim.api.nvim_buf_get_name(0)
             if file and file ~= "" then
               local output = vim.fn.fnamemodify(file, ":r") .. ".html"
@@ -124,7 +124,7 @@
             local ok, wk = pcall(require, "which-key")
             if ok then
               wk.add({
-                { "<leader>m", group = "Markdown", icon = { icon = "", color = "orange" }, buffer = bufnr },
+                { "<leader>M", group = "Markdown", icon = { icon = "", color = "orange" }, buffer = bufnr },
               })
             end
           end, 100)
