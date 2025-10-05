@@ -101,33 +101,4 @@
       };
     }
   ];
-
-  extraPlugins = with pkgs; [
-    # lsp-lens.nvim - Affiche références + implémentations + auteurs git
-    # NOTE : J'ai décidé d'utiliser un fork du plugin de base
-    (vimUtils.buildVimPlugin {
-      pname = "lsp-lens";
-      version = "2025-08-08";
-      src = fetchFromGitHub {
-        owner = "tkolleh";
-        repo = "lsp-lens.nvim";
-        rev = "bf4cdee1b092a611ca6398741eb05e13e9f42f0b";
-        hash = "sha256-/yJog/rOsYhKxNvTTF9HJ7ow1KRKqzTYiVt5RfpBYhE=";
-      };
-    })
-  ];
-
-  extraConfigLua = ''
-    local SymbolKind = vim.lsp.protocol.SymbolKind
-    require('lsp-lens').setup({
-      enable = true,
-      include_declaration = false,
-      sections = {
-        definition = true,
-        references = true,
-        implements = true,
-        git_authors = true,
-      },
-    })
-  '';
 }
