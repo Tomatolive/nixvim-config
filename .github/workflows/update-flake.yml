@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   update-flake:
@@ -24,5 +25,4 @@ jobs:
         with:
           commit-msg: "chore(flake): update flake.lock"
           path-to-flake-dir: "."
-          
           token: ${{ secrets.GITHUB_TOKEN }}
