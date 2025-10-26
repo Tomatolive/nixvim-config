@@ -25,4 +25,5 @@ jobs:
         with:
           commit-msg: "chore(flake): update flake.lock"
           path-to-flake-dir: "."
+          pr-title: ""
           token: ${{ secrets.PAT_TOKEN }}
