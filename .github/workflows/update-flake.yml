@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: write
-  actions: write
 
 jobs:
   update-flake:
@@ -16,14 +15,25 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
       - name: Update flake.lock
-        uses: DeterminateSystems/update-flake-lock@main
-        with:
-          commit-msg: "chore(flake): update flake.lock"
-          path-to-flake-dir: "."
-          pr-title: ""
-          token: ${{ secrets.PAT_TOKEN }}
+        run: nix flake update
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          if git diff --quiet flake.lock; then
+            echo "No changes to flake.lock"
+            exit 0
+          fi
+          
+          git add flake.lock
+          git commit -m "chore(flake): update flake.lock"
+          git push
