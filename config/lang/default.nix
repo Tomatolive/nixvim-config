@@ -49,7 +49,6 @@
 
         # Configuration et données
         json
-        jsonc
         yaml
         toml
         xml
