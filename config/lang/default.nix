@@ -89,23 +89,9 @@
     };
 
 
-    # NOTE: Bug actuellement sur nixpkgs 25.11+, à réactiver par la suite (voir issue #4108)
-    # Text objects utiles  
-    # treesitter-textobjects = {
-    #   enable = true;
-    #   settings = {
-    #     select = {
-    #       enable = true;
-    #       lookahead = true;
-    #       keymaps = {
-    #         "af" = "@function.outer";
-    #         "if" = "@function.inner";
-    #         "ac" = "@class.outer";
-    #         "ic" = "@class.inner";
-    #       };
-    #     };
-    #   };
-    # };
+    treesitter-textobjects = {
+      enable = true;
+    };
 
     conform-nvim = {
       enable = true;
@@ -130,14 +116,50 @@
     };
   };
 
-  # keymaps = [
-  #   {
-  #     mode = "n";
-  #     key = "[C"; # [c est pris par mini.bracketed (comments)
-  #     action.__raw = ''function() require("treesitter-context").go_to_context(vim.v.count1) end'';
-  #     options = { silent = true; desc = "Go to context"; };
-  #   }
-  # ];
+  keymaps = [
+    #   {
+    #     mode = "n";
+    #     key = "[C"; # [c est pris par mini.bracketed (comments)
+    #     action.__raw = ''function() require("treesitter-context").go_to_context(vim.v.count1) end'';
+    #     options = { silent = true; desc = "Go to context"; };
+    #   }
+    {
+      mode = "n";
+      key = "<A-a>";
+      action.__raw = ''function() require("nvim-treesitter-textobjects.swap").swap_next("@parameter.inner") end'';
+      options.desc = "Swap parameter with next";
+    }
+    {
+      mode = "n";
+      key = "<A-A>";
+      action.__raw = ''function() require("nvim-treesitter-textobjects.swap").swap_previous("@parameter.inner") end'';
+      options.desc = "Swap parameter with previous";
+    }
+    {
+      mode = [ "n" "x" "o" ];
+      key = "]a";
+      action.__raw = ''function() require("nvim-treesitter-textobjects.move").goto_next_start("@parameter.inner", "textobjects") end'';
+      options.desc = "Next parameter";
+    }
+    {
+      mode = [ "n" "x" "o" ];
+      key = "[a";
+      action.__raw = ''function() require("nvim-treesitter-textobjects.move").goto_previous_start("@parameter.inner", "textobjects") end'';
+      options.desc = "Previous parameter";
+    }
+    {
+      mode = [ "n" "x" "o" ];
+      key = "]f";
+      action.__raw = ''function() require("nvim-treesitter-textobjects.move").goto_next_start("@function.outer", "textobjects") end'';
+      options.desc = "Next function";
+    }
+    {
+      mode = [ "n" "x" "o" ];
+      key = "[f";
+      action.__raw = ''function() require("nvim-treesitter-textobjects.move").goto_previous_start("@function.outer", "textobjects") end'';
+      options.desc = "Previous function";
+    }
+  ];
 
   diagnostic.settings = {
     virtual_lines.current_line = true;

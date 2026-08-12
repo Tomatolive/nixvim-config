@@ -148,6 +148,7 @@
 
   plugins.which-key.settings.spec = [
     { __unkeyed-1 = "<leader>r"; group = "Persistence"; icon = { icon = ""; color = "blue"; }; }
+    { __unkeyed-1 = "<leader>l"; group = "LanguageTool"; icon = { icon = " "; color = "green"; }; }
   ];
 
   # =====================================================================
@@ -155,6 +156,16 @@
   # =====================================================================
   extraPlugins = with pkgs.vimPlugins; [
     plenary-nvim # Requis pour todo-comments.nvim
+
+    (pkgs.vimUtils.buildVimPlugin {
+      name = "languagetool-nvim";
+      src = pkgs.fetchFromGitHub {
+        owner = "liba2k";
+        repo = "languagetool.nvim";
+        rev = "5a24ae8847b10d55eeaf53bed7444b3dddeec887";
+        hash = "sha256-BkJUNBb8gTCzOAzL1/EI18lhKkzvLUtk8GujbDC3eKo=";
+      };
+    })
   ];
 
   extraPackages = with pkgs; [
@@ -186,6 +197,68 @@
       key = "S";
       action.__raw = ''function() require("flash").treesitter() end'';
       options.desc = "Flash Treesitter";
+    }
+    {
+      mode = "o";
+      key = "r";
+      action.__raw = ''function() require("flash").remote() end'';
+      options.desc = "Remote Flash";
+    }
+    {
+      mode = [ "o" "x" ];
+      key = "R";
+      action.__raw = ''function() require("flash").treesitter_search() end'';
+      options.desc = "Treesitter Search";
+    }
+    {
+      mode = "c";
+      key = "<c-s>";
+      action.__raw = ''function() require("flash").toggle() end'';
+      options.desc = "Toggle Flash Search";
+    }
+    {
+      mode = [ "n" "x" "o" ];
+      key = "<c-space>";
+      action.__raw = ''
+        function()
+          require("flash").treesitter({
+            actions = { ["<c-space>"] = "next", ["<BS>"] = "prev" }
+          })
+        end
+      '';
+      options.desc = "Treesitter incremental selection";
+    }
+
+    # ===== LANGUAGE GROUP - <leader>l =====
+    {
+      mode = "n";
+      key = "<leader>lc";
+      action = "<cmd>LTCheck<cr>";
+      options.desc = "LT: Check line";
+    }
+    {
+      mode = "v";
+      key = "<leader>lc";
+      action = ":LTCheck<cr>";
+      options.desc = "LT: Check selection";
+    }
+    {
+      mode = "n";
+      key = "<leader>lb";
+      action = "<cmd>LTCheckBuffer<cr>";
+      options.desc = "LT: Check buffer";
+    }
+    {
+      mode = "n";
+      key = "<leader>lf";
+      action = "<cmd>LTFix<cr>";
+      options.desc = "LT: Show fixes";
+    }
+    {
+      mode = "n";
+      key = "<leader>lx";
+      action = "<cmd>LTClear<cr>";
+      options.desc = "LT: Clear diagnostics";
     }
 
     # ===== PASTE GROUP - <leader>p =====
@@ -274,5 +347,17 @@
     pcall(function()
       require("telescope").load_extension("yank_history")
     end)
+
+    require("languagetool").setup({
+      server_url = "https://languagetool.hexasec.io/tombdfapr1ShEQVfT0i4K6xN0tCUqTMinoC4L0x",
+      language = "auto",
+      severity = {
+        typographical = vim.diagnostic.severity.HINT,
+        grammar = vim.diagnostic.severity.WARN,
+        misspelling = vim.diagnostic.severity.ERROR,
+        style = vim.diagnostic.severity.INFO,
+        default = vim.diagnostic.severity.WARN,
+      },
+    })
   '';
 }

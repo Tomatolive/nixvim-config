@@ -13,6 +13,15 @@
       # Text objects améliorés
       ai = {
         n_lines = 500;
+        custom_textobjects.__raw = ''
+          {
+            f = require('mini.ai').gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
+            c = require('mini.ai').gen_spec.treesitter({ a = "@comment.outer", i = "@comment.inner" }),
+            C = require('mini.ai').gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),
+            o = require('mini.ai').gen_spec.treesitter({ a = "@conditional.outer", i = "@conditional.inner" }),
+            L = require('mini.ai').gen_spec.treesitter({ a = "@loop.outer", i = "@loop.inner" }),
+          }
+        '';
       };
 
       # Auto-pairing simple
@@ -106,21 +115,21 @@
       # Navigation avec [ et ] pour différents objets
       bracketed = {
 
-        # Désactive les mappings qui rentrent en conflit avec tes keymaps
+        # Désactive les mappings
         buffer = { suffix = ""; }; # Désactive [b ]b (tu as déjà ça)
         diagnostic = { suffix = ""; }; # Désactive [d ]d (tu as déjà ça)
         yank = { suffix = ""; }; # Désactive [y ]y (tu as yanky)
         location = { suffix = ""; }; # Désactive [l ]l (défaut neovim)  
         quickfix = { suffix = ""; }; # Désactive [q ]q (défaut neovim)
+        file = { suffix = ""; }; # Désactive [f ]f (pas franchement utile)
+        indent = { suffix = ""; }; # Désactive [i ]i (pas franchement utile)
+        treesitter = { suffix = ""; }; # Désactive [n ]n (pas franchement utile)
 
-        # Active les autres mappings utiles (pas de conflit)
+        # Active les autres mappings utiles
         comment = { suffix = "c"; }; # [c ]c pour les commentaires
         conflict = { suffix = "x"; }; # [x ]x pour les conflits git
-        file = { suffix = "f"; }; # [f ]f pour les fichiers dans le directory
-        indent = { suffix = "i"; }; # [i ]i pour les niveaux d'indentation
         jump = { suffix = "j"; }; # [j ]j pour la jump list
         oldfile = { suffix = "o"; }; # [o ]o pour les fichiers récents
-        treesitter = { suffix = "n"; }; # [n ]n pour les nodes treesitter
         undo = { suffix = "u"; }; # [u ]u pour l'undo tree
         window = { suffix = "w"; }; # [w ]w pour les fenêtres
       };
@@ -130,6 +139,18 @@
   plugins.which-key.settings.spec = [
     { __unkeyed-1 = "gs"; group = "Surround"; }
     { __unkeyed-1 = "gp"; group = "Peek/Preview"; }
+
+    # Textobjects mini.ai
+    { __unkeyed-1 = "af"; desc = "around function"; mode = [ "x" "o" ]; }
+    { __unkeyed-1 = "if"; desc = "inner function"; mode = [ "x" "o" ]; }
+    { __unkeyed-1 = "ac"; desc = "around comment"; mode = [ "x" "o" ]; }
+    { __unkeyed-1 = "ic"; desc = "inner comment"; mode = [ "x" "o" ]; }
+    { __unkeyed-1 = "aC"; desc = "around class"; mode = [ "x" "o" ]; }
+    { __unkeyed-1 = "iC"; desc = "inner class"; mode = [ "x" "o" ]; }
+    { __unkeyed-1 = "ao"; desc = "around conditional"; mode = [ "x" "o" ]; }
+    { __unkeyed-1 = "io"; desc = "inner conditional"; mode = [ "x" "o" ]; }
+    { __unkeyed-1 = "aL"; desc = "around loop"; mode = [ "x" "o" ]; }
+    { __unkeyed-1 = "iL"; desc = "inner loop"; mode = [ "x" "o" ]; }
   ];
 
 }
